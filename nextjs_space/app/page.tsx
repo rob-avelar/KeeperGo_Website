@@ -253,30 +253,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">500+</div>
-              <div className="text-blue-100">Active Goalkeepers</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">2,000+</div>
-              <div className="text-blue-100">Matches Completed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">4.8★</div>
-              <div className="text-blue-100">Average Rating</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">€20+</div>
-              <div className="text-blue-100">Starting Price</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 px-4 text-center">
         <div className="max-w-4xl mx-auto">
