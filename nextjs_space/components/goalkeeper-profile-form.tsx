@@ -25,8 +25,8 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
     experienceLevel: profile?.experienceLevel || '',
     preferredFields: profile?.preferredFields || [],
     serviceRadius: profile?.serviceRadius || 10,
-    hourlyRateMin: profile?.hourlyRateMin ? profile.hourlyRateMin / 100 : 25,
-    hourlyRateMax: profile?.hourlyRateMax ? profile.hourlyRateMax / 100 : 40,
+    hourlyRateMin: profile?.hourlyRateMin ? profile.hourlyRateMin / 100 : 20,
+    hourlyRateMax: profile?.hourlyRateMax ? profile.hourlyRateMax / 100 : 30,
     address: profile?.address || '',
     city: profile?.city || '',
     postalCode: profile?.postalCode || ''

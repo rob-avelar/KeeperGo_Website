@@ -203,7 +203,7 @@ export default function BookGoalkeeperForm() {
                   <Input
                     id="pricePerHour"
                     type="number"
-                    placeholder="e.g., 30"
+                    placeholder="e.g., 20"
                     min="15"
                     max="100"
                     value={formData.pricePerHour}
@@ -213,7 +213,7 @@ export default function BookGoalkeeperForm() {
                   />
                 </div>
                 <p className="text-sm text-gray-500">
-                  Typical range: €25-45 per hour
+                  Standard rate: €20 per hour
                 </p>
               </div>
 

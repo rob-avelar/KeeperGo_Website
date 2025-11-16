@@ -93,8 +93,8 @@ async function main() {
       experienceLevel: 'Advanced',
       preferredFields: ['5-a-side', '7-a-side', '11-a-side', 'Indoor'],
       serviceRadius: 15,
-      hourlyRateMin: 2500, // €25
-      hourlyRateMax: 4000, // €40
+      hourlyRateMin: 2000, // €20
+      hourlyRateMax: 3000, // €30
       isActive: true,
       totalMatches: 45,
       averageRating: 4.7,
@@ -118,7 +118,7 @@ async function main() {
       preferredFields: ['5-a-side', '7-a-side', 'Indoor'],
       serviceRadius: 12,
       hourlyRateMin: 2000, // €20
-      hourlyRateMax: 3500, // €35
+      hourlyRateMax: 2500, // €25
       isActive: true,
       totalMatches: 32,
       averageRating: 4.5,
@@ -141,8 +141,8 @@ async function main() {
       experienceLevel: 'Expert',
       preferredFields: ['11-a-side', 'Outdoor'],
       serviceRadius: 20,
-      hourlyRateMin: 3500, // €35
-      hourlyRateMax: 5000, // €50
+      hourlyRateMin: 2500, // €25
+      hourlyRateMax: 3500, // €35
       isActive: true,
       totalMatches: 78,
       averageRating: 4.9,
@@ -169,8 +169,8 @@ async function main() {
       latitude: 52.3598,
       longitude: 4.8776,
       fieldType: '7-a-side',
-      pricePerHour: 3000, // €30/hour
-      totalAmount: 6000, // €60 total
+      pricePerHour: 2000, // €20/hour
+      totalAmount: 4000, // €40 total
       status: 'CONFIRMED'
     }
   })
@@ -204,8 +204,8 @@ async function main() {
       latitude: 51.9244,
       longitude: 4.4777,
       fieldType: '11-a-side',
-      pricePerHour: 4000, // €40/hour
-      totalAmount: 8000, // €80 total
+      pricePerHour: 2500, // €25/hour
+      totalAmount: 5000, // €50 total
       status: 'PENDING'
     }
   })
