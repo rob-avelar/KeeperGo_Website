@@ -1,4 +1,5 @@
 
+
 export const dynamic = "force-dynamic"
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -17,42 +18,127 @@ export async function POST(
 
     const bookingId = params.id
 
-    // Find the booking and verify it belongs to this goalkeeper
-    const booking = await prisma.booking.findFirst({
-      where: {
-        id: bookingId,
-        goalkeeperId: session.user.id,
-        status: 'PENDING'
-      },
-      include: {
-        organizer: true
-      }
+    // Get goalkeeper profile
+    const goalkeeperProfile = await prisma.goalkeeperProfile.findFirst({
+      where: { userId: session.user.id }
     })
 
-    if (!booking) {
-      return NextResponse.json({ error: 'Booking not found or not available' }, { status: 404 })
+    if (!goalkeeperProfile) {
+      return NextResponse.json(
+        { error: 'Goalkeeper profile not found. Please complete your profile first.' },
+        { status: 404 }
+      )
     }
 
-    // Update booking status
-    const updatedBooking = await prisma.booking.update({
-      where: { id: bookingId },
-      data: { status: 'ACCEPTED' }
-    })
+    // Use a transaction to ensure atomicity and handle race conditions
+    const result = await prisma.$transaction(async (tx) => {
+      // First, check if booking is still available
+      const booking = await tx.booking.findUnique({
+        where: { id: bookingId },
+        include: {
+          organizer: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        }
+      })
 
-    // Create notification for organizer
-    await prisma.notification.create({
-      data: {
-        userId: booking.organizerId,
-        bookingId: booking.id,
-        title: 'Booking Accepted!',
-        message: `${session.user.name} has accepted your booking request for ${new Date(booking.date).toLocaleDateString()}`,
-        type: 'BOOKING_ACCEPTED'
+      if (!booking) {
+        throw new Error('BOOKING_NOT_FOUND')
       }
+
+      // Check if already taken
+      if (booking.goalkeeperId !== null) {
+        throw new Error('BOOKING_ALREADY_TAKEN')
+      }
+
+      // Check if booking is still pending
+      if (booking.status !== 'PENDING') {
+        throw new Error('BOOKING_NOT_AVAILABLE')
+      }
+
+      // Check if booking is in the future
+      if (new Date(booking.date) < new Date()) {
+        throw new Error('BOOKING_EXPIRED')
+      }
+
+      // Update booking with goalkeeper assignment
+      const updatedBooking = await tx.booking.update({
+        where: { id: bookingId },
+        data: {
+          goalkeeperId: session.user.id,
+          goalkeeperProfileId: goalkeeperProfile.id,
+          status: 'ACCEPTED'
+        },
+        include: {
+          organizer: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        }
+      })
+
+      // Create notification for organizer
+      await tx.notification.create({
+        data: {
+          userId: booking.organizer.id,
+          bookingId: booking.id,
+          title: 'Goalkeeper Accepted Your Match!',
+          message: `${session.user.name} has accepted your match on ${new Date(booking.date).toLocaleDateString()}`,
+          type: 'BOOKING_ACCEPTED'
+        }
+      })
+
+      // Create notification for goalkeeper
+      await tx.notification.create({
+        data: {
+          userId: session.user.id,
+          bookingId: booking.id,
+          title: 'Match Accepted',
+          message: `You've successfully accepted the match with ${booking.organizer.name} on ${new Date(booking.date).toLocaleDateString()}`,
+          type: 'BOOKING_ACCEPTED'
+        }
+      })
+
+      return updatedBooking
     })
 
-    return NextResponse.json(updatedBooking)
-  } catch (error) {
+    return NextResponse.json(result, { status: 200 })
+  } catch (error: any) {
     console.error('Error accepting booking:', error)
+    
+    // Handle specific error cases
+    if (error.message === 'BOOKING_NOT_FOUND') {
+      return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
+    }
+    
+    if (error.message === 'BOOKING_ALREADY_TAKEN') {
+      return NextResponse.json(
+        { error: 'This booking has already been accepted by another goalkeeper' },
+        { status: 409 }
+      )
+    }
+    
+    if (error.message === 'BOOKING_NOT_AVAILABLE') {
+      return NextResponse.json(
+        { error: 'This booking is no longer available' },
+        { status: 409 }
+      )
+    }
+    
+    if (error.message === 'BOOKING_EXPIRED') {
+      return NextResponse.json(
+        { error: 'This booking date has already passed' },
+        { status: 400 }
+      )
+    }
+
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

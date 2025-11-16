@@ -55,7 +55,7 @@ export default function BookGoalkeeperForm() {
 
       toast({
         title: 'Success!',
-        description: 'Your booking request has been created. You will be notified when goalkeepers respond.',
+        description: 'Your match announcement has been posted. Goalkeepers can now view and accept it.',
       })
 
       router.push('/organizer/dashboard')
@@ -95,9 +95,9 @@ export default function BookGoalkeeperForm() {
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Book a Goalkeeper</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Post a Match Announcement</h2>
           <p className="text-gray-600">
-            Fill in your match details and we'll help you find the perfect goalkeeper.
+            Create a match announcement that all registered goalkeepers can see. The first goalkeeper to accept will be assigned to your match.
           </p>
         </div>
 
@@ -242,10 +242,10 @@ export default function BookGoalkeeperForm() {
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    'Creating Booking...'
+                    'Posting Announcement...'
                   ) : (
                     <>
-                      Create Booking
+                      Post Match Announcement
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </>
                   )}

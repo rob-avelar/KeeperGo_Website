@@ -30,7 +30,11 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
   const bookings = user?.organizerBookings || []
 
   const upcomingBookings = bookings?.filter((booking: any) => 
-    new Date(booking.date) >= new Date() && booking.status === 'CONFIRMED'
+    new Date(booking.date) >= new Date() && (booking.status === 'CONFIRMED' || booking.status === 'ACCEPTED')
+  ) || []
+
+  const openBookings = bookings?.filter((booking: any) => 
+    new Date(booking.date) >= new Date() && booking.status === 'PENDING' && !booking.goalkeeperId
   ) || []
 
   const completedBookings = bookings?.filter((booking: any) => 
@@ -97,13 +101,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             <Link href="/organizer/book-goalkeeper">
               <Button className="bg-blue-600 hover:bg-blue-700">
                 <Plus className="w-4 h-4 mr-2" />
-                Book Goalkeeper
-              </Button>
-            </Link>
-            <Link href="/organizer/search-goalkeepers">
-              <Button variant="outline">
-                <Users className="w-4 h-4 mr-2" />
-                Browse Goalkeepers
+                Post Match Announcement
               </Button>
             </Link>
           </div>
@@ -167,6 +165,53 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </CardContent>
           </Card>
         </div>
+
+        {/* Open Announcements */}
+        {openBookings?.length > 0 && (
+          <Card className="mb-8 border-yellow-300 bg-yellow-50/50">
+            <CardHeader>
+              <CardTitle className="flex items-center text-yellow-800">
+                <Activity className="h-5 w-5 mr-2" />
+                Open Match Announcements
+              </CardTitle>
+              <CardDescription className="text-yellow-700">
+                Waiting for goalkeepers to accept
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {openBookings?.map((booking: any) => (
+                <div key={booking.id} className="border-l-4 border-yellow-500 pl-4 py-2 bg-white rounded-r-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-semibold">
+                      Waiting for Goalkeeper
+                    </h4>
+                    <Badge variant="outline" className="text-yellow-600">
+                      OPEN
+                    </Badge>
+                  </div>
+                  <div className="space-y-1 text-sm text-gray-600">
+                    <div className="flex items-center">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {new Date(booking.date).toLocaleDateString()} at {new Date(booking.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    <div className="flex items-center">
+                      <MapPin className="h-3 w-3 mr-1" />
+                      {booking.location}
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="h-3 w-3 mr-1" />
+                      {booking.duration} hours • {booking.fieldType}
+                    </div>
+                    <div className="flex items-center">
+                      <Euro className="h-3 w-3 mr-1" />
+                      €{(booking.totalAmount / 100).toFixed(0)} total
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Recent Bookings */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

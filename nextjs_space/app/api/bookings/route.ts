@@ -76,7 +76,6 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     const {
-      goalkeeperId,
       date,
       duration,
       location,
@@ -93,19 +92,12 @@ export async function POST(request: NextRequest) {
 
     const totalAmount = pricePerHour * duration
 
-    // Find goalkeeper profile if goalkeeperId provided
-    let goalkeeperProfile = null
-    if (goalkeeperId) {
-      goalkeeperProfile = await prisma.goalkeeperProfile.findFirst({
-        where: { userId: goalkeeperId }
-      })
-    }
-
+    // Create open booking (announcement) without assigned goalkeeper
     const booking = await prisma.booking.create({
       data: {
         organizerId: session.user.id,
-        goalkeeperId: goalkeeperId || null,
-        goalkeeperProfileId: goalkeeperProfile?.id || null,
+        goalkeeperId: null, // Open for any goalkeeper to accept
+        goalkeeperProfileId: null,
         date: new Date(date),
         duration: parseInt(duration),
         location,
@@ -115,22 +107,9 @@ export async function POST(request: NextRequest) {
         pricePerHour: parseInt(pricePerHour),
         totalAmount,
         specialRequests,
-        status: goalkeeperId ? 'PENDING' : 'PENDING'
+        status: 'PENDING' // Available for goalkeepers to accept
       }
     })
-
-    // Create notification for goalkeeper if specified
-    if (goalkeeperId) {
-      await prisma.notification.create({
-        data: {
-          userId: goalkeeperId,
-          bookingId: booking.id,
-          title: 'New Booking Request',
-          message: `${session.user.name} has requested you for a match on ${new Date(date).toLocaleDateString()}`,
-          type: 'BOOKING_REQUEST'
-        }
-      })
-    }
 
     return NextResponse.json(booking, { status: 201 })
   } catch (error) {
