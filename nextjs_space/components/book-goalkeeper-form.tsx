@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -9,8 +9,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Calendar, MapPin, Clock, Euro, ArrowRight, Goal } from 'lucide-react'
+import { Calendar, MapPin, Clock, Euro, ArrowRight, Goal, Star } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 
 export default function BookGoalkeeperForm() {
@@ -21,14 +22,59 @@ export default function BookGoalkeeperForm() {
     location: '',
     fieldType: '',
     pricePerHour: '',
-    specialRequests: ''
+    specialRequests: '',
+    bookingType: 'open', // 'open' or 'direct'
+    selectedGoalkeeperId: ''
   })
+  const [goalkeepers, setGoalkeepers] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingGoalkeepers, setIsLoadingGoalkeepers] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
 
+  // Load goalkeepers when booking type is 'direct'
+  useEffect(() => {
+    if (formData.bookingType === 'direct') {
+      fetchGoalkeepers()
+    }
+  }, [formData.bookingType])
+
+  const fetchGoalkeepers = async () => {
+    setIsLoadingGoalkeepers(true)
+    try {
+      const response = await fetch('/api/goalkeepers')
+      if (response.ok) {
+        const data = await response.json()
+        setGoalkeepers(data.goalkeepers || [])
+      }
+    } catch (error) {
+      console.error('Failed to fetch goalkeepers:', error)
+    } finally {
+      setIsLoadingGoalkeepers(false)
+    }
+  }
+
+  const calculateTotalPrice = () => {
+    const basePrice = parseInt(formData.pricePerHour) || 20
+    const duration = parseInt(formData.duration) || 1
+    const isPremium = formData.bookingType === 'direct'
+    const premiumMultiplier = isPremium ? 1.25 : 1
+    return Math.round(basePrice * duration * premiumMultiplier)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validate direct booking
+    if (formData.bookingType === 'direct' && !formData.selectedGoalkeeperId) {
+      toast({
+        title: 'Error',
+        description: 'Please select a goalkeeper for direct booking.',
+        variant: 'destructive'
+      })
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -45,7 +91,9 @@ export default function BookGoalkeeperForm() {
           location: formData.location,
           fieldType: formData.fieldType,
           pricePerHour: parseInt(formData.pricePerHour) * 100, // Convert to cents
-          specialRequests: formData.specialRequests
+          specialRequests: formData.specialRequests,
+          bookingType: formData.bookingType,
+          goalkeeperId: formData.bookingType === 'direct' ? formData.selectedGoalkeeperId : undefined
         }),
       })
 
@@ -53,9 +101,13 @@ export default function BookGoalkeeperForm() {
         throw new Error('Failed to create booking')
       }
 
+      const successMessage = formData.bookingType === 'direct'
+        ? 'Direct booking created! The goalkeeper has been notified.'
+        : 'Your match announcement has been posted. Goalkeepers can now view and accept it.'
+
       toast({
         title: 'Success!',
-        description: 'Your match announcement has been posted. Goalkeepers can now view and accept it.',
+        description: successMessage,
       })
 
       router.push('/organizer/dashboard')
@@ -95,9 +147,9 @@ export default function BookGoalkeeperForm() {
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Post a Match Announcement</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Book a Goalkeeper</h2>
           <p className="text-gray-600">
-            Create a match announcement that all registered goalkeepers can see. The first goalkeeper to accept will be assigned to your match.
+            Choose between posting an open announcement or booking a specific goalkeeper directly.
           </p>
         </div>
 
@@ -111,6 +163,76 @@ export default function BookGoalkeeperForm() {
 
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-6">
+              {/* Booking Type Selection */}
+              <div className="space-y-2">
+                <Label>Booking Type</Label>
+                <Select value={formData.bookingType} onValueChange={(value) => handleChange('bookingType', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select booking type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="open">Open Announcement (Standard Rate)</SelectItem>
+                    <SelectItem value="direct">Direct Booking (+25% Premium)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-gray-500">
+                  {formData.bookingType === 'open' 
+                    ? 'Post an announcement visible to all goalkeepers. First to accept gets the match.'
+                    : 'Choose a specific goalkeeper you prefer. 25% premium fee applies for direct booking convenience.'}
+                </p>
+              </div>
+
+              {/* Goalkeeper Selection (only for direct booking) */}
+              {formData.bookingType === 'direct' && (
+                <div className="space-y-2">
+                  <Label>Select Goalkeeper</Label>
+                  {isLoadingGoalkeepers ? (
+                    <div className="text-center py-4 text-gray-500">
+                      Loading goalkeepers...
+                    </div>
+                  ) : goalkeepers.length === 0 ? (
+                    <div className="text-center py-4 text-gray-500">
+                      No goalkeepers available at the moment.
+                    </div>
+                  ) : (
+                    <Select value={formData.selectedGoalkeeperId} onValueChange={(value) => handleChange('selectedGoalkeeperId', value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choose a goalkeeper" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {goalkeepers.map((gk) => (
+                          <SelectItem key={gk.id} value={gk.id}>
+                            <div className="flex items-center gap-2">
+                              <span>{gk.name}</span>
+                              <Badge variant="outline" className="ml-2">
+                                {gk.profile?.experienceLevel || 'No level'}
+                              </Badge>
+                              {gk.profile?.averageRating > 0 && (
+                                <span className="flex items-center text-xs text-yellow-600">
+                                  <Star className="h-3 w-3 fill-current mr-1" />
+                                  {gk.profile.averageRating.toFixed(1)}
+                                </span>
+                              )}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  {formData.selectedGoalkeeperId && goalkeepers.find(gk => gk.id === formData.selectedGoalkeeperId) && (
+                    <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-sm text-blue-800">
+                        <strong>Selected:</strong> {goalkeepers.find(gk => gk.id === formData.selectedGoalkeeperId)?.name}
+                      </p>
+                      {goalkeepers.find(gk => gk.id === formData.selectedGoalkeeperId)?.profile?.bio && (
+                        <p className="text-xs text-blue-600 mt-1">
+                          {goalkeepers.find(gk => gk.id === formData.selectedGoalkeeperId)?.profile?.bio}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
               {/* Date and Time */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -197,7 +319,7 @@ export default function BookGoalkeeperForm() {
 
               {/* Price Per Hour */}
               <div className="space-y-2">
-                <Label htmlFor="pricePerHour">Price Per Hour (€)</Label>
+                <Label htmlFor="pricePerHour">Base Price Per Hour (€)</Label>
                 <div className="relative">
                   <Euro className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
@@ -215,6 +337,32 @@ export default function BookGoalkeeperForm() {
                 <p className="text-sm text-gray-500">
                   Standard rate: €20 per hour
                 </p>
+                {formData.pricePerHour && formData.duration && (
+                  <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600">Base cost:</span>
+                      <span className="font-medium">€{parseInt(formData.pricePerHour) * parseInt(formData.duration)}</span>
+                    </div>
+                    {formData.bookingType === 'direct' && (
+                      <>
+                        <div className="flex justify-between items-center text-sm text-orange-600 mt-1">
+                          <span>Direct booking premium (+25%):</span>
+                          <span className="font-medium">€{Math.round(parseInt(formData.pricePerHour) * parseInt(formData.duration) * 0.25)}</span>
+                        </div>
+                        <div className="border-t border-gray-300 mt-2 pt-2 flex justify-between items-center">
+                          <span className="font-semibold text-gray-900">Total:</span>
+                          <span className="font-bold text-blue-600 text-lg">€{calculateTotalPrice()}</span>
+                        </div>
+                      </>
+                    )}
+                    {formData.bookingType === 'open' && (
+                      <div className="border-t border-gray-300 mt-2 pt-2 flex justify-between items-center">
+                        <span className="font-semibold text-gray-900">Total:</span>
+                        <span className="font-bold text-blue-600 text-lg">€{calculateTotalPrice()}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Special Requests */}
@@ -242,10 +390,10 @@ export default function BookGoalkeeperForm() {
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    'Posting Announcement...'
+                    formData.bookingType === 'direct' ? 'Creating Direct Booking...' : 'Posting Announcement...'
                   ) : (
                     <>
-                      Post Match Announcement
+                      {formData.bookingType === 'direct' ? 'Confirm Direct Booking' : 'Post Match Announcement'}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </>
                   )}

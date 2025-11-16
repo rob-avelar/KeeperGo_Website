@@ -197,15 +197,6 @@ export default function HomePage() {
                     2
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900">Review Goalkeepers</h4>
-                    <p className="text-gray-600">Browse available goalkeepers with ratings and profiles</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
-                    3
-                  </div>
-                  <div>
                     <h4 className="font-semibold text-gray-900">Book & Pay</h4>
                     <p className="text-gray-600">Secure payment and instant confirmation</p>
                   </div>

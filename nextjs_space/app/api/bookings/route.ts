@@ -83,21 +83,49 @@ export async function POST(request: NextRequest) {
       longitude,
       fieldType,
       pricePerHour,
-      specialRequests
+      specialRequests,
+      bookingType,
+      goalkeeperId
     } = body
 
     if (!date || !duration || !location || !fieldType || !pricePerHour) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const totalAmount = pricePerHour * duration
+    // Validate direct booking
+    if (bookingType === 'direct' && !goalkeeperId) {
+      return NextResponse.json({ error: 'Goalkeeper ID required for direct booking' }, { status: 400 })
+    }
 
-    // Create open booking (announcement) without assigned goalkeeper
+    // Calculate total amount with premium for direct booking
+    const isPremium = bookingType === 'direct'
+    const premiumMultiplier = isPremium ? 1.25 : 1
+    const baseAmount = pricePerHour * duration
+    const totalAmount = Math.round(baseAmount * premiumMultiplier)
+
+    // Get goalkeeper profile if direct booking
+    let goalkeeperProfileId = null
+    if (bookingType === 'direct' && goalkeeperId) {
+      const goalkeeperProfile = await prisma.goalkeeperProfile.findUnique({
+        where: { userId: goalkeeperId }
+      })
+      goalkeeperProfileId = goalkeeperProfile?.id || null
+
+      // Check if goalkeeper exists
+      const goalkeeper = await prisma.user.findUnique({
+        where: { id: goalkeeperId }
+      })
+      if (!goalkeeper || goalkeeper.role !== 'GOALKEEPER') {
+        return NextResponse.json({ error: 'Invalid goalkeeper' }, { status: 400 })
+      }
+    }
+
+    // Create booking
     const booking = await prisma.booking.create({
       data: {
         organizerId: session.user.id,
-        goalkeeperId: null, // Open for any goalkeeper to accept
-        goalkeeperProfileId: null,
+        goalkeeperId: bookingType === 'direct' ? goalkeeperId : null,
+        goalkeeperProfileId,
         date: new Date(date),
         duration: parseInt(duration),
         location,
@@ -107,9 +135,22 @@ export async function POST(request: NextRequest) {
         pricePerHour: parseInt(pricePerHour),
         totalAmount,
         specialRequests,
-        status: 'PENDING' // Available for goalkeepers to accept
+        status: bookingType === 'direct' ? 'CONFIRMED' : 'PENDING' // Direct bookings are confirmed immediately
       }
     })
+
+    // Create notification for direct booking
+    if (bookingType === 'direct' && goalkeeperId) {
+      await prisma.notification.create({
+        data: {
+          userId: goalkeeperId,
+          type: 'BOOKING_CONFIRMED',
+          title: 'Direct Booking Confirmed',
+          message: `You have been directly booked for a match on ${new Date(date).toLocaleDateString()}`,
+          bookingId: booking.id
+        }
+      })
+    }
 
     return NextResponse.json(booking, { status: 201 })
   } catch (error) {
