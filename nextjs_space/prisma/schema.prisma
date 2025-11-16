@@ -1,0 +1,221 @@
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/netminder_hire/nextjs_space/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(ORGANIZER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts           Account[]
+  sessions           Session[]
+  goalkeeperProfile  GoalkeeperProfile?
+  organizerBookings  Booking[]          @relation("OrganizerBookings")
+  goalkeeperBookings Booking[]          @relation("GoalkeeperBookings")
+  ratingsGiven       Rating[]           @relation("RatingsGiven")
+  ratingsReceived    Rating[]           @relation("RatingsReceived")
+  payments           Payment[]
+  notifications      Notification[]
+
+  @@map("users")
+}
+
+model GoalkeeperProfile {
+  id                String      @id @default(cuid())
+  userId            String      @unique
+  age               Int?
+  bio               String?
+  experienceLevel   String?
+  preferredFields   String[]    @default([])
+  serviceRadius     Int         @default(10) // in kilometers
+  hourlyRateMin     Int         @default(2500) // in cents
+  hourlyRateMax     Int         @default(5000) // in cents
+  profilePhotoPath  String?
+  availability      Json?       // Store availability as JSON
+  isActive          Boolean     @default(true)
+  totalMatches      Int         @default(0)
+  averageRating     Float       @default(0.0)
+  totalEarnings     Int         @default(0) // in cents
+  latitude          Float?
+  longitude         Float?
+  address           String?
+  city              String?
+  postalCode        String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@map("goalkeeper_profiles")
+}
+
+model Booking {
+  id                String        @id @default(cuid())
+  organizerId       String
+  goalkeeperId      String?
+  goalkeeperProfileId String?
+  date              DateTime
+  duration          Int           // in hours
+  location          String
+  latitude          Float?
+  longitude         Float?
+  fieldType         String
+  pricePerHour      Int           // in cents
+  totalAmount       Int           // in cents
+  status            BookingStatus @default(PENDING)
+  specialRequests   String?
+  isCompleted       Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  organizer         User                  @relation("OrganizerBookings", fields: [organizerId], references: [id])
+  goalkeeper        User?                 @relation("GoalkeeperBookings", fields: [goalkeeperId], references: [id])
+  goalkeeperProfile GoalkeeperProfile?    @relation(fields: [goalkeeperProfileId], references: [id])
+  ratings           Rating[]
+  payments          Payment[]
+  notifications     Notification[]
+
+  @@map("bookings")
+}
+
+model Rating {
+  id             String   @id @default(cuid())
+  bookingId      String
+  raterId        String
+  ratedUserId    String
+  punctuality    Int      // 1-5 stars
+  attitude       Int      // 1-5 stars
+  technicalSkill Int      // 1-10 stars
+  overallRating  Float    // calculated average
+  comment        String?
+  createdAt      DateTime @default(now())
+
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  rater     User    @relation("RatingsGiven", fields: [raterId], references: [id])
+  ratedUser User    @relation("RatingsReceived", fields: [ratedUserId], references: [id])
+
+  @@unique([bookingId, raterId])
+  @@map("ratings")
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  userId            String
+  bookingId         String?
+  stripePaymentId   String?       @unique
+  amount            Int           // in cents
+  platformFee       Int           // in cents
+  goalkeeperEarning Int           // in cents
+  status            PaymentStatus @default(PENDING)
+  paymentMethod     String?
+  stripeClientSecret String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id])
+  booking Booking? @relation(fields: [bookingId], references: [id])
+
+  @@map("payments")
+}
+
+model Notification {
+  id        String             @id @default(cuid())
+  userId    String
+  bookingId String?
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean            @default(false)
+  data      Json?              // Additional data as JSON
+  createdAt DateTime           @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum UserRole {
+  ORGANIZER
+  GOALKEEPER
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  BOOKING_REQUEST
+  BOOKING_ACCEPTED
+  BOOKING_REJECTED
+  BOOKING_CONFIRMED
+  PAYMENT_RECEIVED
+  RATING_REQUEST
+  GENERAL
+}
