@@ -95,10 +95,10 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-green-800 mb-2">NetMinder Hire</h1>
+          <h1 className="text-3xl font-bold text-blue-800 mb-2">NetMinder Hire</h1>
           <p className="text-gray-600">Create your account</p>
         </div>
 
@@ -201,7 +201,7 @@ export default function SignUpPage() {
             <CardFooter className="flex flex-col gap-4">
               <Button 
                 type="submit" 
-                className="w-full bg-green-600 hover:bg-green-700" 
+                className="w-full bg-blue-600 hover:bg-blue-700" 
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -218,7 +218,7 @@ export default function SignUpPage() {
                 <span className="text-gray-600">Already have an account? </span>
                 <Link 
                   href="/auth/signin" 
-                  className="text-green-600 hover:text-green-700 font-medium"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
                 >
                   Sign in
                 </Link>

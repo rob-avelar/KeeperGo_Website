@@ -102,14 +102,14 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/goalkeeper/dashboard" className="flex items-center gap-2">
-              <Goal className="h-8 w-8 text-green-600" />
-              <h1 className="text-2xl font-bold text-green-800">NetMinder Hire</h1>
+              <Goal className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-blue-800">NetMinder Hire</h1>
             </Link>
             <Link href="/goalkeeper/dashboard">
               <Button variant="outline" size="sm">
@@ -133,7 +133,7 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center">
-                <User className="h-5 w-5 text-green-600 mr-2" />
+                <User className="h-5 w-5 text-blue-600 mr-2" />
                 Basic Information
               </CardTitle>
               <CardDescription>
@@ -247,7 +247,7 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Euro className="h-5 w-5 text-green-600 mr-2" />
+                <Euro className="h-5 w-5 text-blue-600 mr-2" />
                 Rates & Service Area
               </CardTitle>
               <CardDescription>
@@ -302,7 +302,7 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center">
-                <MapPin className="h-5 w-5 text-green-600 mr-2" />
+                <MapPin className="h-5 w-5 text-blue-600 mr-2" />
                 Location
               </CardTitle>
               <CardDescription>
@@ -353,7 +353,7 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
             </Link>
             <Button 
               type="submit" 
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-blue-600 hover:bg-blue-700"
               disabled={isLoading}
             >
               {isLoading ? (

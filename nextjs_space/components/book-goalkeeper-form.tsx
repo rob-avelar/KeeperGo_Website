@@ -75,14 +75,14 @@ export default function BookGoalkeeperForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/organizer/dashboard" className="flex items-center gap-2">
-              <Goal className="h-8 w-8 text-green-600" />
-              <h1 className="text-2xl font-bold text-green-800">NetMinder Hire</h1>
+              <Goal className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-blue-800">NetMinder Hire</h1>
             </Link>
             <Link href="/organizer/dashboard">
               <Button variant="outline" size="sm">
@@ -238,7 +238,7 @@ export default function BookGoalkeeperForm() {
                 </Link>
                 <Button 
                   type="submit" 
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-blue-600 hover:bg-blue-700"
                   disabled={isLoading}
                 >
                   {isLoading ? (

@@ -61,14 +61,14 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <Goal className="h-8 w-8 text-green-600" />
-              <h1 className="text-2xl font-bold text-green-800">NetMinder Hire</h1>
+              <Goal className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-blue-800">NetMinder Hire</h1>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
@@ -95,7 +95,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
         <div className="mb-8">
           <div className="flex flex-wrap gap-4">
             <Link href="/organizer/book-goalkeeper">
-              <Button className="bg-green-600 hover:bg-green-700">
+              <Button className="bg-blue-600 hover:bg-blue-700">
                 <Plus className="w-4 h-4 mr-2" />
                 Book Goalkeeper
               </Button>
@@ -119,7 +119,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Activity className="h-4 w-4 text-green-600 mr-2" />
+                <Activity className="h-4 w-4 text-blue-600 mr-2" />
                 <span className="text-2xl font-bold">{bookings?.length || 0}</span>
               </div>
             </CardContent>
@@ -147,7 +147,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Euro className="h-4 w-4 text-green-600 mr-2" />
+                <Euro className="h-4 w-4 text-blue-600 mr-2" />
                 <span className="text-2xl font-bold">€{(totalSpent / 100).toFixed(0)}</span>
               </div>
             </CardContent>
@@ -221,7 +221,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <TrendingUp className="h-5 w-5 text-green-600 mr-2" />
+                <TrendingUp className="h-5 w-5 text-blue-600 mr-2" />
                 Recent Activity
               </CardTitle>
               <CardDescription>
@@ -235,7 +235,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                 </p>
               ) : (
                 bookings?.slice(0, 5)?.map((booking: any) => (
-                  <div key={booking.id} className="border-l-4 border-green-500 pl-4 py-2">
+                  <div key={booking.id} className="border-l-4 border-blue-500 pl-4 py-2">
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-medium">
                         Match {booking.isCompleted ? 'Completed' : 'Scheduled'}

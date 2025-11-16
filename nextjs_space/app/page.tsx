@@ -24,15 +24,15 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-6xl mx-auto flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-2">
-            <Goal className="h-6 w-6 text-green-600" />
-            <span className="font-bold text-xl text-green-800">NetMinder Hire</span>
+            <Goal className="h-6 w-6 text-blue-600" />
+            <span className="font-bold text-xl text-blue-800">NetMinder Hire</span>
           </div>
           <nav className="flex items-center gap-4">
             <Link href="/auth/signin">
               <Button variant="outline" size="sm">Sign In</Button>
             </Link>
             <Link href="/auth/signup">
-              <Button size="sm" className="bg-green-600 hover:bg-green-700">
+              <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                 Get Started
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -44,12 +44,12 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative py-20 px-4 text-center">
         <div className="max-w-4xl mx-auto">
-          <Badge className="mb-4 bg-green-100 text-green-800 border-green-200">
+          <Badge className="mb-4 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border-blue-200">
             #1 Goalkeeper Platform in Netherlands
           </Badge>
           
           <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Find the Perfect <span className="text-green-600">Goalkeeper</span> for Your Match
+            Find the Perfect <span className="text-blue-600">Goalkeeper</span> for Your Match
           </h1>
           
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
@@ -59,13 +59,13 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/auth/signup">
-              <Button size="lg" className="bg-green-600 hover:bg-green-700 px-8 py-3">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-3">
                 <Users className="w-5 h-5 mr-2" />
                 I Need a Goalkeeper
               </Button>
             </Link>
             <Link href="/auth/signup">
-              <Button size="lg" variant="outline" className="px-8 py-3">
+              <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3">
                 <Goal className="w-5 h-5 mr-2" />
                 I Am a Goalkeeper
               </Button>
@@ -100,7 +100,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader>
-                <MapPin className="h-12 w-12 text-green-600 mb-4" />
+                <MapPin className="h-12 w-12 text-blue-600 mb-4" />
                 <CardTitle>Location-Based Matching</CardTitle>
                 <CardDescription>
                   Find goalkeepers near your match location with intelligent geolocation matching
@@ -109,11 +109,11 @@ export default function HomePage() {
               <CardContent>
                 <ul className="space-y-2">
                   <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-blue-600" />
                     <span className="text-sm">Real-time proximity search</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-blue-600" />
                     <span className="text-sm">Interactive map interface</span>
                   </li>
                 </ul>
@@ -122,7 +122,7 @@ export default function HomePage() {
 
             <Card className="shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader>
-                <Star className="h-12 w-12 text-green-600 mb-4" />
+                <Star className="h-12 w-12 text-blue-600 mb-4" />
                 <CardTitle>Verified Ratings</CardTitle>
                 <CardDescription>
                   Comprehensive rating system for punctuality, attitude, and technical skills
@@ -131,11 +131,11 @@ export default function HomePage() {
               <CardContent>
                 <ul className="space-y-2">
                   <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-blue-600" />
                     <span className="text-sm">Multi-criteria ratings</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-blue-600" />
                     <span className="text-sm">Detailed match history</span>
                   </li>
                 </ul>
@@ -144,7 +144,7 @@ export default function HomePage() {
 
             <Card className="shadow-lg hover:shadow-xl transition-shadow">
               <CardHeader>
-                <Shield className="h-12 w-12 text-green-600 mb-4" />
+                <Shield className="h-12 w-12 text-blue-600 mb-4" />
                 <CardTitle>Secure Payments</CardTitle>
                 <CardDescription>
                   Safe and secure payment processing with transparent pricing
@@ -153,11 +153,11 @@ export default function HomePage() {
               <CardContent>
                 <ul className="space-y-2">
                   <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-blue-600" />
                     <span className="text-sm">Stripe payment integration</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-blue-600" />
                     <span className="text-sm">Transparent fee structure</span>
                   </li>
                 </ul>
@@ -179,12 +179,12 @@ export default function HomePage() {
             {/* For Organizers */}
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
-                <Users className="h-6 w-6 text-green-600 mr-2" />
+                <Users className="h-6 w-6 text-blue-600 mr-2" />
                 For Match Organizers
               </h3>
               <div className="space-y-6">
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
                     1
                   </div>
                   <div>
@@ -193,7 +193,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
                     2
                   </div>
                   <div>
@@ -202,7 +202,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
                     3
                   </div>
                   <div>
@@ -216,12 +216,12 @@ export default function HomePage() {
             {/* For Goalkeepers */}
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
-                <Goal className="h-6 w-6 text-green-600 mr-2" />
+                <Goal className="h-6 w-6 text-blue-600 mr-2" />
                 For Goalkeepers
               </h3>
               <div className="space-y-6">
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
                     1
                   </div>
                   <div>
@@ -230,7 +230,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
                     2
                   </div>
                   <div>
@@ -239,7 +239,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
                     3
                   </div>
                   <div>
@@ -254,24 +254,24 @@ export default function HomePage() {
       </section>
 
       {/* Stats */}
-      <section className="py-20 px-4 bg-green-600 text-white">
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">500+</div>
-              <div className="text-green-100">Active Goalkeepers</div>
+              <div className="text-blue-100">Active Goalkeepers</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">2,000+</div>
-              <div className="text-green-100">Matches Completed</div>
+              <div className="text-blue-100">Matches Completed</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">4.8★</div>
-              <div className="text-green-100">Average Rating</div>
+              <div className="text-blue-100">Average Rating</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold mb-2">€25-45</div>
-              <div className="text-green-100">Per Hour Range</div>
+              <div className="text-4xl font-bold mb-2">€20+</div>
+              <div className="text-blue-100">Starting Price</div>
             </div>
           </div>
         </div>
@@ -280,7 +280,7 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-20 px-4 text-center">
         <div className="max-w-4xl mx-auto">
-          <Trophy className="h-16 w-16 text-green-600 mx-auto mb-6" />
+          <Trophy className="h-16 w-16 text-blue-600 mx-auto mb-6" />
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
             Ready to Find Your Perfect Goalkeeper?
           </h2>
@@ -288,7 +288,7 @@ export default function HomePage() {
             Join thousands of satisfied players and goalkeepers on NetMinder Hire
           </p>
           <Link href="/auth/signup">
-            <Button size="lg" className="bg-green-600 hover:bg-green-700 px-8 py-3">
+            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-3">
               Get Started Now
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
@@ -302,7 +302,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Goal className="h-6 w-6 text-green-500" />
+                <Goal className="h-6 w-6 text-purple-400" />
                 <span className="font-bold text-xl">NetMinder Hire</span>
               </div>
               <p className="text-gray-400">

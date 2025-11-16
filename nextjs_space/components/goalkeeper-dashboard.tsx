@@ -61,14 +61,14 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <Goal className="h-8 w-8 text-green-600" />
-              <h1 className="text-2xl font-bold text-green-800">NetMinder Hire</h1>
+              <Goal className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-blue-800">NetMinder Hire</h1>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
@@ -95,7 +95,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
         <div className="mb-8">
           <div className="flex flex-wrap gap-4">
             <Link href="/goalkeeper/profile">
-              <Button className="bg-green-600 hover:bg-green-700">
+              <Button className="bg-blue-600 hover:bg-blue-700">
                 <Settings className="w-4 h-4 mr-2" />
                 Edit Profile
               </Button>
@@ -119,7 +119,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Activity className="h-4 w-4 text-green-600 mr-2" />
+                <Activity className="h-4 w-4 text-blue-600 mr-2" />
                 <span className="text-2xl font-bold">{profile?.totalMatches || 0}</span>
               </div>
             </CardContent>
@@ -147,7 +147,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Euro className="h-4 w-4 text-green-600 mr-2" />
+                <Euro className="h-4 w-4 text-blue-600 mr-2" />
                 <span className="text-2xl font-bold">€{(totalEarnings / 100).toFixed(0)}</span>
               </div>
             </CardContent>
@@ -233,7 +233,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3">
-                      <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
                         Accept
                       </Button>
                       <Button size="sm" variant="outline">
