@@ -27,14 +27,17 @@ export default function HomePage() {
             <Goal className="h-6 w-6 text-blue-600" />
             <span className="font-bold text-xl text-blue-800">NetMinder Hire</span>
           </div>
-          <nav className="flex items-center gap-4">
-            <Link href="/auth/signin">
-              <Button variant="outline" size="sm">Sign In</Button>
+          <nav className="flex items-center gap-2 sm:gap-4">
+            <Link href="/auth/organizer/signin">
+              <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                <Users className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Organizer</span> Login
+              </Button>
             </Link>
-            <Link href="/auth/signup">
-              <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                Get Started
-                <ArrowRight className="w-4 h-4 ml-2" />
+            <Link href="/auth/goalkeeper/signin">
+              <Button variant="ghost" size="sm" className="text-purple-600 hover:text-purple-700 hover:bg-purple-50">
+                <Goal className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Goalkeeper</span> Login
               </Button>
             </Link>
           </nav>
@@ -58,14 +61,14 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/auth/signup">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-3">
+            <Link href="/auth/organizer/signup">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-8 py-3">
                 <Users className="w-5 h-5 mr-2" />
                 I Need a Goalkeeper
               </Button>
             </Link>
-            <Link href="/auth/signup">
-              <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3">
+            <Link href="/auth/goalkeeper/signup">
+              <Button size="lg" variant="outline" className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 px-8 py-3">
                 <Goal className="w-5 h-5 mr-2" />
                 I Am a Goalkeeper
               </Button>
@@ -254,12 +257,20 @@ export default function HomePage() {
           <p className="text-xl text-gray-600 mb-8">
             Join thousands of satisfied players and goalkeepers on NetMinder Hire
           </p>
-          <Link href="/auth/signup">
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-3">
-              Get Started Now
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href="/auth/organizer/signup">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-8 py-3">
+                <Users className="w-5 h-5 mr-2" />
+                Sign Up as Organizer
+              </Button>
+            </Link>
+            <Link href="/auth/goalkeeper/signup">
+              <Button size="lg" variant="outline" className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 px-8 py-3">
+                <Goal className="w-5 h-5 mr-2" />
+                Sign Up as Goalkeeper
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
