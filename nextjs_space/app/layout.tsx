@@ -6,6 +6,8 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { SessionProvider } from '@/components/session-provider'
 import { auth } from '@/lib/auth'
+import GoogleAnalytics from '@/components/google-analytics'
+import WebVitals from '@/components/web-vitals'
 
 export const dynamic = "force-dynamic"
 
@@ -66,6 +68,8 @@ export default async function RootLayout({
               {children}
             </div>
             <Toaster />
+            <GoogleAnalytics />
+            <WebVitals />
           </ThemeProvider>
         </SessionProvider>
       </body>
