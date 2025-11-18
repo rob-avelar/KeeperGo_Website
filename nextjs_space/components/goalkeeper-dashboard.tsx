@@ -543,7 +543,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                     </div>
                     <div className="flex items-center">
                       <Euro className="h-3 w-3 mr-1" />
-                      €{((booking.totalAmount * 0.85) / 100).toFixed(0)} earnings
+                      €{((booking.totalAmount * 0.75) / 100).toFixed(0)} earnings
                     </div>
                   </div>
                   <div className="text-sm text-gray-600 mb-3">
