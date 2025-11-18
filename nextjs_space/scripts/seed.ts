@@ -93,12 +93,12 @@ async function main() {
       experienceLevel: 'Advanced',
       preferredFields: ['5-a-side', '7-a-side', '11-a-side', 'Indoor'],
       serviceRadius: 15,
-      hourlyRateMin: 2000, // €20
-      hourlyRateMax: 3000, // €30
+      hourlyRateMin: 1500, // €15 (goalkeeper receives this)
+      hourlyRateMax: 2250, // €22.50 (goalkeeper receives this)
       isActive: true,
       totalMatches: 45,
       averageRating: 4.7,
-      totalEarnings: 1125000, // €11,250
+      totalEarnings: 843750, // €8,437.50 (75% of total bookings)
       latitude: 52.3676,
       longitude: 4.9041,
       address: 'Centrum, Amsterdam',
@@ -117,12 +117,12 @@ async function main() {
       experienceLevel: 'Intermediate',
       preferredFields: ['5-a-side', '7-a-side', 'Indoor'],
       serviceRadius: 12,
-      hourlyRateMin: 2000, // €20
-      hourlyRateMax: 2500, // €25
+      hourlyRateMin: 1500, // €15 (goalkeeper receives this)
+      hourlyRateMax: 1875, // €18.75 (goalkeeper receives this)
       isActive: true,
       totalMatches: 32,
       averageRating: 4.5,
-      totalEarnings: 640000, // €6,400
+      totalEarnings: 480000, // €4,800 (75% of total bookings)
       latitude: 52.0907,
       longitude: 5.1214,
       address: 'Centrum, Utrecht',
@@ -141,12 +141,12 @@ async function main() {
       experienceLevel: 'Expert',
       preferredFields: ['11-a-side', 'Outdoor'],
       serviceRadius: 20,
-      hourlyRateMin: 2500, // €25
-      hourlyRateMax: 3500, // €35
+      hourlyRateMin: 1875, // €18.75 (goalkeeper receives this)
+      hourlyRateMax: 2625, // €26.25 (goalkeeper receives this)
       isActive: true,
       totalMatches: 78,
       averageRating: 4.9,
-      totalEarnings: 2340000, // €23,400
+      totalEarnings: 1755000, // €17,550 (75% of total bookings)
       latitude: 51.9244,
       longitude: 4.4777,
       address: 'Centrum, Rotterdam',

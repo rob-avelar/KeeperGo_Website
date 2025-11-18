@@ -319,14 +319,15 @@ export default function BookGoalkeeperForm() {
 
               {/* Price Per Hour */}
               <div className="space-y-2">
-                <Label htmlFor="pricePerHour">Base Price Per Hour (€)</Label>
+                <Label htmlFor="pricePerHour">Total Price Per Hour (€)</Label>
                 <div className="relative">
                   <Euro className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="pricePerHour"
                     type="number"
                     placeholder="e.g., 20"
-                    min="15"
+                    min="20"
+                    step="1"
                     max="100"
                     value={formData.pricePerHour}
                     onChange={(e) => handleChange('pricePerHour', e.target.value)}
@@ -335,32 +336,43 @@ export default function BookGoalkeeperForm() {
                   />
                 </div>
                 <p className="text-sm text-gray-500">
-                  Standard rate: €20 per hour
+                  Minimum rate: €20 per hour (goalkeeper receives €15, app fee €5)
                 </p>
-                {formData.pricePerHour && formData.duration && (
-                  <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-600">Base cost:</span>
-                      <span className="font-medium">€{parseInt(formData.pricePerHour) * parseInt(formData.duration)}</span>
-                    </div>
-                    {formData.bookingType === 'direct' && (
-                      <>
-                        <div className="flex justify-between items-center text-sm text-orange-600 mt-1">
-                          <span>Direct booking premium (+25%):</span>
-                          <span className="font-medium">€{Math.round(parseInt(formData.pricePerHour) * parseInt(formData.duration) * 0.25)}</span>
-                        </div>
-                        <div className="border-t border-gray-300 mt-2 pt-2 flex justify-between items-center">
-                          <span className="font-semibold text-gray-900">Total:</span>
-                          <span className="font-bold text-blue-600 text-lg">€{calculateTotalPrice()}</span>
-                        </div>
-                      </>
-                    )}
-                    {formData.bookingType === 'open' && (
-                      <div className="border-t border-gray-300 mt-2 pt-2 flex justify-between items-center">
-                        <span className="font-semibold text-gray-900">Total:</span>
+                {formData.pricePerHour && formData.duration && parseInt(formData.pricePerHour) >= 20 && (
+                  <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-700">Price per hour:</span>
+                        <span className="font-medium">€{parseInt(formData.pricePerHour)}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span className="ml-4">→ Goalkeeper receives (75%):</span>
+                        <span className="font-medium text-green-600">€{Math.round(parseInt(formData.pricePerHour) * 0.75)}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span className="ml-4">→ Platform fee (25%):</span>
+                        <span className="font-medium">€{Math.round(parseInt(formData.pricePerHour) * 0.25)}</span>
+                      </div>
+                      
+                      {formData.bookingType === 'direct' && (
+                        <>
+                          <div className="border-t border-blue-300 my-2"></div>
+                          <div className="flex justify-between items-center text-sm text-orange-600">
+                            <span>Direct booking premium (+25%):</span>
+                            <span className="font-medium">€{Math.round(parseInt(formData.pricePerHour) * parseInt(formData.duration) * 0.25)}</span>
+                          </div>
+                        </>
+                      )}
+                      
+                      <div className="border-t border-blue-300 mt-2 pt-2 flex justify-between items-center">
+                        <span className="font-semibold text-gray-900">Total you pay:</span>
                         <span className="font-bold text-blue-600 text-lg">€{calculateTotalPrice()}</span>
                       </div>
-                    )}
+                      <div className="flex justify-between items-center text-sm text-green-600">
+                        <span className="font-medium">Goalkeeper will earn:</span>
+                        <span className="font-bold">€{Math.round(parseInt(formData.pricePerHour) * parseInt(formData.duration) * 0.75)}</span>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

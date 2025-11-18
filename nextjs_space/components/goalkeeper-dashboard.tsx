@@ -48,7 +48,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
   ) || []
 
   const totalEarnings = completedBookings?.reduce((sum: number, booking: any) => {
-    const goalkeeperEarning = booking.totalAmount * 0.85 // 85% after platform fee
+    const goalkeeperEarning = booking.totalAmount * 0.75 // 75% - goalkeeper share
     return sum + goalkeeperEarning
   }, 0) || 0
 
@@ -211,9 +211,10 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Euro className="h-4 w-4 text-blue-600 mr-2" />
-                <span className="text-2xl font-bold">€{(totalEarnings / 100).toFixed(0)}</span>
+                <Euro className="h-4 w-4 text-green-600 mr-2" />
+                <span className="text-2xl font-bold text-green-600">€{(totalEarnings / 100).toFixed(0)}</span>
               </div>
+              <p className="text-xs text-gray-500 mt-1">Your share (75% of bookings)</p>
             </CardContent>
           </Card>
 
@@ -365,8 +366,13 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                         {booking.location}
                       </div>
                       <div className="flex items-center">
-                        <Euro className="h-3 w-3 mr-1" />
-                        €{(booking.totalAmount / 100).toFixed(0)} ({booking.duration}h)
+                        <Euro className="h-3 w-3 mr-1 text-green-600" />
+                        <span className="font-semibold text-green-600">
+                          You earn: €{((booking.totalAmount * 0.75) / 100).toFixed(0)}
+                        </span>
+                        <span className="text-gray-500 text-xs ml-1">
+                          (of €{(booking.totalAmount / 100).toFixed(0)} total, {booking.duration}h)
+                        </span>
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3">
