@@ -248,67 +248,38 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Euro className="h-5 w-5 text-blue-600 mr-2" />
-                Your Earnings & Service Area
+                Rates & Service Area
               </CardTitle>
               <CardDescription>
-                Set what you want to earn per hour (you receive 75% of the total price)
+                Set your hourly rates and service radius
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg mb-4">
-                <div className="flex items-start gap-2">
-                  <div className="bg-green-100 p-2 rounded-full">
-                    <Euro className="h-4 w-4 text-green-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-green-800 mb-1">How pricing works</h4>
-                    <p className="text-sm text-green-700">
-                      You receive <strong>75%</strong> of what organizers pay. Platform fee is <strong>25%</strong>.
-                      <br />
-                      Example: Organizer pays €20/hour → You earn €15/hour (€5 platform fee)
-                    </p>
-                  </div>
-                </div>
-              </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="hourlyRateMin">Minimum You Want to Earn (€/hour)</Label>
+                  <Label htmlFor="hourlyRateMin">Minimum Rate (€/hour)</Label>
                   <Input
                     id="hourlyRateMin"
                     type="number"
-                    min="15"
-                    max="75"
+                    min="20"
+                    max="100"
                     value={formData.hourlyRateMin}
                     onChange={(e) => handleChange('hourlyRateMin', parseInt(e.target.value))}
                   />
-                  {formData.hourlyRateMin >= 15 && (
-                    <p className="text-xs text-gray-600">
-                      Organizer will pay: <strong>€{Math.round((formData.hourlyRateMin / 100) / 0.75)}/hour</strong>
-                    </p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="hourlyRateMax">Maximum You Want to Earn (€/hour)</Label>
+                  <Label htmlFor="hourlyRateMax">Maximum Rate (€/hour)</Label>
                   <Input
                     id="hourlyRateMax"
                     type="number"
-                    min="15"
-                    max="75"
+                    min="20"
+                    max="100"
                     value={formData.hourlyRateMax}
                     onChange={(e) => handleChange('hourlyRateMax', parseInt(e.target.value))}
                   />
-                  {formData.hourlyRateMax >= 15 && (
-                    <p className="text-xs text-gray-600">
-                      Organizer will pay: <strong>€{Math.round((formData.hourlyRateMax / 100) / 0.75)}/hour</strong>
-                    </p>
-                  )}
                 </div>
               </div>
-              <p className="text-sm text-gray-500">
-                Standard minimum: €15/hour earning (€20/hour total for organizer)
-              </p>
 
               <div className="space-y-2">
                 <Label htmlFor="serviceRadius">Service Radius (km)</Label>
