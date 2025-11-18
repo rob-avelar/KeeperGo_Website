@@ -5,6 +5,18 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
 import { 
   Calendar,
   MapPin,
@@ -15,11 +27,14 @@ import {
   Users,
   Activity,
   TrendingUp,
-  Goal
+  Goal,
+  X,
+  AlertCircle
 } from 'lucide-react'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
 import { useToast } from '@/hooks/use-toast'
+import { useRouter } from 'next/navigation'
 
 interface OrganizerDashboardProps {
   user: any
@@ -27,7 +42,15 @@ interface OrganizerDashboardProps {
 
 export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
   const { toast } = useToast()
+  const router = useRouter()
   const bookings = user?.organizerBookings || []
+  
+  // Cancellation state
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
+  const [bookingToCancel, setBookingToCancel] = useState<any>(null)
+  const [cancelReason, setCancelReason] = useState('')
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelFeeInfo, setCancelFeeInfo] = useState<any>(null)
 
   const upcomingBookings = bookings?.filter((booking: any) => 
     new Date(booking.date) >= new Date() && (booking.status === 'CONFIRMED' || booking.status === 'ACCEPTED')
@@ -61,6 +84,95 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
         description: 'Failed to sign out',
         variant: 'destructive'
       })
+    }
+  }
+
+  const calculateCancellationPreview = (booking: any) => {
+    const now = new Date()
+    const matchDate = new Date(booking.date)
+    const hoursUntilMatch = (matchDate.getTime() - now.getTime()) / (1000 * 60 * 60)
+
+    let refundPercentage = 0
+    let message = ''
+
+    if (hoursUntilMatch > 48) {
+      refundPercentage = 100
+      message = 'Free cancellation - Full refund'
+    } else if (hoursUntilMatch > 24) {
+      refundPercentage = 50
+      message = '50% refund (24-48h before match)'
+    } else if (hoursUntilMatch > 12) {
+      refundPercentage = 25
+      message = '25% refund (12-24h before match)'
+    } else {
+      refundPercentage = 0
+      message = 'No refund (<12h before match)'
+    }
+
+    const refundAmount = Math.round((booking.totalAmount * refundPercentage) / 100)
+    const cancellationFee = booking.totalAmount - refundAmount
+
+    return {
+      refundAmount,
+      cancellationFee,
+      message,
+      hoursUntilMatch: Math.round(hoursUntilMatch * 10) / 10
+    }
+  }
+
+  const handleOpenCancelDialog = (booking: any) => {
+    setBookingToCancel(booking)
+    const feeInfo = calculateCancellationPreview(booking)
+    setCancelFeeInfo(feeInfo)
+    setCancelDialogOpen(true)
+  }
+
+  const handleCancelBooking = async () => {
+    if (!bookingToCancel) return
+
+    setCancelling(true)
+    try {
+      const response = await fetch(`/api/bookings/${bookingToCancel.id}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          reason: cancelReason || 'Cancelled by organizer'
+        })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast({
+          title: 'Booking Cancelled',
+          description: data.fees.penaltyReason,
+        })
+        
+        setCancelDialogOpen(false)
+        setBookingToCancel(null)
+        setCancelReason('')
+        setCancelFeeInfo(null)
+        
+        // Refresh page to show updated data
+        router.refresh()
+      } else {
+        toast({
+          title: 'Error',
+          description: data.error || 'Failed to cancel booking',
+          variant: 'destructive'
+        })
+      }
+    } catch (error) {
+      console.error('Error cancelling booking:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to cancel booking',
+        variant: 'destructive'
+      })
+    } finally {
+      setCancelling(false)
     }
   }
 
@@ -256,6 +368,17 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                         {booking.duration} hours
                       </div>
                     </div>
+                    <div className="mt-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => handleOpenCancelDialog(booking)}
+                      >
+                        <X className="h-3 w-3 mr-1" />
+                        Cancel Match
+                      </Button>
+                    </div>
                   </div>
                 ))
               )}
@@ -314,6 +437,89 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
           </Card>
         </div>
       </div>
+
+      {/* Cancellation Dialog */}
+      <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-orange-600" />
+              Cancel Match
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel this match?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          {bookingToCancel && cancelFeeInfo && (
+            <div className="space-y-4">
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h4 className="font-semibold text-sm mb-2">Match Details:</h4>
+                <p className="text-sm text-gray-700">
+                  <strong>Date:</strong> {new Date(bookingToCancel.date).toLocaleDateString()} at {new Date(bookingToCancel.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <strong>Location:</strong> {bookingToCancel.location}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <strong>Time until match:</strong> {cancelFeeInfo.hoursUntilMatch} hours
+                </p>
+              </div>
+
+              <div className={`p-4 rounded-lg border ${
+                cancelFeeInfo.cancellationFee === 0 
+                  ? 'bg-green-50 border-green-200' 
+                  : 'bg-orange-50 border-orange-200'
+              }`}>
+                <h4 className="font-semibold text-sm mb-2">
+                  {cancelFeeInfo.message}
+                </h4>
+                <div className="space-y-1 text-sm">
+                  <p className="flex justify-between">
+                    <span>Original amount:</span>
+                    <span className="font-medium">€{(bookingToCancel.totalAmount / 100).toFixed(2)}</span>
+                  </p>
+                  {cancelFeeInfo.cancellationFee > 0 && (
+                    <p className="flex justify-between text-orange-600">
+                      <span>Cancellation fee:</span>
+                      <span className="font-medium">-€{(cancelFeeInfo.cancellationFee / 100).toFixed(2)}</span>
+                    </p>
+                  )}
+                  <p className="flex justify-between border-t pt-1 font-semibold">
+                    <span>You will receive:</span>
+                    <span className="text-green-600">€{(cancelFeeInfo.refundAmount / 100).toFixed(2)}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="cancelReason">Reason (Optional)</Label>
+                <Textarea
+                  id="cancelReason"
+                  placeholder="Please provide a reason for cancellation..."
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  rows={3}
+                  className="mt-1"
+                />
+              </div>
+            </div>
+          )}
+          
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={cancelling}>
+              Keep Match
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleCancelBooking}
+              disabled={cancelling}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {cancelling ? 'Cancelling...' : 'Cancel Match'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

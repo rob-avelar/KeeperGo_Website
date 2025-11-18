@@ -95,23 +95,31 @@ model GoalkeeperProfile {
 }
 
 model Booking {
-  id                String        @id @default(cuid())
-  organizerId       String
-  goalkeeperId      String?
+  id                  String        @id @default(cuid())
+  organizerId         String
+  goalkeeperId        String?
   goalkeeperProfileId String?
-  date              DateTime
-  duration          Int           // in hours
-  location          String
-  latitude          Float?
-  longitude         Float?
-  fieldType         String
-  pricePerHour      Int           // in cents
-  totalAmount       Int           // in cents
-  status            BookingStatus @default(PENDING)
-  specialRequests   String?
-  isCompleted       Boolean       @default(false)
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  date                DateTime
+  duration            Int           // in hours
+  location            String
+  latitude            Float?
+  longitude           Float?
+  fieldType           String
+  pricePerHour        Int           // in cents
+  totalAmount         Int           // in cents
+  status              BookingStatus @default(PENDING)
+  specialRequests     String?
+  isCompleted         Boolean       @default(false)
+  
+  // Cancellation fields
+  cancelledAt         DateTime?
+  cancelledBy         String?       // userId of who cancelled
+  cancellationReason  String?
+  cancellationFee     Int?          // in cents
+  refundAmount        Int?          // in cents
+  
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
 
   organizer         User                  @relation("OrganizerBookings", fields: [organizerId], references: [id])
   goalkeeper        User?                 @relation("GoalkeeperBookings", fields: [goalkeeperId], references: [id])
@@ -215,6 +223,7 @@ enum NotificationType {
   BOOKING_ACCEPTED
   BOOKING_REJECTED
   BOOKING_CONFIRMED
+  BOOKING_CANCELLED
   PAYMENT_RECEIVED
   RATING_REQUEST
   GENERAL
