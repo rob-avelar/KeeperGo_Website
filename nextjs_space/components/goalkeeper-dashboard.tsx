@@ -59,6 +59,9 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
   const [cancelReason, setCancelReason] = useState('')
   const [cancelling, setCancelling] = useState(false)
   const [cancelFeeInfo, setCancelFeeInfo] = useState<any>(null)
+  
+  // State for goalkeeper confirmation
+  const [confirmingBookingId, setConfirmingBookingId] = useState<string | null>(null)
 
   const now = new Date()
 
@@ -66,7 +69,24 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
     new Date(booking.date) >= now && (booking.status === 'CONFIRMED' || booking.status === 'ACCEPTED')
   ) || []
 
-  // Bookings awaiting confirmation from organizer
+  // Bookings where match ended and goalkeeper needs to confirm attendance
+  const needsGoalkeeperConfirmation = bookings?.filter((booking: any) => {
+    const matchDate = new Date(booking.date)
+    const matchEndTime = new Date(matchDate)
+    matchEndTime.setHours(matchEndTime.getHours() + (booking.duration || 0))
+    
+    return (
+      matchEndTime < now && // Match has ended
+      booking.status === 'CONFIRMED' &&
+      !booking.goalkeeperConfirmedAt && // Goalkeeper hasn't confirmed yet
+      !booking.confirmedAt && // Organizer hasn't confirmed yet
+      !booking.noShow && // Not marked as no-show
+      booking.confirmationDeadline &&
+      new Date(booking.confirmationDeadline) > now // Still within deadline
+    )
+  }) || []
+
+  // Bookings awaiting confirmation from organizer (goalkeeper already confirmed)
   const awaitingConfirmation = bookings?.filter((booking: any) => {
     const matchDate = new Date(booking.date)
     const matchEndTime = new Date(matchDate)
@@ -75,7 +95,8 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
     return (
       matchEndTime < now && // Match has ended
       booking.status === 'CONFIRMED' &&
-      !booking.confirmedAt &&
+      booking.goalkeeperConfirmedAt && // Goalkeeper has confirmed
+      !booking.confirmedAt && // Organizer hasn't confirmed yet
       !booking.noShow &&
       booking.confirmationDeadline &&
       new Date(booking.confirmationDeadline) > now // Still within deadline
@@ -153,6 +174,37 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
       fetchAvailableBookings()
     } finally {
       setLoadingBookingId(null)
+    }
+  }
+
+  const handleGoalkeeperConfirm = async (bookingId: string) => {
+    try {
+      setConfirmingBookingId(bookingId)
+      const response = await fetch(`/api/bookings/${bookingId}/goalkeeper-confirm`, {
+        method: 'POST'
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to confirm attendance')
+      }
+
+      toast({
+        title: 'Attendance Confirmed!',
+        description: data.message || 'The organizer will now validate and rate your performance.',
+      })
+
+      // Refresh the page to show updated data
+      router.refresh()
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to confirm attendance',
+        variant: 'destructive'
+      })
+    } finally {
+      setConfirmingBookingId(null)
     }
   }
 
@@ -385,6 +437,24 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
           </div>
         )}
 
+        {/* Confirm Your Attendance Banner */}
+        {needsGoalkeeperConfirmation?.length > 0 && (
+          <div className="mb-6 p-4 bg-green-50 border-2 border-green-400 rounded-lg">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-green-900">
+                  Action Required: Confirm Your Attendance
+                </h3>
+                <p className="text-green-800 text-sm mt-1">
+                  You have <strong>{needsGoalkeeperConfirmation.length} match{needsGoalkeeperConfirmation.length > 1 ? 'es' : ''}</strong> where you need to confirm your attendance.
+                  This helps speed up payment processing!
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Awaiting Confirmation Banner */}
         {awaitingConfirmation?.length > 0 && (
           <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-400 rounded-lg">
@@ -395,7 +465,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                   Reminder: Ask Organizer to Confirm Your Attendance
                 </h3>
                 <p className="text-blue-800 text-sm mt-1">
-                  You have <strong>{awaitingConfirmation.length} match{awaitingConfirmation.length > 1 ? 'es' : ''}</strong> awaiting confirmation.
+                  You have <strong>{awaitingConfirmation.length} match{awaitingConfirmation.length > 1 ? 'es' : ''}</strong> awaiting organizer confirmation.
                   Please remind the organizer to confirm your attendance in the app to release your payment.
                 </p>
               </div>
@@ -576,6 +646,76 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Confirm Your Attendance */}
+          {needsGoalkeeperConfirmation?.length > 0 && (
+            <Card className="border-green-300">
+              <CardHeader className="bg-green-50">
+                <CardTitle className="flex items-center">
+                  <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
+                  Confirm Your Attendance
+                </CardTitle>
+                <CardDescription>
+                  Matches where you need to confirm you attended
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 mt-4">
+                {needsGoalkeeperConfirmation.map((booking: any) => (
+                  <div key={booking.id} className="border-l-4 border-green-500 pl-4 py-3 bg-green-50">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="font-semibold">
+                          Match with {booking?.organizer?.name || 'Organizer'}
+                        </h4>
+                        <p className="text-xs text-green-700 font-medium mt-1">
+                          ⏰ Confirm within: {getTimeUntilDeadline(booking.confirmationDeadline)}
+                        </p>
+                      </div>
+                      <Badge variant="outline" className="bg-green-100">
+                        Action Needed
+                      </Badge>
+                    </div>
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <div className="flex items-center">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        {new Date(booking.date).toLocaleDateString()} at {new Date(booking.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </div>
+                      <div className="flex items-center">
+                        <MapPin className="h-3 w-3 mr-1" />
+                        {booking.location}
+                      </div>
+                      <div className="flex items-center text-green-700 font-medium">
+                        <Euro className="h-3 w-3 mr-1" />
+                        You will earn: €{((booking.totalAmount * 0.75) / 100).toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <Button
+                        size="sm"
+                        className="w-full bg-green-600 hover:bg-green-700"
+                        onClick={() => handleGoalkeeperConfirm(booking.id)}
+                        disabled={confirmingBookingId === booking.id}
+                      >
+                        {confirmingBookingId === booking.id ? (
+                          'Confirming...'
+                        ) : (
+                          <>
+                            <CheckCircle className="h-4 w-4 mr-1" />
+                            Yes, I Attended This Match
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    <div className="mt-2 p-2 bg-white rounded border border-green-200">
+                      <p className="text-xs text-gray-600">
+                        💡 <strong>Note:</strong> After you confirm, the organizer will validate and rate your performance to release payment.
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+
           {/* Pending Requests */}
           <Card>
             <CardHeader>

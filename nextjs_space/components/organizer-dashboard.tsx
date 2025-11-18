@@ -488,18 +488,37 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               {awaitingConfirmation.map((booking: any) => (
-                <div key={booking.id} className="border-l-4 border-orange-500 pl-4 py-3 bg-orange-50">
+                <div key={booking.id} className={`border-l-4 pl-4 py-3 ${
+                  booking.goalkeeperConfirmedAt 
+                    ? 'border-green-500 bg-green-50' 
+                    : 'border-orange-500 bg-orange-50'
+                }`}>
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h4 className="font-semibold">
                         {booking?.goalkeeper?.name || 'Goalkeeper'}
                       </h4>
-                      <p className="text-xs text-orange-700 font-medium mt-1">
-                        ⏰ {getTimeUntilDeadline(booking.confirmationDeadline)}
+                      {booking.goalkeeperConfirmedAt ? (
+                        <div className="flex items-center gap-1 mt-1">
+                          <CheckCircle className="h-3 w-3 text-green-600" />
+                          <p className="text-xs text-green-700 font-medium">
+                            Goalkeeper confirmed attendance
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-orange-700 font-medium mt-1">
+                          ⏰ Goalkeeper hasn't confirmed yet
+                        </p>
+                      )}
+                      <p className="text-xs text-gray-600 mt-1">
+                        Deadline: {getTimeUntilDeadline(booking.confirmationDeadline)}
                       </p>
                     </div>
-                    <Badge variant="outline" className="bg-orange-100">
-                      Awaiting
+                    <Badge 
+                      variant="outline" 
+                      className={booking.goalkeeperConfirmedAt ? 'bg-green-100' : 'bg-orange-100'}
+                    >
+                      {booking.goalkeeperConfirmedAt ? 'Ready to Confirm' : 'Awaiting'}
                     </Badge>
                   </div>
                   <div className="space-y-1 text-sm text-gray-700">

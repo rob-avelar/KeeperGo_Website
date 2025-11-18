@@ -124,9 +124,10 @@ model Booking {
   refundAmount        Int?          // in cents
   
   // Confirmation fields
-  confirmationDeadline DateTime?    // 48h after match time
-  confirmedAt         DateTime?     // when organizer confirmed
-  noShow              Boolean       @default(false) // if goalkeeper didn't show up
+  confirmationDeadline    DateTime?    // 48h after match time
+  goalkeeperConfirmedAt   DateTime?    // when goalkeeper confirmed their attendance
+  confirmedAt             DateTime?    // when organizer confirmed
+  noShow                  Boolean      @default(false) // if goalkeeper didn't show up
   
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @updatedAt
