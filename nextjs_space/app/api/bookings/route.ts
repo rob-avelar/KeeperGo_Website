@@ -120,6 +120,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Calculate confirmation deadline for direct bookings (48h after match end time)
+    let confirmationDeadline = null;
+    if (bookingType === 'direct') {
+      const matchDate = new Date(date);
+      const matchEndTime = new Date(matchDate);
+      matchEndTime.setHours(matchEndTime.getHours() + parseInt(duration));
+      confirmationDeadline = new Date(matchEndTime);
+      confirmationDeadline.setHours(confirmationDeadline.getHours() + 48);
+    }
+
     // Create booking
     const booking = await prisma.booking.create({
       data: {
@@ -135,7 +145,8 @@ export async function POST(request: NextRequest) {
         pricePerHour: parseInt(pricePerHour),
         totalAmount,
         specialRequests,
-        status: bookingType === 'direct' ? 'CONFIRMED' : 'PENDING' // Direct bookings are confirmed immediately
+        status: bookingType === 'direct' ? 'CONFIRMED' : 'PENDING', // Direct bookings are confirmed immediately
+        confirmationDeadline,
       }
     })
 

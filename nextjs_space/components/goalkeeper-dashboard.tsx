@@ -60,13 +60,36 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
   const [cancelling, setCancelling] = useState(false)
   const [cancelFeeInfo, setCancelFeeInfo] = useState<any>(null)
 
+  const now = new Date()
+
   const upcomingBookings = bookings?.filter((booking: any) => 
-    new Date(booking.date) >= new Date() && (booking.status === 'CONFIRMED' || booking.status === 'ACCEPTED')
+    new Date(booking.date) >= now && (booking.status === 'CONFIRMED' || booking.status === 'ACCEPTED')
   ) || []
 
+  // Bookings awaiting confirmation from organizer
+  const awaitingConfirmation = bookings?.filter((booking: any) => {
+    const matchDate = new Date(booking.date)
+    const matchEndTime = new Date(matchDate)
+    matchEndTime.setHours(matchEndTime.getHours() + (booking.duration || 0))
+    
+    return (
+      matchEndTime < now && // Match has ended
+      booking.status === 'CONFIRMED' &&
+      !booking.confirmedAt &&
+      !booking.noShow &&
+      booking.confirmationDeadline &&
+      new Date(booking.confirmationDeadline) > now // Still within deadline
+    )
+  }) || []
+
   const completedBookings = bookings?.filter((booking: any) => 
-    booking.isCompleted
+    booking.isCompleted || booking.status === 'COMPLETED'
   ) || []
+
+  // Warning and blocking info
+  const warningCount = profile?.warningCount || 0
+  const blockedUntil = profile?.blockedUntil ? new Date(profile.blockedUntil) : null
+  const isBlocked = blockedUntil && blockedUntil > now
 
   const totalEarnings = completedBookings?.reduce((sum: number, booking: any) => {
     const goalkeeperEarning = booking.totalAmount * 0.75 // 75% - goalkeeper share
@@ -139,27 +162,28 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
     const hoursUntilMatch = (matchDate.getTime() - now.getTime()) / (1000 * 60 * 60)
 
     const goalkeeperEarnings = Math.round(booking.totalAmount * 0.75) // 75% of total
-    let penaltyPercentage = 0
+    let warningLevel = ''
     let message = ''
 
-    if (hoursUntilMatch > 48) {
-      penaltyPercentage = 0
-      message = 'Free cancellation - No penalty'
-    } else if (hoursUntilMatch > 24) {
-      penaltyPercentage = 25
-      message = '25% penalty on your earnings (24-48h before match)'
-    } else if (hoursUntilMatch > 12) {
-      penaltyPercentage = 50
-      message = '50% penalty on your earnings (12-24h before match)'
+    if (hoursUntilMatch > 24) {
+      warningLevel = 'NONE'
+      message = 'Free cancellation - No penalty or warning'
+    } else if (hoursUntilMatch > 6) {
+      warningLevel = 'LIGHT'
+      message = '⚠️ Light warning will be issued (6-24h before match)'
+    } else if (hoursUntilMatch > 3) {
+      warningLevel = 'MODERATE'
+      message = '⚠️⚠️ Moderate warning will be issued (3-6h before match)'
+    } else if (hoursUntilMatch > 1) {
+      warningLevel = 'SEVERE'
+      message = '⚠️⚠️⚠️ SEVERE warning will be issued (1-3h before match)'
     } else {
-      penaltyPercentage = 100
-      message = '100% penalty on your earnings + warning (<12h before match)'
+      warningLevel = 'CRITICAL'
+      message = '🚫 CRITICAL: Severe warning + 7-day block (<1h before match)'
     }
 
-    const penaltyAmount = Math.round((goalkeeperEarnings * penaltyPercentage) / 100)
-
     return {
-      penaltyAmount,
+      warningLevel,
       goalkeeperEarnings,
       message,
       hoursUntilMatch: Math.round(hoursUntilMatch * 10) / 10
@@ -234,6 +258,40 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
     }
   }
 
+
+  const getTimeUntilDeadline = (deadline: string) => {
+    const deadlineDate = new Date(deadline)
+    const hoursLeft = Math.floor((deadlineDate.getTime() - now.getTime()) / (1000 * 60 * 60))
+    
+    if (hoursLeft < 0) return 'Deadline passed'
+    if (hoursLeft < 1) return 'Less than 1 hour left'
+    if (hoursLeft < 24) return `${hoursLeft}h left`
+    return `${Math.floor(hoursLeft / 24)}d ${hoursLeft % 24}h left`
+  }
+
+  const getWarningBadge = () => {
+    if (warningCount === 0) return null
+    
+    let variant: 'default' | 'destructive' = 'default'
+    let text = ''
+    
+    if (warningCount >= 5) {
+      variant = 'destructive'
+      text = `${warningCount} Warnings - At Risk`
+    } else if (warningCount >= 3) {
+      variant = 'destructive'
+      text = `${warningCount} Warnings`
+    } else {
+      text = `${warningCount} Warning${warningCount > 1 ? 's' : ''}`
+    }
+    
+    return (
+      <Badge variant={variant} className="flex items-center gap-1">
+        <AlertCircle className="h-3 w-3" />
+        {text}
+      </Badge>
+    )
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
@@ -264,6 +322,86 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
             Manage your bookings and build your goalkeeper reputation.
           </p>
         </div>
+
+        {/* Blocked Warning */}
+        {isBlocked && (
+          <div className="mb-6 p-4 bg-red-50 border-2 border-red-500 rounded-lg">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-6 w-6 text-red-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-bold text-red-900 text-lg">Account Temporarily Blocked</h3>
+                <p className="text-red-800 mt-1">
+                  Your account is blocked until{' '}
+                  <strong>{blockedUntil?.toLocaleDateString()}</strong> due to recent cancellations or no-shows.
+                </p>
+                <p className="text-red-700 text-sm mt-2">
+                  You cannot accept new bookings during this period. Please ensure better attendance to avoid permanent blocking.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Warning Banner */}
+        {!isBlocked && warningCount > 0 && (
+          <div className={`mb-6 p-4 rounded-lg border-2 ${
+            warningCount >= 5
+              ? 'bg-red-50 border-red-400'
+              : warningCount >= 3
+              ? 'bg-orange-50 border-orange-400'
+              : 'bg-yellow-50 border-yellow-400'
+          }`}>
+            <div className="flex items-start gap-3">
+              <AlertCircle className={`h-5 w-5 flex-shrink-0 mt-0.5 ${
+                warningCount >= 5
+                  ? 'text-red-600'
+                  : warningCount >= 3
+                  ? 'text-orange-600'
+                  : 'text-yellow-600'
+              }`} />
+              <div>
+                <h3 className={`font-semibold ${
+                  warningCount >= 5
+                    ? 'text-red-900'
+                    : warningCount >= 3
+                    ? 'text-orange-900'
+                    : 'text-yellow-900'
+                }`}>
+                  {warningCount >= 5 ? 'Critical Warning Level' : warningCount >= 3 ? 'Warning Alert' : 'Attention Required'}
+                </h3>
+                <p className={`text-sm mt-1 ${
+                  warningCount >= 5
+                    ? 'text-red-800'
+                    : warningCount >= 3
+                    ? 'text-orange-800'
+                    : 'text-yellow-800'
+                }`}>
+                  You have <strong>{warningCount} warning{warningCount > 1 ? 's' : ''}</strong> on your account.
+                  {warningCount >= 5 && ' One more warning may result in permanent blocking.'}
+                  {warningCount >= 3 && warningCount < 5 && ' Please avoid late cancellations to prevent blocking.'}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Awaiting Confirmation Banner */}
+        {awaitingConfirmation?.length > 0 && (
+          <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-400 rounded-lg">
+            <div className="flex items-start gap-3">
+              <Bell className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-blue-900">
+                  Reminder: Ask Organizer to Confirm Your Attendance
+                </h3>
+                <p className="text-blue-800 text-sm mt-1">
+                  You have <strong>{awaitingConfirmation.length} match{awaitingConfirmation.length > 1 ? 'es' : ''}</strong> awaiting confirmation.
+                  Please remind the organizer to confirm your attendance in the app to release your payment.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Quick Actions */}
         <div className="mb-8">
@@ -493,6 +631,59 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
             </CardContent>
           </Card>
 
+
+          {/* Awaiting Confirmation */}
+          {awaitingConfirmation?.length > 0 && (
+            <Card className="border-blue-300">
+              <CardHeader className="bg-blue-50">
+                <CardTitle className="flex items-center">
+                  <Bell className="h-5 w-5 text-blue-600 mr-2" />
+                  Awaiting Organizer Confirmation
+                </CardTitle>
+                <CardDescription>
+                  Remind organizers to confirm your attendance to receive payment
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 mt-4">
+                {awaitingConfirmation.map((booking: any) => (
+                  <div key={booking.id} className="border-l-4 border-blue-500 pl-4 py-3 bg-blue-50">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="font-semibold">
+                          {booking?.organizer?.name || 'Organizer'}
+                        </h4>
+                        <p className="text-xs text-blue-700 font-medium mt-1">
+                          ⏰ Payment auto-releases in: {getTimeUntilDeadline(booking.confirmationDeadline)}
+                        </p>
+                      </div>
+                      <Badge variant="outline" className="bg-blue-100">
+                        Awaiting
+                      </Badge>
+                    </div>
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <div className="flex items-center">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        {new Date(booking.date).toLocaleDateString()} at {new Date(booking.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </div>
+                      <div className="flex items-center">
+                        <MapPin className="h-3 w-3 mr-1" />
+                        {booking.location}
+                      </div>
+                      <div className="flex items-center text-green-700 font-medium">
+                        <Euro className="h-3 w-3 mr-1" />
+                        You earn: €{((booking.totalAmount * 0.75) / 100).toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="mt-2 p-2 bg-white rounded border border-blue-200">
+                      <p className="text-xs text-gray-600">
+                        💡 <strong>Tip:</strong> Contact the organizer via phone/email to remind them to confirm your attendance in the app.
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
           {/* Upcoming Matches */}
           <Card>
             <CardHeader>
@@ -589,41 +780,47 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
               </div>
 
               <div className={`p-4 rounded-lg border ${
-                cancelFeeInfo.penaltyAmount === 0 
+                cancelFeeInfo.warningLevel === 'NONE' 
                   ? 'bg-green-50 border-green-200' 
-                  : 'bg-orange-50 border-orange-200'
+                  : cancelFeeInfo.warningLevel === 'LIGHT'
+                  ? 'bg-yellow-50 border-yellow-200'
+                  : cancelFeeInfo.warningLevel === 'MODERATE'
+                  ? 'bg-orange-50 border-orange-200'
+                  : 'bg-red-50 border-red-200'
               }`}>
                 <h4 className="font-semibold text-sm mb-2">
                   {cancelFeeInfo.message}
                 </h4>
                 <div className="space-y-1 text-sm">
-                  <p className="flex justify-between">
-                    <span>Your expected earnings:</span>
+                  <p className="flex justify-between text-gray-600">
+                    <span>You would have earned:</span>
                     <span className="font-medium">€{(cancelFeeInfo.goalkeeperEarnings / 100).toFixed(2)}</span>
                   </p>
-                  {cancelFeeInfo.penaltyAmount > 0 && (
-                    <>
-                      <p className="flex justify-between text-orange-600">
-                        <span>Cancellation penalty:</span>
-                        <span className="font-medium">-€{(cancelFeeInfo.penaltyAmount / 100).toFixed(2)}</span>
-                      </p>
-                      <p className="flex justify-between border-t pt-1 text-xs text-gray-600">
-                        <span>Organizer receives full refund:</span>
-                        <span>€{(bookingToCancel.totalAmount / 100).toFixed(2)}</span>
-                      </p>
-                    </>
-                  )}
-                  {cancelFeeInfo.penaltyAmount === 0 && (
-                    <p className="text-green-600 text-xs mt-1">
-                      ✓ No penalty - Organizer will receive full refund
+                  <p className="flex justify-between border-t pt-1 text-xs text-gray-600">
+                    <span>Organizer receives full refund:</span>
+                    <span>€{(bookingToCancel.totalAmount / 100).toFixed(2)}</span>
+                  </p>
+                  {cancelFeeInfo.warningLevel === 'NONE' && (
+                    <p className="text-green-600 text-xs mt-2">
+                      ✓ No warning or penalty
                     </p>
                   )}
+                  {cancelFeeInfo.warningLevel !== 'NONE' && (
+                    <div className={`mt-2 p-2 rounded text-xs ${
+                      cancelFeeInfo.warningLevel === 'LIGHT' ? 'bg-yellow-100 border border-yellow-300 text-yellow-800' :
+                      cancelFeeInfo.warningLevel === 'MODERATE' ? 'bg-orange-100 border border-orange-300 text-orange-800' :
+                      'bg-red-100 border border-red-300 text-red-800'
+                    }`}>
+                      <strong>Warning System:</strong> 
+                      {cancelFeeInfo.warningLevel === 'LIGHT' && ' You will receive 1 warning point.'}
+                      {cancelFeeInfo.warningLevel === 'MODERATE' && ' You will receive 2 warning points.'}
+                      {cancelFeeInfo.warningLevel === 'SEVERE' && ' You will receive 3 warning points.'}
+                      {cancelFeeInfo.warningLevel === 'CRITICAL' && ' You will receive 3 warning points + 7-day account block!'}
+                      <br/>
+                      <span className="text-xs">Current warnings: {warningCount} | 9 warnings = permanent block</span>
+                    </div>
+                  )}
                 </div>
-                {cancelFeeInfo.penaltyAmount === cancelFeeInfo.goalkeeperEarnings && (
-                  <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-xs text-red-700">
-                    <strong>Warning:</strong> Frequent last-minute cancellations may affect your profile rating.
-                  </div>
-                )}
               </div>
 
               <div>

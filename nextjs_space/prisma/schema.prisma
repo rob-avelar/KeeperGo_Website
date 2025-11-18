@@ -85,6 +85,11 @@ model GoalkeeperProfile {
   address           String?
   city              String?
   postalCode        String?
+  
+  // Warning and blocking system
+  warningCount      Int         @default(0)
+  blockedUntil      DateTime?
+  
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 
@@ -117,6 +122,11 @@ model Booking {
   cancellationReason  String?
   cancellationFee     Int?          // in cents
   refundAmount        Int?          // in cents
+  
+  // Confirmation fields
+  confirmationDeadline DateTime?    // 48h after match time
+  confirmedAt         DateTime?     // when organizer confirmed
+  noShow              Boolean       @default(false) // if goalkeeper didn't show up
   
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @updatedAt
@@ -208,6 +218,8 @@ enum BookingStatus {
   CONFIRMED
   COMPLETED
   CANCELLED
+  AWAITING_CONFIRMATION
+  NO_SHOW
 }
 
 enum PaymentStatus {
@@ -226,5 +238,10 @@ enum NotificationType {
   BOOKING_CANCELLED
   PAYMENT_RECEIVED
   RATING_REQUEST
+  CONFIRMATION_REMINDER
+  NO_SHOW_REPORTED
+  PAYMENT_RELEASED
+  WARNING_ISSUED
+  BLOCKED
   GENERAL
 }

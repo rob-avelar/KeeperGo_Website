@@ -29,12 +29,15 @@ import {
   TrendingUp,
   Goal,
   X,
-  AlertCircle
+  AlertCircle,
+  CheckCircle,
+  XCircle
 } from 'lucide-react'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { ConfirmBookingModal } from './confirm-booking-modal'
 
 interface OrganizerDashboardProps {
   user: any
@@ -52,16 +55,44 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
   const [cancelling, setCancelling] = useState(false)
   const [cancelFeeInfo, setCancelFeeInfo] = useState<any>(null)
 
+  // Confirmation state
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false)
+  const [bookingToConfirm, setBookingToConfirm] = useState<any>(null)
+  
+  // No-show state
+  const [noShowDialogOpen, setNoShowDialogOpen] = useState(false)
+  const [bookingToReport, setBookingToReport] = useState<any>(null)
+  const [reportingNoShow, setReportingNoShow] = useState(false)
+
+  const now = new Date()
+
+  // Upcoming bookings (future matches)
   const upcomingBookings = bookings?.filter((booking: any) => 
-    new Date(booking.date) >= new Date() && (booking.status === 'CONFIRMED' || booking.status === 'ACCEPTED')
+    new Date(booking.date) >= now && (booking.status === 'CONFIRMED' || booking.status === 'ACCEPTED')
   ) || []
 
+  // Bookings awaiting confirmation (past matches, within 48h deadline)
+  const awaitingConfirmation = bookings?.filter((booking: any) => {
+    const matchDate = new Date(booking.date)
+    const matchEndTime = new Date(matchDate)
+    matchEndTime.setHours(matchEndTime.getHours() + (booking.duration || 0))
+    
+    return (
+      matchEndTime < now && // Match has ended
+      booking.status === 'CONFIRMED' &&
+      !booking.confirmedAt &&
+      !booking.noShow &&
+      booking.confirmationDeadline &&
+      new Date(booking.confirmationDeadline) > now // Still within deadline
+    )
+  }) || []
+
   const openBookings = bookings?.filter((booking: any) => 
-    new Date(booking.date) >= new Date() && booking.status === 'PENDING' && !booking.goalkeeperId
+    new Date(booking.date) >= now && booking.status === 'PENDING' && !booking.goalkeeperId
   ) || []
 
   const completedBookings = bookings?.filter((booking: any) => 
-    booking.isCompleted
+    booking.isCompleted || booking.status === 'COMPLETED'
   ) || []
 
   const totalSpent = completedBookings?.reduce((sum: number, booking: any) => 
@@ -95,18 +126,18 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
     let refundPercentage = 0
     let message = ''
 
-    if (hoursUntilMatch > 48) {
+    if (hoursUntilMatch > 6) {
       refundPercentage = 100
       message = 'Free cancellation - Full refund'
-    } else if (hoursUntilMatch > 24) {
+    } else if (hoursUntilMatch > 3) {
       refundPercentage = 50
-      message = '50% refund (24-48h before match)'
-    } else if (hoursUntilMatch > 12) {
+      message = '50% refund (3-6h before match)'
+    } else if (hoursUntilMatch > 1) {
       refundPercentage = 25
-      message = '25% refund (12-24h before match)'
+      message = '25% refund (1-3h before match)'
     } else {
       refundPercentage = 0
-      message = 'No refund (<12h before match)'
+      message = 'No refund (<1h before match)'
     }
 
     const refundAmount = Math.round((booking.totalAmount * refundPercentage) / 100)
@@ -147,7 +178,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
       if (response.ok) {
         toast({
           title: 'Booking Cancelled',
-          description: data.fees.penaltyReason,
+          description: data.message || 'Booking has been cancelled successfully',
         })
         
         setCancelDialogOpen(false)
@@ -174,6 +205,64 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
     } finally {
       setCancelling(false)
     }
+  }
+
+  const handleReportNoShow = async () => {
+    if (!bookingToReport) return
+
+    setReportingNoShow(true)
+    try {
+      const response = await fetch(`/api/bookings/${bookingToReport.id}/report-noshow`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          reason: 'Goalkeeper did not show up'
+        })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast({
+          title: 'No-Show Reported',
+          description: 'Goalkeeper has been blocked and full refund issued.',
+        })
+        
+        setNoShowDialogOpen(false)
+        setBookingToReport(null)
+        
+        // Refresh page to show updated data
+        router.refresh()
+      } else {
+        toast({
+          title: 'Error',
+          description: data.error || 'Failed to report no-show',
+          variant: 'destructive'
+        })
+      }
+    } catch (error) {
+      console.error('Error reporting no-show:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to report no-show',
+        variant: 'destructive'
+      })
+    } finally {
+      setReportingNoShow(false)
+    }
+  }
+
+  const getTimeUntilDeadline = (deadline: string) => {
+    const now = new Date()
+    const deadlineDate = new Date(deadline)
+    const hoursLeft = Math.floor((deadlineDate.getTime() - now.getTime()) / (1000 * 60 * 60))
+    
+    if (hoursLeft < 0) return 'Deadline passed'
+    if (hoursLeft < 1) return 'Less than 1 hour left'
+    if (hoursLeft < 24) return `${hoursLeft}h left`
+    return `${Math.floor(hoursLeft / 24)}d ${hoursLeft % 24}h left`
   }
 
   return (
@@ -385,6 +474,80 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </CardContent>
           </Card>
 
+        {/* Bookings Awaiting Confirmation */}
+        {awaitingConfirmation?.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <AlertCircle className="h-5 w-5 text-orange-600 mr-2" />
+                Awaiting Confirmation
+              </CardTitle>
+              <CardDescription>
+                These matches have ended. Please confirm goalkeeper attendance within 48 hours.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {awaitingConfirmation.map((booking: any) => (
+                <div key={booking.id} className="border-l-4 border-orange-500 pl-4 py-3 bg-orange-50">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold">
+                        {booking?.goalkeeper?.name || 'Goalkeeper'}
+                      </h4>
+                      <p className="text-xs text-orange-700 font-medium mt-1">
+                        ⏰ {getTimeUntilDeadline(booking.confirmationDeadline)}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="bg-orange-100">
+                      Awaiting
+                    </Badge>
+                  </div>
+                  <div className="space-y-1 text-sm text-gray-700">
+                    <div className="flex items-center">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {new Date(booking.date).toLocaleDateString()} at {new Date(booking.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </div>
+                    <div className="flex items-center">
+                      <MapPin className="h-3 w-3 mr-1" />
+                      {booking.location}
+                    </div>
+                    <div className="flex items-center">
+                      <Euro className="h-3 w-3 mr-1" />
+                      €{(booking.totalAmount / 100).toFixed(2)}
+                    </div>
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="flex-1 bg-green-600 hover:bg-green-700"
+                      onClick={() => {
+                        setBookingToConfirm(booking)
+                        setConfirmModalOpen(true)
+                      }}
+                    >
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Confirm & Rate
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      onClick={() => {
+                        setBookingToReport(booking)
+                        setNoShowDialogOpen(true)
+                      }}
+                    >
+                      <XCircle className="h-3 w-3 mr-1" />
+                      Report No-Show
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
           {/* Recent Activity */}
           <Card>
             <CardHeader>
@@ -519,6 +682,65 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
+
+      {/* Confirm Booking Modal */}
+      <ConfirmBookingModal
+        isOpen={confirmModalOpen}
+        onClose={() => {
+          setConfirmModalOpen(false)
+          setBookingToConfirm(null)
+        }}
+        bookingId={bookingToConfirm?.id || ''}
+        goalkeeperName={bookingToConfirm?.goalkeeper?.name}
+      />
+
+      {/* Report No-Show Dialog */}
+      <AlertDialog open={noShowDialogOpen} onOpenChange={setNoShowDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <XCircle className="h-5 w-5 text-red-600" />
+              Report Goalkeeper No-Show
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure the goalkeeper did not show up for this match? This action will:
+              <ul className="mt-2 ml-4 space-y-1 text-sm">
+                <li>• Issue you a <strong>full refund</strong></li>
+                <li>• <strong>Block</strong> the goalkeeper's account permanently</li>
+                <li>• Cannot be undone</li>
+              </ul>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          {bookingToReport && (
+            <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+              <h4 className="font-semibold text-sm mb-2">Match Details:</h4>
+              <p className="text-sm text-gray-700">
+                <strong>Goalkeeper:</strong> {bookingToReport?.goalkeeper?.name}
+              </p>
+              <p className="text-sm text-gray-700">
+                <strong>Date:</strong> {new Date(bookingToReport.date).toLocaleDateString()}
+              </p>
+              <p className="text-sm text-gray-700">
+                <strong>Amount:</strong> €{(bookingToReport.totalAmount / 100).toFixed(2)}
+              </p>
+            </div>
+          )}
+          
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={reportingNoShow}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleReportNoShow}
+              disabled={reportingNoShow}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {reportingNoShow ? 'Reporting...' : 'Report No-Show'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       </AlertDialog>
     </div>
   )

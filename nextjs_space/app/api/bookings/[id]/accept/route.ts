@@ -65,13 +65,20 @@ export async function POST(
         throw new Error('BOOKING_EXPIRED')
       }
 
+      // Calculate confirmation deadline (48h after match end time)
+      const matchEndTime = new Date(booking.date);
+      matchEndTime.setHours(matchEndTime.getHours() + booking.duration);
+      const confirmationDeadline = new Date(matchEndTime);
+      confirmationDeadline.setHours(confirmationDeadline.getHours() + 48);
+
       // Update booking with goalkeeper assignment
       const updatedBooking = await tx.booking.update({
         where: { id: bookingId },
         data: {
           goalkeeperId: session.user.id,
           goalkeeperProfileId: goalkeeperProfile.id,
-          status: 'ACCEPTED'
+          status: 'CONFIRMED',
+          confirmationDeadline,
         },
         include: {
           organizer: {
