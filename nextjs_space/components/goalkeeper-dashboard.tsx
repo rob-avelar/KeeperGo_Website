@@ -578,6 +578,52 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
           </Card>
         )}
 
+        {/* Bank Account Status */}
+        {!profile?.stripePayoutsEnabled && (
+          <Card className="mb-8 border-purple-200 bg-purple-50">
+            <CardHeader>
+              <CardTitle className="text-purple-800 flex items-center">
+                <Euro className="h-5 w-5 mr-2" />
+                Bank Account Required
+              </CardTitle>
+              <CardDescription className="text-purple-700">
+                {!profile?.stripeAccountId 
+                  ? 'Connect your bank account to receive payments for your goalkeeper services'
+                  : 'Complete your bank account setup to start receiving payments'
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/goalkeeper/bank-account">
+                <Button className="bg-purple-600 hover:bg-purple-700">
+                  {!profile?.stripeAccountId ? 'Connect Bank Account' : 'Complete Setup'}
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        )}
+
+        {profile?.stripePayoutsEnabled && (
+          <Card className="mb-8 border-green-200 bg-green-50">
+            <CardHeader>
+              <CardTitle className="text-green-800 flex items-center">
+                <CheckCircle className="h-5 w-5 mr-2" />
+                Bank Account Connected
+              </CardTitle>
+              <CardDescription className="text-green-700">
+                Your bank account is active. You'll receive 75% of each booking payment after confirmation.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/goalkeeper/bank-account">
+                <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-100">
+                  View Bank Account
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Available Matches - First Come First Served */}
         {availableBookings?.length > 0 && (
           <Card className="mb-8 border-blue-300 bg-blue-50/50">

@@ -90,6 +90,15 @@ model GoalkeeperProfile {
   warningCount      Int         @default(0)
   blockedUntil      DateTime?
   
+  // Stripe Connect fields for bank payouts
+  stripeAccountId       String?   @unique // Stripe Connect Express Account ID
+  stripeAccountStatus   String?   // Onboarding status: 'incomplete', 'pending', 'complete', 'restricted'
+  stripeOnboardingLink  String?   // Temporary onboarding link (expires after use)
+  stripeLinkExpiresAt   DateTime? // Expiration time for onboarding link
+  stripeDetailsSubmitted Boolean  @default(false) // Whether user completed Stripe onboarding
+  stripeChargesEnabled   Boolean  @default(false) // Whether Stripe account can receive charges
+  stripePayoutsEnabled   Boolean  @default(false) // Whether Stripe account can receive payouts
+  
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 
