@@ -551,7 +551,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
         </div>
 
         {/* Profile Status */}
-        {(!profile?.profilePhotoPath || !profile?.bio) && (
+        {(!profile?.bio || !profile?.experienceLevel || !profile?.address || !profile?.city || !profile?.postalCode) && (
           <Card className="mb-8 border-orange-200 bg-orange-50">
             <CardHeader>
               <CardTitle className="text-orange-800 flex items-center">
@@ -559,7 +559,13 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                 Complete Your Profile
               </CardTitle>
               <CardDescription className="text-orange-700">
-                Complete your profile to receive more booking requests
+                Complete your profile to receive more booking requests. Missing: {[
+                  !profile?.bio && 'Bio',
+                  !profile?.experienceLevel && 'Experience Level',
+                  !profile?.address && 'Address',
+                  !profile?.city && 'City',
+                  !profile?.postalCode && 'Postal Code'
+                ].filter(Boolean).join(', ')}
               </CardDescription>
             </CardHeader>
             <CardContent>
