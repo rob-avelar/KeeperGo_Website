@@ -15,20 +15,20 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL || 'http://localhost:3000'),
-  title: 'NetMinder Hire - Goalkeeper Rental Platform',
+  title: 'KeeperGo - Goalkeeper Rental Platform',
   description: 'Find and book professional goalkeepers for your football matches in the Netherlands. Connect with skilled goalkeepers in your area.',
   keywords: 'goalkeeper, rental, football, soccer, Netherlands, booking, sports',
   openGraph: {
-    title: 'NetMinder Hire - Goalkeeper Rental Platform',
+    title: 'KeeperGo - Goalkeeper Rental Platform',
     description: 'Find and book professional goalkeepers for your football matches in the Netherlands.',
     url: '/',
-    siteName: 'NetMinder Hire',
+    siteName: 'KeeperGo',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'NetMinder Hire - Goalkeeper Rental Platform',
+        alt: 'KeeperGo - Goalkeeper Rental Platform',
       },
     ],
     locale: 'en_US',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'NetMinder Hire - Goalkeeper Rental Platform',
+    title: 'KeeperGo - Goalkeeper Rental Platform',
     description: 'Find and book professional goalkeepers for your football matches in the Netherlands.',
     images: ['/og-image.png'],
   },

@@ -77,7 +77,7 @@ export default function OrganizerSignInPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">
             <Goal className="h-8 w-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-blue-800">NetMinder Hire</h1>
+            <h1 className="text-3xl font-bold text-blue-800">KeeperGo</h1>
           </Link>
           <p className="text-gray-600">Match Organizer Sign In</p>
         </div>

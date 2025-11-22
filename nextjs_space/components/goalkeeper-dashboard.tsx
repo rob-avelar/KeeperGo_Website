@@ -352,7 +352,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
               <Goal className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-blue-800">NetMinder Hire</h1>
+              <h1 className="text-2xl font-bold text-blue-800">KeeperGo</h1>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">Welcome, {user?.name}</span>

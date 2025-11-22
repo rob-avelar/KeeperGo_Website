@@ -98,13 +98,13 @@ export default function SignUpPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-800 mb-2">NetMinder Hire</h1>
+          <h1 className="text-3xl font-bold text-blue-800 mb-2">KeeperGo</h1>
           <p className="text-gray-600">Create your account</p>
         </div>
 
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl text-center">Join NetMinder</CardTitle>
+            <CardTitle className="text-2xl text-center">Join KeeperGo</CardTitle>
             <CardDescription className="text-center">
               Choose your role and create your account
             </CardDescription>

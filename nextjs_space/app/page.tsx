@@ -25,7 +25,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <Goal className="h-6 w-6 text-blue-600" />
-            <span className="font-bold text-xl text-blue-800">NetMinder Hire</span>
+            <span className="font-bold text-xl text-blue-800">KeeperGo</span>
           </div>
           <nav className="flex items-center gap-2 sm:gap-4">
             <Link href="/auth/organizer/signin">
@@ -80,7 +80,7 @@ export default function HomePage() {
           <div className="relative aspect-video bg-muted rounded-lg overflow-hidden shadow-2xl">
             <Image
               src="/og-image.png"
-              alt="NetMinder Hire Platform"
+              alt="KeeperGo Platform"
               fill
               className="object-cover"
             />
@@ -93,7 +93,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Why Choose NetMinder Hire?
+              Why Choose KeeperGo?
             </h2>
             <p className="text-xl text-gray-600">
               The most trusted platform for goalkeeper bookings in the Netherlands
@@ -255,7 +255,7 @@ export default function HomePage() {
             Ready to Find Your Perfect Goalkeeper?
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Join thousands of satisfied players and goalkeepers on NetMinder Hire
+            Join thousands of satisfied players and goalkeepers on KeeperGo
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/auth/organizer/signup">
@@ -281,7 +281,7 @@ export default function HomePage() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Goal className="h-6 w-6 text-purple-400" />
-                <span className="font-bold text-xl">NetMinder Hire</span>
+                <span className="font-bold text-xl">KeeperGo</span>
               </div>
               <p className="text-gray-400">
                 The premier goalkeeper rental platform for the Netherlands.
@@ -313,7 +313,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 NetMinder Hire. All rights reserved.</p>
+            <p>&copy; 2024 KeeperGo. All rights reserved.</p>
           </div>
         </div>
       </footer>

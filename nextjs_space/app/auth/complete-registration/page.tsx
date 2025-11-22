@@ -73,7 +73,7 @@ export default function CompleteRegistrationPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">
             <GoalIcon className="h-8 w-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-blue-800">NetMinder Hire</h1>
+            <h1 className="text-3xl font-bold text-blue-800">KeeperGo</h1>
           </Link>
           <p className="text-gray-600">Complete Your Registration</p>
         </div>
@@ -82,7 +82,7 @@ export default function CompleteRegistrationPage() {
           <CardHeader>
             <CardTitle className="text-2xl text-center">Choose Your Role</CardTitle>
             <CardDescription className="text-center">
-              Tell us how you want to use NetMinder Hire
+              Tell us how you want to use KeeperGo
             </CardDescription>
           </CardHeader>
 
