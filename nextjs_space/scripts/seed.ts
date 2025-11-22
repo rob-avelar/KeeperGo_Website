@@ -158,12 +158,27 @@ async function main() {
   console.log('✓ Created goalkeeper profiles')
 
   // Create sample bookings
+  // Create dates relative to now for testing
+  const now = new Date()
+  const yesterday = new Date(now)
+  yesterday.setDate(yesterday.getDate() - 1)
+  yesterday.setHours(14, 0, 0, 0)
+  
+  const twoDaysAgo = new Date(now)
+  twoDaysAgo.setDate(twoDaysAgo.getDate() - 2)
+  twoDaysAgo.setHours(10, 0, 0, 0)
+  
+  const nextWeek = new Date(now)
+  nextWeek.setDate(nextWeek.getDate() + 7)
+  nextWeek.setHours(16, 0, 0, 0)
+
+  // Booking 1: Match ended yesterday - needs goalkeeper confirmation
   const booking1 = await prisma.booking.create({
     data: {
       organizerId: organizer1.id,
       goalkeeperId: goalkeeper1.id,
       goalkeeperProfileId: profile1.id,
-      date: new Date('2024-12-20T14:00:00Z'),
+      date: yesterday,
       duration: 2,
       location: 'Vondelpark Football Field, Amsterdam',
       latitude: 52.3598,
@@ -171,16 +186,18 @@ async function main() {
       fieldType: '7-a-side',
       pricePerHour: 2000, // €20/hour
       totalAmount: 4000, // €40 total
-      status: 'CONFIRMED'
+      status: 'CONFIRMED',
+      confirmationDeadline: new Date(yesterday.getTime() + 48 * 60 * 60 * 1000) // 48h after match
     }
   })
 
+  // Booking 2: Match ended 2 days ago - already confirmed by goalkeeper, needs organizer confirmation
   const booking2 = await prisma.booking.create({
     data: {
       organizerId: organizer2.id,
       goalkeeperId: goalkeeper2.id,
       goalkeeperProfileId: profile2.id,
-      date: new Date('2024-11-25T10:00:00Z'),
+      date: twoDaysAgo,
       duration: 1,
       location: 'Sports Center Utrecht',
       latitude: 52.0907,
@@ -188,17 +205,19 @@ async function main() {
       fieldType: '5-a-side',
       pricePerHour: 2500, // €25/hour
       totalAmount: 2500, // €25 total
-      status: 'COMPLETED',
-      isCompleted: true
+      status: 'CONFIRMED',
+      goalkeeperConfirmedAt: new Date(twoDaysAgo.getTime() + 2 * 60 * 60 * 1000), // Confirmed 2h after match
+      confirmationDeadline: new Date(twoDaysAgo.getTime() + 48 * 60 * 60 * 1000) // 48h after match
     }
   })
 
+  // Booking 3: Future match
   const booking3 = await prisma.booking.create({
     data: {
       organizerId: testUser.id,
       goalkeeperId: goalkeeper3.id,
       goalkeeperProfileId: profile3.id,
-      date: new Date('2024-12-15T16:00:00Z'),
+      date: nextWeek,
       duration: 2,
       location: 'Rotterdam Football Club',
       latitude: 51.9244,
@@ -206,7 +225,34 @@ async function main() {
       fieldType: '11-a-side',
       pricePerHour: 2500, // €25/hour
       totalAmount: 5000, // €50 total
-      status: 'PENDING'
+      status: 'CONFIRMED',
+      confirmationDeadline: new Date(nextWeek.getTime() + 48 * 60 * 60 * 1000) // 48h after match
+    }
+  })
+
+  // Booking 4: Completed match (for ratings/payments examples)
+  const oneWeekAgo = new Date(now)
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+  oneWeekAgo.setHours(18, 0, 0, 0)
+  
+  const booking4 = await prisma.booking.create({
+    data: {
+      organizerId: organizer2.id,
+      goalkeeperId: goalkeeper3.id,
+      goalkeeperProfileId: profile3.id,
+      date: oneWeekAgo,
+      duration: 1,
+      location: 'Ajax Training Center',
+      latitude: 52.3135,
+      longitude: 4.9412,
+      fieldType: '5-a-side',
+      pricePerHour: 2000, // €20/hour
+      totalAmount: 2000, // €20 total
+      status: 'COMPLETED',
+      isCompleted: true,
+      goalkeeperConfirmedAt: new Date(oneWeekAgo.getTime() + 3 * 60 * 60 * 1000),
+      confirmedAt: new Date(oneWeekAgo.getTime() + 4 * 60 * 60 * 1000),
+      confirmationDeadline: new Date(oneWeekAgo.getTime() + 48 * 60 * 60 * 1000)
     }
   })
 
@@ -215,9 +261,9 @@ async function main() {
   // Create sample ratings for completed bookings
   const rating1 = await prisma.rating.create({
     data: {
-      bookingId: booking2.id,
+      bookingId: booking4.id,
       raterId: organizer2.id,
-      ratedUserId: goalkeeper2.id,
+      ratedUserId: goalkeeper3.id,
       punctuality: 5,
       attitude: 4,
       technicalSkill: 8,
@@ -232,10 +278,10 @@ async function main() {
   const payment1 = await prisma.payment.create({
     data: {
       userId: organizer2.id,
-      bookingId: booking2.id,
-      amount: 2500,
-      platformFee: 375, // 15% platform fee
-      goalkeeperEarning: 2125, // 85% to goalkeeper
+      bookingId: booking4.id,
+      amount: 2000,
+      platformFee: 500, // 25% platform fee (€5)
+      goalkeeperEarning: 1500, // 75% to goalkeeper (€15)
       status: 'COMPLETED',
       paymentMethod: 'card'
     }
