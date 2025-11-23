@@ -50,6 +50,14 @@ model User {
   role          UserRole  @default(ORGANIZER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  
+  // Notification preferences
+  emailNotifications         Boolean  @default(true)
+  notifyBookingAccepted      Boolean  @default(true)
+  notifyBookingCancelled     Boolean  @default(true)
+  notifyMatchReminder24h     Boolean  @default(true)
+  notifyMatchReminder2h      Boolean  @default(true)
+  notifyPaymentReceived      Boolean  @default(true)
 
   accounts           Account[]
   sessions           Session[]

@@ -31,7 +31,9 @@ import {
   X,
   AlertCircle,
   CheckCircle,
-  XCircle
+  XCircle,
+  BarChart3,
+  Settings
 } from 'lucide-react'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
@@ -278,6 +280,11 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
+              <Link href="/organizer/settings">
+                <Button variant="ghost" size="sm">
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </Link>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 Sign Out
               </Button>
@@ -310,6 +317,12 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
               <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
                 <Users className="w-4 h-4 mr-2" />
                 Search Goalkeepers
+              </Button>
+            </Link>
+            <Link href="/organizer/analytics">
+              <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Analytics
               </Button>
             </Link>
           </div>

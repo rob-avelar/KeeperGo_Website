@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic"
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { sendEmail, emailTemplates } from '@/lib/email'
 
 export async function POST(
   request: NextRequest,
@@ -85,7 +86,9 @@ export async function POST(
             select: {
               id: true,
               name: true,
-              email: true
+              email: true,
+              emailNotifications: true,
+              notifyBookingAccepted: true
             }
           }
         }
@@ -115,6 +118,23 @@ export async function POST(
 
       return updatedBooking
     })
+
+    // Send email notification to organizer
+    const organizer = result.organizer
+    if (organizer.emailNotifications && organizer.notifyBookingAccepted) {
+      const template = emailTemplates.bookingAccepted(
+        organizer.name || 'there',
+        session.user.name || 'A goalkeeper',
+        result.date,
+        result.location
+      )
+      await sendEmail({
+        to: organizer.email,
+        subject: template.subject,
+        html: template.html,
+        text: template.text
+      })
+    }
 
     return NextResponse.json(result, { status: 200 })
   } catch (error: any) {
