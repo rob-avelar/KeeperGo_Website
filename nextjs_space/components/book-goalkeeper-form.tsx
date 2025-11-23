@@ -2,19 +2,23 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Calendar, MapPin, Clock, Euro, ArrowRight, Goal, Star } from 'lucide-react'
+import { Switch } from '@/components/ui/switch'
+import { Calendar, MapPin, Clock, Euro, ArrowRight, Goal, Star, Heart, Repeat } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 
 export default function BookGoalkeeperForm() {
+  const searchParams = useSearchParams()
+  const inviteGoalkeeperId = searchParams?.get('invite')
+  
   const [formData, setFormData] = useState({
     date: '',
     time: '',
@@ -23,8 +27,11 @@ export default function BookGoalkeeperForm() {
     fieldType: '',
     pricePerHour: '',
     specialRequests: '',
-    bookingType: 'open', // 'open' or 'direct'
-    selectedGoalkeeperId: ''
+    bookingType: inviteGoalkeeperId ? 'direct' : 'open', // 'open' or 'direct'
+    selectedGoalkeeperId: inviteGoalkeeperId || '',
+    isRecurring: false,
+    recurrenceFrequency: 'weekly', // 'weekly' or 'biweekly'
+    numberOfOccurrences: '4'
   })
   const [goalkeepers, setGoalkeepers] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -78,30 +85,53 @@ export default function BookGoalkeeperForm() {
     setIsLoading(true)
 
     try {
+      // Calculate dates for recurring bookings
       const bookingDateTime = new Date(`${formData.date}T${formData.time}:00`)
+      const datesToCreate = [bookingDateTime]
       
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          date: bookingDateTime.toISOString(),
-          duration: parseInt(formData.duration),
-          location: formData.location,
-          fieldType: formData.fieldType,
-          pricePerHour: parseInt(formData.pricePerHour) * 100, // Convert to cents
-          specialRequests: formData.specialRequests,
-          bookingType: formData.bookingType,
-          goalkeeperId: formData.bookingType === 'direct' ? formData.selectedGoalkeeperId : undefined
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to create booking')
+      if (formData.isRecurring) {
+        const numberOfMatches = parseInt(formData.numberOfOccurrences)
+        const daysInterval = formData.recurrenceFrequency === 'weekly' ? 7 : 14
+        
+        for (let i = 1; i < numberOfMatches; i++) {
+          const nextDate = new Date(bookingDateTime)
+          nextDate.setDate(nextDate.getDate() + (i * daysInterval))
+          datesToCreate.push(nextDate)
+        }
       }
 
-      const successMessage = formData.bookingType === 'direct'
+      // Create all bookings
+      const bookingPromises = datesToCreate.map(date =>
+        fetch('/api/bookings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            date: date.toISOString(),
+            duration: parseInt(formData.duration),
+            location: formData.location,
+            fieldType: formData.fieldType,
+            pricePerHour: parseInt(formData.pricePerHour) * 100, // Convert to cents
+            specialRequests: formData.specialRequests,
+            bookingType: formData.bookingType,
+            goalkeeperId: formData.bookingType === 'direct' ? formData.selectedGoalkeeperId : undefined
+          }),
+        })
+      )
+
+      const responses = await Promise.all(bookingPromises)
+      
+      // Check if all requests succeeded
+      const allSucceeded = responses.every(response => response.ok)
+      
+      if (!allSucceeded) {
+        throw new Error('Failed to create some bookings')
+      }
+
+      const successMessage = formData.isRecurring
+        ? `Successfully created ${datesToCreate.length} recurring ${formData.bookingType === 'direct' ? 'bookings' : 'match announcements'}!`
+        : formData.bookingType === 'direct'
         ? 'Direct booking created! The goalkeeper has been notified.'
         : 'Your match announcement has been posted. Goalkeepers can now view and accept it.'
 
@@ -114,7 +144,7 @@ export default function BookGoalkeeperForm() {
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to create booking. Please try again.',
+        description: 'Failed to create booking(s). Please try again.',
         variant: 'destructive'
       })
     } finally {
@@ -264,6 +294,77 @@ export default function BookGoalkeeperForm() {
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* Recurring Matches */}
+              <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Repeat className="h-5 w-5 text-blue-600" />
+                    <Label htmlFor="recurring" className="cursor-pointer">
+                      Create Recurring Matches
+                    </Label>
+                  </div>
+                  <Switch
+                    id="recurring"
+                    checked={formData.isRecurring}
+                    onCheckedChange={(checked) => setFormData({ ...formData, isRecurring: checked })}
+                  />
+                </div>
+                
+                {formData.isRecurring && (
+                  <div className="space-y-4 pt-2">
+                    <p className="text-sm text-gray-600">
+                      Schedule multiple matches automatically at the same time and location
+                    </p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Frequency</Label>
+                        <Select 
+                          value={formData.recurrenceFrequency} 
+                          onValueChange={(value) => handleChange('recurrenceFrequency', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="weekly">Weekly (every 7 days)</SelectItem>
+                            <SelectItem value="biweekly">Bi-weekly (every 14 days)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Number of Matches</Label>
+                        <Select 
+                          value={formData.numberOfOccurrences} 
+                          onValueChange={(value) => handleChange('numberOfOccurrences', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="2">2 matches</SelectItem>
+                            <SelectItem value="3">3 matches</SelectItem>
+                            <SelectItem value="4">4 matches</SelectItem>
+                            <SelectItem value="6">6 matches</SelectItem>
+                            <SelectItem value="8">8 matches</SelectItem>
+                            <SelectItem value="12">12 matches</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-3 rounded border border-blue-200">
+                      <p className="text-sm font-medium text-blue-900 mb-1">Preview:</p>
+                      <p className="text-sm text-gray-600">
+                        {formData.numberOfOccurrences} matches will be created {formData.recurrenceFrequency === 'weekly' ? 'every week' : 'every 2 weeks'}
+                        {formData.bookingType === 'direct' && formData.selectedGoalkeeperId && ' with the same goalkeeper'}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Duration and Field Type */}

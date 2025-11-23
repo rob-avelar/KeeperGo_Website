@@ -19,6 +19,8 @@ export async function GET(request: NextRequest) {
     const fieldType = searchParams.get('fieldType')
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
+    const minRating = searchParams.get('minRating')
+    const experienceLevel = searchParams.get('experienceLevel')
 
     let whereClause: any = {
       isActive: true,
@@ -34,9 +36,21 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Filter by minimum rating
+    if (minRating) {
+      whereClause.averageRating = {
+        gte: parseFloat(minRating)
+      }
+    }
+
+    // Filter by experience level
+    if (experienceLevel && experienceLevel !== 'all') {
+      whereClause.experienceLevel = experienceLevel
+    }
+
     // Filter by price range
     if (minPrice || maxPrice) {
-      whereClause.AND = []
+      if (!whereClause.AND) whereClause.AND = []
       if (minPrice) {
         whereClause.AND.push({
           hourlyRateMin: { gte: parseInt(minPrice) * 100 }

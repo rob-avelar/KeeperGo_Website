@@ -38,6 +38,7 @@ import { signOut } from 'next-auth/react'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { ConfirmBookingModal } from './confirm-booking-modal'
+import FavoritesSection from './favorites-section'
 
 interface OrganizerDashboardProps {
   user: any
@@ -305,6 +306,12 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                 Post Match Announcement
               </Button>
             </Link>
+            <Link href="/organizer/search-goalkeepers">
+              <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                <Users className="w-4 h-4 mr-2" />
+                Search Goalkeepers
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -365,6 +372,11 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Favorite Goalkeepers */}
+        <div className="mb-8">
+          <FavoritesSection />
         </div>
 
         {/* Open Announcements */}

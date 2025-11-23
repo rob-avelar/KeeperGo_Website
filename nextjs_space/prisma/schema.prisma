@@ -60,6 +60,8 @@ model User {
   ratingsReceived    Rating[]           @relation("RatingsReceived")
   payments           Payment[]
   notifications      Notification[]
+  favoriteGoalkeepers FavoriteGoalkeeper[] @relation("OrganizerFavorites")
+  favoritedBy         FavoriteGoalkeeper[] @relation("GoalkeeperFavorites")
 
   @@map("users")
 }
@@ -206,6 +208,19 @@ model Notification {
   booking Booking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
+}
+
+model FavoriteGoalkeeper {
+  id           String   @id @default(cuid())
+  organizerId  String
+  goalkeeperId String
+  createdAt    DateTime @default(now())
+
+  organizer  User @relation("OrganizerFavorites", fields: [organizerId], references: [id], onDelete: Cascade)
+  goalkeeper User @relation("GoalkeeperFavorites", fields: [goalkeeperId], references: [id], onDelete: Cascade)
+
+  @@unique([organizerId, goalkeeperId])
+  @@map("favorite_goalkeepers")
 }
 
 model VerificationToken {
