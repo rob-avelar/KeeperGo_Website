@@ -49,16 +49,16 @@ ChartJS.register(
 
 interface AnalyticsData {
   summary: {
-    totalSpent: number
     totalMatches: number
-    avgMatchCost: number
+    totalHoursPlayed: number
+    avgMatchDuration: number
     avgRatingGiven: number
-    currentMonthSpending: number
-    spendingTrend: number
+    currentMonthMatches: number
+    activityTrend: number
   }
   charts: {
-    monthlyData: Array<{ month: string; spending: number; matches: number }>
-    topGoalkeepers: Array<{ id: string; name: string; matches: number; totalSpent: number }>
+    monthlyData: Array<{ month: string; matches: number; totalHours: number }>
+    topGoalkeepers: Array<{ id: string; name: string; matches: number; avgRating: number }>
     peakHours: Array<{ hour: number; matches: number }>
     fieldTypes: Array<{ type: string; count: number }>
   }
@@ -96,9 +96,9 @@ export default function AnalyticsDashboard() {
     
     if (format === 'csv') {
       // CSV format
-      content = 'Month,Spending (€),Matches\n'
+      content = 'Month,Matches,Total Hours\n'
       data.charts.monthlyData.forEach(row => {
-        content += `${row.month},${row.spending},${row.matches}\n`
+        content += `${row.month},${row.matches},${row.totalHours}\n`
       })
       filename += '.csv'
     } else {
@@ -140,7 +140,7 @@ export default function AnalyticsDashboard() {
 
   const { summary, charts } = data
 
-  // Monthly spending chart data
+  // Monthly activity chart data
   const monthlyChartData = {
     labels: charts.monthlyData.map(d => {
       const [year, month] = d.month.split('-')
@@ -148,8 +148,8 @@ export default function AnalyticsDashboard() {
     }),
     datasets: [
       {
-        label: 'Spending (€)',
-        data: charts.monthlyData.map(d => d.spending),
+        label: 'Matches Organized',
+        data: charts.monthlyData.map(d => d.matches),
         borderColor: 'rgb(59, 130, 246)',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         fill: true,
@@ -219,7 +219,7 @@ export default function AnalyticsDashboard() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h2>
-          <p className="text-gray-600">Insights into your booking history and spending</p>
+          <p className="text-gray-600">Insights into your match activity and performance</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
@@ -235,23 +235,6 @@ export default function AnalyticsDashboard() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
-              Total Spent
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">€{summary.totalSpent}</div>
-                <p className="text-xs text-gray-500 mt-1">All time</p>
-              </div>
-              <Euro className="h-8 w-8 text-blue-600 opacity-20" />
-            </div>
-          </CardContent>
-        </Card>
-
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
@@ -272,13 +255,30 @@ export default function AnalyticsDashboard() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Avg Match Cost
+              Total Hours Played
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold">€{summary.avgMatchCost}</div>
+                <div className="text-2xl font-bold">{summary.totalHoursPlayed}h</div>
+                <p className="text-xs text-gray-500 mt-1">All time</p>
+              </div>
+              <Clock className="h-8 w-8 text-blue-600 opacity-20" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600">
+              Avg Match Duration
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold">{summary.avgMatchDuration}h</div>
                 <p className="text-xs text-gray-500 mt-1">Per match</p>
               </div>
               <BarChart3 className="h-8 w-8 text-blue-600 opacity-20" />
@@ -295,21 +295,21 @@ export default function AnalyticsDashboard() {
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold">€{summary.currentMonthSpending}</div>
-                {summary.spendingTrend !== 0 && (
+                <div className="text-2xl font-bold">{summary.currentMonthMatches} matches</div>
+                {summary.activityTrend !== 0 && (
                   <div className="flex items-center gap-1 mt-1">
-                    {summary.spendingTrend > 0 ? (
+                    {summary.activityTrend > 0 ? (
                       <TrendingUp className="h-3 w-3 text-green-600" />
                     ) : (
-                      <TrendingDown className="h-3 w-3 text-red-600" />
+                      <TrendingDown className="h-3 w-3 text-orange-600" />
                     )}
-                    <span className={`text-xs ${summary.spendingTrend > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {Math.abs(summary.spendingTrend).toFixed(1)}% vs last month
+                    <span className={`text-xs ${summary.activityTrend > 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                      {Math.abs(summary.activityTrend).toFixed(1)}% vs last month
                     </span>
                   </div>
                 )}
               </div>
-              <Euro className="h-8 w-8 text-blue-600 opacity-20" />
+              <Trophy className="h-8 w-8 text-blue-600 opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -317,11 +317,11 @@ export default function AnalyticsDashboard() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Monthly Spending */}
+        {/* Monthly Activity */}
         <Card>
           <CardHeader>
-            <CardTitle>Monthly Spending Trend</CardTitle>
-            <CardDescription>Last 12 months</CardDescription>
+            <CardTitle>Monthly Activity Trend</CardTitle>
+            <CardDescription>Matches organized in the last 12 months</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -394,8 +394,11 @@ export default function AnalyticsDashboard() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-blue-600">€{gk.totalSpent}</p>
-                      <p className="text-xs text-gray-500">total spent</p>
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                        <p className="font-semibold text-gray-900">{gk.avgRating > 0 ? gk.avgRating.toFixed(1) : 'N/A'}</p>
+                      </div>
+                      <p className="text-xs text-gray-500">avg rating</p>
                     </div>
                   </div>
                 ))

@@ -43,10 +43,10 @@ export async function GET() {
       }
     })
 
-    // Calculate monthly spending
-    const monthlySpending: { [key: string]: number } = {}
+    // Calculate monthly activity and positive metrics
     const monthlyMatches: { [key: string]: number } = {}
-    const goalkeeperFrequency: { [key: string]: { name: string, count: number, totalSpent: number } } = {}
+    const monthlyDuration: { [key: string]: number } = {}
+    const goalkeeperFrequency: { [key: string]: { name: string, count: number, totalRating: number, ratingCount: number } } = {}
     const hourFrequency: { [key: number]: number } = {}
     const fieldTypeFrequency: { [key: string]: number } = {}
 
@@ -54,24 +54,31 @@ export async function GET() {
       const date = new Date(booking.date)
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
       
-      // Monthly spending
-      monthlySpending[monthKey] = (monthlySpending[monthKey] || 0) + (booking.totalAmount / 100)
-      
       // Monthly matches
       monthlyMatches[monthKey] = (monthlyMatches[monthKey] || 0) + 1
+      
+      // Monthly total duration (hours)
+      monthlyDuration[monthKey] = (monthlyDuration[monthKey] || 0) + (booking.duration || 0)
 
-      // Goalkeeper frequency
+      // Goalkeeper frequency with ratings
       if (booking.goalkeeperId) {
         const gkName = booking.goalkeeper?.name || booking.goalkeeper?.email?.split('@')[0] || 'Unknown'
         if (!goalkeeperFrequency[booking.goalkeeperId]) {
           goalkeeperFrequency[booking.goalkeeperId] = {
             name: gkName,
             count: 0,
-            totalSpent: 0
+            totalRating: 0,
+            ratingCount: 0
           }
         }
         goalkeeperFrequency[booking.goalkeeperId].count++
-        goalkeeperFrequency[booking.goalkeeperId].totalSpent += (booking.totalAmount / 100)
+        
+        // Add ratings if available
+        if (booking.ratings && booking.ratings.length > 0) {
+          const rating = booking.ratings[0].overallRating
+          goalkeeperFrequency[booking.goalkeeperId].totalRating += rating
+          goalkeeperFrequency[booking.goalkeeperId].ratingCount++
+        }
       }
 
       // Hour frequency (when matches are scheduled)
@@ -85,16 +92,16 @@ export async function GET() {
     })
 
     // Format monthly data for charts
-    const monthlyData = Object.entries(monthlySpending)
+    const monthlyData = Object.entries(monthlyMatches)
       .sort(([a], [b]) => a.localeCompare(b))
       .slice(-12) // Last 12 months
-      .map(([month, spending]) => ({
+      .map(([month, matches]) => ({
         month,
-        spending: Math.round(spending),
-        matches: monthlyMatches[month] || 0
+        matches,
+        totalHours: monthlyDuration[month] || 0
       }))
 
-    // Top goalkeepers
+    // Top goalkeepers (sorted by matches, with average ratings)
     const topGoalkeepers = Object.entries(goalkeeperFrequency)
       .sort(([, a], [, b]) => b.count - a.count)
       .slice(0, 5)
@@ -102,7 +109,7 @@ export async function GET() {
         id,
         name: data.name,
         matches: data.count,
-        totalSpent: Math.round(data.totalSpent)
+        avgRating: data.ratingCount > 0 ? Math.round((data.totalRating / data.ratingCount) * 10) / 10 : 0
       }))
 
     // Peak hours
@@ -122,37 +129,37 @@ export async function GET() {
       }))
 
     // Calculate totals and averages
-    const totalSpent = completedBookings.reduce((sum, b) => sum + (b.totalAmount / 100), 0)
     const totalMatches = completedBookings.length
-    const avgMatchCost = totalMatches > 0 ? totalSpent / totalMatches : 0
+    const totalHoursPlayed = completedBookings.reduce((sum, b) => sum + (b.duration || 0), 0)
+    const avgMatchDuration = totalMatches > 0 ? totalHoursPlayed / totalMatches : 0
     
     const ratingsGiven = completedBookings.flatMap(b => b.ratings)
     const avgRatingGiven = ratingsGiven.length > 0
       ? ratingsGiven.reduce((sum, r) => sum + r.overallRating, 0) / ratingsGiven.length
       : 0
 
-    // Get current month spending
+    // Get current month matches
     const now = new Date()
     const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-    const currentMonthSpending = monthlySpending[currentMonthKey] || 0
+    const currentMonthMatches = monthlyMatches[currentMonthKey] || 0
 
     // Get last month for comparison
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
     const lastMonthKey = `${lastMonth.getFullYear()}-${String(lastMonth.getMonth() + 1).padStart(2, '0')}`
-    const lastMonthSpending = monthlySpending[lastMonthKey] || 0
+    const lastMonthMatches = monthlyMatches[lastMonthKey] || 0
 
-    const spendingTrend = lastMonthSpending > 0
-      ? ((currentMonthSpending - lastMonthSpending) / lastMonthSpending) * 100
+    const activityTrend = lastMonthMatches > 0
+      ? ((currentMonthMatches - lastMonthMatches) / lastMonthMatches) * 100
       : 0
 
     return NextResponse.json({
       summary: {
-        totalSpent: Math.round(totalSpent),
         totalMatches,
-        avgMatchCost: Math.round(avgMatchCost),
+        totalHoursPlayed,
+        avgMatchDuration: Math.round(avgMatchDuration * 10) / 10,
         avgRatingGiven: Math.round(avgRatingGiven * 10) / 10,
-        currentMonthSpending: Math.round(currentMonthSpending),
-        spendingTrend: Math.round(spendingTrend)
+        currentMonthMatches,
+        activityTrend: Math.round(activityTrend)
       },
       charts: {
         monthlyData,
