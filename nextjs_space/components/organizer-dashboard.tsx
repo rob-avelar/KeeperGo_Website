@@ -98,9 +98,21 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
     booking.isCompleted || booking.status === 'COMPLETED'
   ) || []
 
-  const totalSpent = completedBookings?.reduce((sum: number, booking: any) => 
-    sum + (booking.totalAmount || 0), 0
-  ) || 0
+  // Calculate success rate: completed matches without cancellations or no-shows
+  const pastBookings = bookings?.filter((booking: any) => {
+    const matchDate = new Date(booking.date)
+    const matchEndTime = new Date(matchDate)
+    matchEndTime.setHours(matchEndTime.getHours() + (booking.duration || 0))
+    return matchEndTime < now
+  }) || []
+
+  const successfulMatches = pastBookings?.filter((booking: any) => 
+    (booking.isCompleted || booking.status === 'COMPLETED') && !booking.noShow
+  ) || []
+
+  const successRate = pastBookings.length > 0 
+    ? Math.round((successfulMatches.length / pastBookings.length) * 100)
+    : 100 // Show 100% if no matches yet (optimistic default)
 
   const averageRating = completedBookings?.length > 0 
     ? completedBookings?.reduce((sum: number, booking: any) => {
@@ -361,14 +373,17 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
-                Total Spent
+                Success Rate
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Euro className="h-4 w-4 text-blue-600 mr-2" />
-                <span className="text-2xl font-bold">€{(totalSpent / 100).toFixed(0)}</span>
+                <TrendingUp className={`h-4 w-4 mr-2 ${successRate >= 80 ? 'text-green-600' : successRate >= 60 ? 'text-yellow-600' : 'text-orange-600'}`} />
+                <span className="text-2xl font-bold">{successRate}%</span>
               </div>
+              <p className="text-xs text-gray-500 mt-1">
+                {successfulMatches.length} of {pastBookings.length} completed
+              </p>
             </CardContent>
           </Card>
 
