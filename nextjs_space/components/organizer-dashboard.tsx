@@ -15,6 +15,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { 
@@ -292,11 +298,27 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
-              <Link href="/organizer/settings">
-                <Button variant="ghost" size="sm">
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href="/organizer/analytics" className="flex items-center cursor-pointer">
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      Analytics
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/organizer/settings" className="flex items-center cursor-pointer">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Notification Settings
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 Sign Out
               </Button>
@@ -329,12 +351,6 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
               <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
                 <Users className="w-4 h-4 mr-2" />
                 Search Goalkeepers
-              </Button>
-            </Link>
-            <Link href="/organizer/analytics">
-              <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
-                <BarChart3 className="w-4 h-4 mr-2" />
-                Analytics
               </Button>
             </Link>
           </div>
