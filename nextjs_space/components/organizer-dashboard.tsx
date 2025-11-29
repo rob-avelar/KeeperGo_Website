@@ -39,7 +39,9 @@ import {
   CheckCircle,
   XCircle,
   BarChart3,
-  Settings
+  Settings,
+  User,
+  Bell
 } from 'lucide-react'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
@@ -304,7 +306,13 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                     <Settings className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem asChild>
+                    <Link href="/organizer/account" className="flex items-center cursor-pointer">
+                      <User className="h-4 w-4 mr-2" />
+                      Account Settings
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/organizer/analytics" className="flex items-center cursor-pointer">
                       <BarChart3 className="h-4 w-4 mr-2" />
@@ -313,8 +321,8 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/organizer/settings" className="flex items-center cursor-pointer">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Notification Settings
+                      <Bell className="h-4 w-4 mr-2" />
+                      Notifications
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>

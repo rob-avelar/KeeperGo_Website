@@ -15,6 +15,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { 
@@ -32,7 +38,8 @@ import {
   Bell,
   CheckCircle,
   X,
-  AlertCircle
+  AlertCircle,
+  User
 } from 'lucide-react'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
@@ -356,6 +363,33 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem asChild>
+                    <Link href="/goalkeeper/account" className="flex items-center cursor-pointer">
+                      <User className="h-4 w-4 mr-2" />
+                      Account Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/goalkeeper/profile" className="flex items-center cursor-pointer">
+                      <Award className="h-4 w-4 mr-2" />
+                      Professional Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/organizer/settings" className="flex items-center cursor-pointer">
+                      <Bell className="h-4 w-4 mr-2" />
+                      Notifications
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 Sign Out
               </Button>
