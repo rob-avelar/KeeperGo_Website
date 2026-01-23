@@ -46,7 +46,9 @@ export default function SignInPage() {
           description: 'Successfully signed in!',
         })
         
-        if (session?.user?.role === 'GOALKEEPER') {
+        if (session?.user?.role === 'ADMIN') {
+          router.replace('/admin/dashboard')
+        } else if (session?.user?.role === 'GOALKEEPER') {
           router.replace('/goalkeeper/dashboard')
         } else {
           router.replace('/organizer/dashboard')
