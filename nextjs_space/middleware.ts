@@ -16,6 +16,11 @@ export default withAuth(
           return true
         }
 
+        // Require admin role for admin routes
+        if (req.nextUrl.pathname.startsWith('/admin/')) {
+          return token?.role === 'ADMIN'
+        }
+
         // Require authentication for protected routes
         if (req.nextUrl.pathname.startsWith('/organizer/')) {
           return token?.role === 'ORGANIZER'
@@ -35,6 +40,7 @@ export const config = {
   matcher: [
     '/organizer/:path*',
     '/goalkeeper/:path*',
+    '/admin/:path*',
     '/dashboard/:path*'
   ]
 }

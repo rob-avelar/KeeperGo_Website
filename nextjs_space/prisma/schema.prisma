@@ -98,7 +98,10 @@ model GoalkeeperProfile {
   
   // Warning and blocking system
   warningCount      Int         @default(0)
+  warnings          Int         @default(0)
   blockedUntil      DateTime?
+  isBlocked         Boolean     @default(false)
+  blockReason       String?
   
   // Stripe Connect fields for bank payouts
   stripeAccountId       String?   @unique // Stripe Connect Express Account ID
@@ -242,6 +245,7 @@ model VerificationToken {
 enum UserRole {
   ORGANIZER
   GOALKEEPER
+  ADMIN
 }
 
 enum BookingStatus {
