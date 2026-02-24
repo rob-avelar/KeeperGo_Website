@@ -127,6 +127,12 @@ export default function AdminDashboard() {
                       Manage Bookings
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin/beta" className="flex items-center cursor-pointer">
+                      <UserCheck className="h-4 w-4 mr-2" />
+                      Beta Testers
+                    </Link>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <Button

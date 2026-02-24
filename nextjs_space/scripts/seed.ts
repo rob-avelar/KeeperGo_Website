@@ -7,6 +7,17 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Seeding database...')
 
+  // Create app settings (disable beta mode for development)
+  await prisma.appSettings.upsert({
+    where: { id: 'settings' },
+    update: {},
+    create: {
+      id: 'settings',
+      betaModeEnabled: false
+    }
+  })
+  console.log('✓ Created app settings (beta mode disabled)')
+
   // Create the required test user with admin privileges
   const hashedPassword = await bcrypt.hash('johndoe123', 12)
   

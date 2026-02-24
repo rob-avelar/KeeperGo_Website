@@ -70,6 +70,7 @@ model User {
   notifications      Notification[]
   favoriteGoalkeepers FavoriteGoalkeeper[] @relation("OrganizerFavorites")
   favoritedBy         FavoriteGoalkeeper[] @relation("GoalkeeperFavorites")
+  betaInvite          BetaInvite[]
 
   @@map("users")
 }
@@ -281,4 +282,24 @@ enum NotificationType {
   WARNING_ISSUED
   BLOCKED
   GENERAL
+}
+
+model BetaInvite {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  email       String?
+  role        UserRole?
+  usedBy      String?
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime?
+  notes       String?
+  
+  user        User?     @relation(fields: [usedBy], references: [id])
+}
+
+model AppSettings {
+  id              String   @id @default("settings")
+  betaModeEnabled Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
 }

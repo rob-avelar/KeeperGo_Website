@@ -1,14 +1,14 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { AlertCircle, User, Mail, Lock, ArrowRight } from 'lucide-react'
+import { AlertCircle, User, Mail, Lock, ArrowRight, Ticket, CheckCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useToast } from '@/hooks/use-toast'
 import { signIn } from 'next-auth/react'
@@ -19,15 +19,80 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [role, setRole] = useState<'ORGANIZER' | 'GOALKEEPER'>('ORGANIZER')
+  const [inviteCode, setInviteCode] = useState('')
+  const [inviteValid, setInviteValid] = useState<boolean | null>(null)
+  const [inviteError, setInviteError] = useState('')
+  const [betaModeEnabled, setBetaModeEnabled] = useState(false)
+  const [checkingBeta, setCheckingBeta] = useState(true)
+  const [validatingCode, setValidatingCode] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
   const { toast } = useToast()
 
+  // Check if beta mode is enabled
+  useEffect(() => {
+    const checkBetaMode = async () => {
+      try {
+        const res = await fetch('/api/beta/status')
+        const data = await res.json()
+        setBetaModeEnabled(data.betaModeEnabled)
+      } catch {
+        setBetaModeEnabled(false)
+      } finally {
+        setCheckingBeta(false)
+      }
+    }
+    checkBetaMode()
+  }, [])
+
+  // Validate invite code
+  const validateInviteCode = async (code: string) => {
+    if (!code || code.length < 5) {
+      setInviteValid(null)
+      setInviteError('')
+      return
+    }
+
+    setValidatingCode(true)
+    try {
+      const res = await fetch('/api/beta/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      })
+      const data = await res.json()
+      
+      setInviteValid(data.valid)
+      setInviteError(data.valid ? '' : data.error)
+      
+      // If invite has a specific role, set it
+      if (data.valid && data.role) {
+        setRole(data.role)
+      }
+      // If invite has a specific email, set it
+      if (data.valid && data.email) {
+        setEmail(data.email)
+      }
+    } catch {
+      setInviteValid(false)
+      setInviteError('Error validating code')
+    } finally {
+      setValidatingCode(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
+
+    // Check invite code in beta mode
+    if (betaModeEnabled && !inviteValid) {
+      setError('Valid invite code required')
+      setIsLoading(false)
+      return
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match')
@@ -52,6 +117,7 @@ export default function SignUpPage() {
           email,
           password,
           role,
+          inviteCode: betaModeEnabled ? inviteCode : undefined,
         }),
       })
 
@@ -94,19 +160,35 @@ export default function SignUpPage() {
     }
   }
 
+  if (checkingBeta) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-blue-800 mb-2">KeeperGo</h1>
           <p className="text-gray-600">Create your account</p>
+          {betaModeEnabled && (
+            <div className="mt-2 inline-flex items-center gap-1 text-sm text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
+              <Ticket className="w-4 h-4" />
+              Beta - Invite code required
+            </div>
+          )}
         </div>
 
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-2xl text-center">Join KeeperGo</CardTitle>
             <CardDescription className="text-center">
-              Choose your role and create your account
+              {betaModeEnabled 
+                ? 'Enter your invite code to create an account' 
+                : 'Choose your role and create your account'}
             </CardDescription>
           </CardHeader>
 
@@ -119,9 +201,49 @@ export default function SignUpPage() {
                 </div>
               )}
 
+              {/* Beta Invite Code */}
+              {betaModeEnabled && (
+                <div className="space-y-2">
+                  <Label htmlFor="inviteCode">Invite Code</Label>
+                  <div className="relative">
+                    <Ticket className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="inviteCode"
+                      type="text"
+                      placeholder="KEEPER-XXXXXXXX"
+                      value={inviteCode}
+                      onChange={(e) => {
+                        setInviteCode(e.target.value.toUpperCase())
+                        validateInviteCode(e.target.value)
+                      }}
+                      className={`pl-10 pr-10 uppercase ${
+                        inviteValid === true ? 'border-green-500 focus-visible:ring-green-500' : 
+                        inviteValid === false ? 'border-red-500 focus-visible:ring-red-500' : ''
+                      }`}
+                      required
+                    />
+                    {validatingCode && (
+                      <Loader2 className="absolute right-3 top-3 h-4 w-4 text-gray-400 animate-spin" />
+                    )}
+                    {!validatingCode && inviteValid === true && (
+                      <CheckCircle className="absolute right-3 top-3 h-4 w-4 text-green-500" />
+                    )}
+                    {!validatingCode && inviteValid === false && (
+                      <AlertCircle className="absolute right-3 top-3 h-4 w-4 text-red-500" />
+                    )}
+                  </div>
+                  {inviteError && (
+                    <p className="text-sm text-red-500">{inviteError}</p>
+                  )}
+                  {inviteValid && (
+                    <p className="text-sm text-green-600">Valid invite code!</p>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-3">
                 <Label>I want to...</Label>
-                <RadioGroup value={role} onValueChange={(value) => setRole(value as any)}>
+                <RadioGroup value={role} onValueChange={(value) => setRole(value as 'ORGANIZER' | 'GOALKEEPER')}>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="ORGANIZER" id="organizer" />
                     <Label htmlFor="organizer">Book goalkeepers for my matches</Label>

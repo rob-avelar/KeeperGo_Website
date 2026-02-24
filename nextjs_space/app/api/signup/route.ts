@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name, role } = await request.json()
+    const { email, password, name, role, inviteCode } = await request.json()
 
     if (!email || !password || !name || !role) {
       return NextResponse.json(
@@ -21,6 +21,56 @@ export async function POST(request: NextRequest) {
         { error: 'Invalid role' },
         { status: 400 }
       )
+    }
+
+    // Check if beta mode is enabled
+    const settings = await prisma.appSettings.findUnique({
+      where: { id: 'settings' }
+    })
+    const betaModeEnabled = settings?.betaModeEnabled ?? true
+
+    // Validate invite code if beta mode is enabled
+    let invite = null
+    if (betaModeEnabled) {
+      if (!inviteCode) {
+        return NextResponse.json(
+          { error: 'Invite code required during beta' },
+          { status: 400 }
+        )
+      }
+
+      invite = await prisma.betaInvite.findUnique({
+        where: { code: inviteCode.toUpperCase().trim() }
+      })
+
+      if (!invite) {
+        return NextResponse.json(
+          { error: 'Invalid invite code' },
+          { status: 400 }
+        )
+      }
+
+      if (invite.usedAt) {
+        return NextResponse.json(
+          { error: 'Invite code already used' },
+          { status: 400 }
+        )
+      }
+
+      if (invite.expiresAt && new Date(invite.expiresAt) < new Date()) {
+        return NextResponse.json(
+          { error: 'Invite code expired' },
+          { status: 400 }
+        )
+      }
+
+      // Check if invite is restricted to a specific email
+      if (invite.email && invite.email.toLowerCase() !== email.toLowerCase()) {
+        return NextResponse.json(
+          { error: 'This invite code is reserved for another email' },
+          { status: 400 }
+        )
+      }
     }
 
     const existingUser = await prisma.user.findUnique({
@@ -41,9 +91,20 @@ export async function POST(request: NextRequest) {
         email,
         password: hashedPassword,
         name,
-        role: role?.toString()?.toUpperCase() as any,
+        role: role?.toString()?.toUpperCase() as 'ORGANIZER' | 'GOALKEEPER',
       }
     })
+
+    // Mark invite as used
+    if (invite) {
+      await prisma.betaInvite.update({
+        where: { id: invite.id },
+        data: {
+          usedBy: user.id,
+          usedAt: new Date()
+        }
+      })
+    }
 
     // Create goalkeeper profile if user is a goalkeeper
     if (role?.toString()?.toUpperCase() === 'GOALKEEPER') {

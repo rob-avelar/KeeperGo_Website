@@ -277,43 +277,22 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Goal className="h-6 w-6 text-purple-400" />
-                <span className="font-bold text-xl">KeeperGo</span>
-              </div>
-              <p className="text-gray-400">
-                The premier goalkeeper rental platform for the Netherlands.
-              </p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-2">
+              <Goal className="h-6 w-6 text-purple-400" />
+              <span className="font-bold text-xl">KeeperGo</span>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4">Platform</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>How it works</li>
-                <li>Pricing</li>
-                <li>Safety</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>Help Center</li>
-                <li>Contact Us</li>
-                <li>Trust & Safety</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>About Us</li>
-                <li>Careers</li>
-                <li>Press</li>
-              </ul>
+            <div className="flex items-center gap-6 text-gray-400">
+              <Link href="/terms" className="hover:text-white transition-colors">
+                Termos de Serviço
+              </Link>
+              <Link href="/privacy" className="hover:text-white transition-colors">
+                Política de Privacidade
+              </Link>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 KeeperGo. All rights reserved.</p>
+            <p>&copy; 2026 KeeperGo. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
