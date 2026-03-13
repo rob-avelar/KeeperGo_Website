@@ -10,7 +10,7 @@ export default function PrivacyPage() {
           <Link href="/">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar
+              Back
             </Button>
           </Link>
           <h1 className="text-xl font-bold text-blue-800">KeeperGo</h1>
@@ -19,151 +19,151 @@ export default function PrivacyPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm border p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Política de Privacidade</h1>
-          <p className="text-sm text-gray-500 mb-8">Última atualização: Fevereiro 2026</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
+          <p className="text-sm text-gray-500 mb-8">Last updated: February 2026</p>
 
           <div className="prose prose-gray max-w-none space-y-6">
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Introdução</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Introduction</h2>
               <p className="text-gray-700 leading-relaxed">
-                A KeeperGo está comprometida em proteger a sua privacidade. Esta política descreve como 
-                recolhemos, utilizamos e protegemos os seus dados pessoais em conformidade com o 
-                Regulamento Geral sobre a Proteção de Dados (GDPR).
+                KeeperGo is committed to protecting your privacy. This policy describes how 
+                we collect, use and protect your personal data in accordance with the 
+                General Data Protection Regulation (GDPR).
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Responsável pelo Tratamento</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Data Controller</h2>
               <p className="text-gray-700 leading-relaxed">
-                A KeeperGo, com sede nos Países Baixos, é responsável pelo tratamento dos seus dados pessoais.
+                KeeperGo, based in the Netherlands, is responsible for the processing of your personal data.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">3. Dados Recolhidos</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">3. Data Collected</h2>
               <div className="text-gray-700 leading-relaxed">
-                <p className="mb-3">Recolhemos os seguintes dados:</p>
+                <p className="mb-3">We collect the following data:</p>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Dados de identificação:</strong> Nome, endereço de email, número de telefone</li>
-                  <li><strong>Dados de perfil:</strong> Foto, localização, experiência (para guarda-redes)</li>
-                  <li><strong>Dados de pagamento:</strong> Processados de forma segura através do Stripe</li>
-                  <li><strong>Dados de utilização:</strong> Histórico de reservas, avaliações, preferências</li>
-                  <li><strong>Dados técnicos:</strong> Endereço IP, tipo de navegador, dispositivo</li>
+                  <li><strong>Identification data:</strong> Name, email address, phone number</li>
+                  <li><strong>Profile data:</strong> Photo, location, experience (for goalkeepers)</li>
+                  <li><strong>Payment data:</strong> Processed securely through Stripe</li>
+                  <li><strong>Usage data:</strong> Booking history, ratings, preferences</li>
+                  <li><strong>Technical data:</strong> IP address, browser type, device</li>
                 </ul>
               </div>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">4. Finalidades do Tratamento</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">4. Purposes of Processing</h2>
               <div className="text-gray-700 leading-relaxed">
-                <p className="mb-3">Utilizamos os seus dados para:</p>
+                <p className="mb-3">We use your data to:</p>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li>Fornecer e gerir os serviços da plataforma</li>
-                  <li>Processar pagamentos e transferências</li>
-                  <li>Enviar notificações sobre reservas e partidas</li>
-                  <li>Melhorar a experiência do utilizador</li>
-                  <li>Cumprir obrigações legais</li>
-                  <li>Prevenir fraudes e garantir a segurança</li>
+                  <li>Provide and manage the platform services</li>
+                  <li>Process payments and transfers</li>
+                  <li>Send notifications about bookings and matches</li>
+                  <li>Improve the user experience</li>
+                  <li>Comply with legal obligations</li>
+                  <li>Prevent fraud and ensure security</li>
                 </ul>
               </div>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">5. Base Legal</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">5. Legal Basis</h2>
               <div className="text-gray-700 leading-relaxed">
-                <p className="mb-3">O tratamento dos dados é baseado em:</p>
+                <p className="mb-3">Data processing is based on:</p>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Execução de contrato:</strong> Necessário para fornecer os serviços</li>
-                  <li><strong>Consentimento:</strong> Para comunicações de marketing</li>
-                  <li><strong>Interesse legítimo:</strong> Melhoria dos serviços e prevenção de fraude</li>
-                  <li><strong>Obrigação legal:</strong> Cumprimento de requisitos fiscais e regulatórios</li>
+                  <li><strong>Contract performance:</strong> Necessary to provide the services</li>
+                  <li><strong>Consent:</strong> For marketing communications</li>
+                  <li><strong>Legitimate interest:</strong> Service improvement and fraud prevention</li>
+                  <li><strong>Legal obligation:</strong> Compliance with tax and regulatory requirements</li>
                 </ul>
               </div>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">6. Partilha de Dados</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">6. Data Sharing</h2>
               <div className="text-gray-700 leading-relaxed">
-                <p className="mb-3">Podemos partilhar dados com:</p>
+                <p className="mb-3">We may share data with:</p>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Outros utilizadores:</strong> Nome e avaliações são visíveis na plataforma</li>
-                  <li><strong>Processadores de pagamento:</strong> Stripe para processar transações</li>
-                  <li><strong>Prestadores de serviços:</strong> Alojamento, análise, comunicações</li>
-                  <li><strong>Autoridades:</strong> Quando exigido por lei</li>
+                  <li><strong>Other users:</strong> Name and ratings are visible on the platform</li>
+                  <li><strong>Payment processors:</strong> Stripe to process transactions</li>
+                  <li><strong>Service providers:</strong> Hosting, analytics, communications</li>
+                  <li><strong>Authorities:</strong> When required by law</li>
                 </ul>
               </div>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">7. Transferências Internacionais</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">7. International Transfers</h2>
               <p className="text-gray-700 leading-relaxed">
-                Alguns dos nossos prestadores de serviços podem estar localizados fora do Espaço Económico 
-                Europeu (EEE). Nestas situações, garantimos que existem salvaguardas adequadas, como 
-                cláusulas contratuais padrão aprovadas pela Comissão Europeia.
+                Some of our service providers may be located outside the European Economic 
+                Area (EEA). In such cases, we ensure that adequate safeguards are in place, such 
+                as standard contractual clauses approved by the European Commission.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">8. Retenção de Dados</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">8. Data Retention</h2>
               <p className="text-gray-700 leading-relaxed">
-                Mantemos os seus dados enquanto a sua conta estiver ativa ou conforme necessário para 
-                lhe fornecer serviços. Dados de transações são mantidos por 7 anos para fins fiscais. 
-                Pode solicitar a eliminação da sua conta a qualquer momento.
+                We retain your data for as long as your account is active or as necessary to 
+                provide you with services. Transaction data is kept for 7 years for tax purposes. 
+                You may request the deletion of your account at any time.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Os Seus Direitos (GDPR)</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Your Rights (GDPR)</h2>
               <div className="text-gray-700 leading-relaxed">
-                <p className="mb-3">Tem os seguintes direitos:</p>
+                <p className="mb-3">You have the following rights:</p>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Acesso:</strong> Obter cópia dos seus dados pessoais</li>
-                  <li><strong>Retificação:</strong> Corrigir dados inexatos ou incompletos</li>
-                  <li><strong>Eliminação:</strong> Solicitar a eliminação dos seus dados</li>
-                  <li><strong>Portabilidade:</strong> Receber os seus dados em formato estruturado</li>
-                  <li><strong>Oposição:</strong> Opor-se ao tratamento em certas circunstâncias</li>
-                  <li><strong>Limitação:</strong> Limitar o tratamento dos seus dados</li>
-                  <li><strong>Retirar consentimento:</strong> A qualquer momento, sem afetar a licitude do tratamento anterior</li>
+                  <li><strong>Access:</strong> Obtain a copy of your personal data</li>
+                  <li><strong>Rectification:</strong> Correct inaccurate or incomplete data</li>
+                  <li><strong>Erasure:</strong> Request the deletion of your data</li>
+                  <li><strong>Portability:</strong> Receive your data in a structured format</li>
+                  <li><strong>Objection:</strong> Object to processing in certain circumstances</li>
+                  <li><strong>Restriction:</strong> Restrict the processing of your data</li>
+                  <li><strong>Withdraw consent:</strong> At any time, without affecting the lawfulness of prior processing</li>
                 </ul>
               </div>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">10. Segurança</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">10. Security</h2>
               <p className="text-gray-700 leading-relaxed">
-                Implementamos medidas técnicas e organizacionais apropriadas para proteger os seus dados, 
-                incluindo encriptação, controlos de acesso e monitorização contínua. Os pagamentos são 
-                processados de forma segura através do Stripe, certificado PCI DSS.
+                We implement appropriate technical and organisational measures to protect your data, 
+                including encryption, access controls and continuous monitoring. Payments are 
+                processed securely through Stripe, which is PCI DSS certified.
               </p>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-gray-900 mb-3">11. Cookies</h2>
               <p className="text-gray-700 leading-relaxed">
-                Utilizamos cookies essenciais para o funcionamento da plataforma e cookies de análise 
-                para melhorar os nossos serviços. Pode gerir as suas preferências de cookies nas 
-                definições do navegador.
+                We use essential cookies for the operation of the platform and analytics cookies 
+                to improve our services. You can manage your cookie preferences in your 
+                browser settings.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">12. Alterações a esta Política</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">12. Changes to this Policy</h2>
               <p className="text-gray-700 leading-relaxed">
-                Podemos atualizar esta política periodicamente. Notificaremos sobre alterações 
-                significativas através da plataforma ou por email.
+                We may update this policy periodically. We will notify you of significant changes 
+                through the platform or by email.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">13. Contacto e Reclamações</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">13. Contact and Complaints</h2>
               <div className="text-gray-700 leading-relaxed">
                 <p className="mb-3">
-                  Para exercer os seus direitos ou questões sobre privacidade, contacte-nos:
+                  To exercise your rights or for privacy-related questions, contact us:
                 </p>
                 <p className="mb-3">Email: privacy@keepergo.nl</p>
                 <p>
-                  Se não estiver satisfeito com a nossa resposta, pode apresentar uma reclamação à 
-                  Autoridade Holandesa de Proteção de Dados (Autoriteit Persoonsgegevens).
+                  If you are not satisfied with our response, you may file a complaint with the 
+                  Dutch Data Protection Authority (Autoriteit Persoonsgegevens).
                 </p>
               </div>
             </section>
@@ -172,7 +172,7 @@ export default function PrivacyPage() {
       </main>
 
       <footer className="max-w-4xl mx-auto px-4 py-8 text-center text-sm text-gray-500">
-        <p>© 2026 KeeperGo. Todos os direitos reservados.</p>
+        <p>© 2026 KeeperGo. All rights reserved.</p>
       </footer>
     </div>
   )
