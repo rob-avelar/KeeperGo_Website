@@ -289,6 +289,9 @@ export default function HomePage() {
               <Link href="/privacy" className="hover:text-white transition-colors">
                 Privacy Policy
               </Link>
+              <a href="mailto:contact@keepergo.nl" className="hover:text-white transition-colors">
+                Contact Us
+              </a>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
