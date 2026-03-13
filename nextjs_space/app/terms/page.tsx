@@ -10,7 +10,7 @@ export default function TermsPage() {
           <Link href="/">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar
+              Back
             </Button>
           </Link>
           <h1 className="text-xl font-bold text-blue-800">KeeperGo</h1>
@@ -19,118 +19,118 @@ export default function TermsPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm border p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Termos de Serviço</h1>
-          <p className="text-sm text-gray-500 mb-8">Última atualização: Fevereiro 2026</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Terms of Service</h1>
+          <p className="text-sm text-gray-500 mb-8">Last updated: February 2026</p>
 
           <div className="prose prose-gray max-w-none space-y-6">
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Aceitação dos Termos</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Acceptance of Terms</h2>
               <p className="text-gray-700 leading-relaxed">
-                Ao aceder e utilizar a plataforma KeeperGo, você concorda em cumprir e estar vinculado a estes 
-                Termos de Serviço. Se não concordar com qualquer parte destes termos, não deve utilizar 
-                os nossos serviços.
+                By accessing and using the KeeperGo platform, you agree to comply with and be bound by these 
+                Terms of Service. If you do not agree with any part of these terms, you should not use 
+                our services.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Descrição do Serviço</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Service Description</h2>
               <p className="text-gray-700 leading-relaxed">
-                A KeeperGo é uma plataforma que conecta organizadores de partidas de futebol com guarda-redes 
-                disponíveis para aluguer. Facilitamos a reserva, pagamento e gestão de serviços de guarda-redes 
-                para partidas amadoras e recreativas na Holanda.
+                KeeperGo is a platform that connects football match organisers with goalkeepers 
+                available for hire. We facilitate the booking, payment and management of goalkeeper services 
+                for amateur and recreational matches in the Netherlands.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">3. Tipos de Utilizadores</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">3. User Types</h2>
               <div className="text-gray-700 leading-relaxed">
-                <p className="mb-2"><strong>Organizadores:</strong> Utilizadores que criam partidas e contratam guarda-redes.</p>
-                <p><strong>Guarda-redes:</strong> Utilizadores que oferecem os seus serviços como guarda-redes.</p>
+                <p className="mb-2"><strong>Organisers:</strong> Users who create matches and hire goalkeepers.</p>
+                <p><strong>Goalkeepers:</strong> Users who offer their services as goalkeepers.</p>
               </div>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">4. Registo e Conta</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">4. Registration and Account</h2>
               <p className="text-gray-700 leading-relaxed">
-                Para utilizar a plataforma, deve criar uma conta fornecendo informações precisas e completas. 
-                É responsável por manter a confidencialidade da sua conta e senha. Deve ter pelo menos 
-                18 anos para se registar.
+                To use the platform, you must create an account by providing accurate and complete information. 
+                You are responsible for maintaining the confidentiality of your account and password. You must be at least 
+                18 years old to register.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">5. Pagamentos e Comissões</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">5. Payments and Commissions</h2>
               <div className="text-gray-700 leading-relaxed">
-                <p className="mb-2">O preço mínimo por hora é de €20.</p>
-                <p className="mb-2">A plataforma retém uma comissão de 25% sobre cada transação.</p>
-                <p className="mb-2">Os guarda-redes recebem 75% do valor total.</p>
-                <p>Reservas diretas incluem um acréscimo de 25% ao preço base.</p>
+                <p className="mb-2">The minimum hourly rate is €20.</p>
+                <p className="mb-2">The platform retains a 25% commission on each transaction.</p>
+                <p className="mb-2">Goalkeepers receive 75% of the total amount.</p>
+                <p>Direct bookings include a 25% surcharge on the base price.</p>
               </div>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">6. Política de Cancelamento</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">6. Cancellation Policy</h2>
               <div className="text-gray-700 leading-relaxed">
-                <p className="mb-2"><strong>Organizadores:</strong> Cancelamento gratuito até 6 horas antes da partida. Após este período, podem aplicar-se penalizações.</p>
-                <p><strong>Guarda-redes:</strong> Cancelamentos frequentes podem resultar em avisos e eventual bloqueio da conta.</p>
+                <p className="mb-2"><strong>Organisers:</strong> Free cancellation up to 6 hours before the match. After this period, penalties may apply.</p>
+                <p><strong>Goalkeepers:</strong> Frequent cancellations may result in warnings and eventual account suspension.</p>
               </div>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">7. Não Comparecimento (No-Show)</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">7. No-Show</h2>
               <p className="text-gray-700 leading-relaxed">
-                Se um guarda-redes não comparecer a uma partida confirmada, o organizador pode reportar 
-                no prazo de 48 horas para reembolso total. O guarda-redes será bloqueado da plataforma.
+                If a goalkeeper fails to attend a confirmed match, the organiser may report it 
+                within 48 hours for a full refund. The goalkeeper will be blocked from the platform.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">8. Avaliações</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">8. Ratings</h2>
               <p className="text-gray-700 leading-relaxed">
-                Os organizadores devem avaliar os guarda-redes após cada partida. As avaliações devem ser 
-                honestas e baseadas na experiência real. Avaliações falsas ou manipuladas podem resultar 
-                em suspensão da conta.
+                Organisers must rate goalkeepers after each match. Ratings should be 
+                honest and based on the actual experience. False or manipulated ratings may result 
+                in account suspension.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Responsabilidades</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Responsibilities</h2>
               <p className="text-gray-700 leading-relaxed">
-                A KeeperGo atua apenas como intermediária. Não somos responsáveis por lesões, acidentes 
-                ou disputas que ocorram durante as partidas. Recomendamos que todos os participantes 
-                tenham seguro adequado.
+                KeeperGo acts solely as an intermediary. We are not responsible for injuries, accidents 
+                or disputes that occur during matches. We recommend that all participants 
+                have adequate insurance.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">10. Propriedade Intelectual</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">10. Intellectual Property</h2>
               <p className="text-gray-700 leading-relaxed">
-                Todo o conteúdo da plataforma, incluindo logotipos, design e software, é propriedade 
-                da KeeperGo e está protegido por leis de propriedade intelectual.
+                All content on the platform, including logos, design and software, is the property 
+                of KeeperGo and is protected by intellectual property laws.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">11. Modificações dos Termos</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">11. Modifications to Terms</h2>
               <p className="text-gray-700 leading-relaxed">
-                Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações 
-                entram em vigor após publicação na plataforma. O uso continuado após modificações 
-                constitui aceitação dos novos termos.
+                We reserve the right to modify these terms at any time. Changes 
+                take effect upon publication on the platform. Continued use after modifications 
+                constitutes acceptance of the new terms.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">12. Lei Aplicável</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">12. Applicable Law</h2>
               <p className="text-gray-700 leading-relaxed">
-                Estes termos são regidos pelas leis dos Países Baixos. Qualquer disputa será resolvida 
-                nos tribunais competentes de Amesterdão.
+                These terms are governed by the laws of the Netherlands. Any dispute shall be resolved 
+                in the competent courts of Amsterdam.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">13. Contacto</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">13. Contact</h2>
               <p className="text-gray-700 leading-relaxed">
-                Para questões sobre estes termos, contacte-nos através de: <br />
+                For questions about these terms, contact us at: <br />
                 Email: info@keepergo.nl
               </p>
             </section>
@@ -139,7 +139,7 @@ export default function TermsPage() {
       </main>
 
       <footer className="max-w-4xl mx-auto px-4 py-8 text-center text-sm text-gray-500">
-        <p>© 2026 KeeperGo. Todos os direitos reservados.</p>
+        <p>© 2026 KeeperGo. All rights reserved.</p>
       </footer>
     </div>
   )
