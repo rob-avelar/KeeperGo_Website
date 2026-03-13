@@ -284,15 +284,15 @@ export default function HomePage() {
             </div>
             <div className="flex items-center gap-6 text-gray-400">
               <Link href="/terms" className="hover:text-white transition-colors">
-                Termos de Serviço
+                Terms of Service
               </Link>
               <Link href="/privacy" className="hover:text-white transition-colors">
-                Política de Privacidade
+                Privacy Policy
               </Link>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2026 KeeperGo. Todos os direitos reservados.</p>
+            <p>&copy; 2026 KeeperGo. All rights reserved.</p>
           </div>
         </div>
       </footer>
