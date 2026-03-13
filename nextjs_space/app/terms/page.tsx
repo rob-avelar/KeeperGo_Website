@@ -131,7 +131,7 @@ export default function TermsPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-3">13. Contact</h2>
               <p className="text-gray-700 leading-relaxed">
                 For questions about these terms, contact us at: <br />
-                Email: info@keepergo.nl
+                Email: contact@keepergo.nl
               </p>
             </section>
           </div>
