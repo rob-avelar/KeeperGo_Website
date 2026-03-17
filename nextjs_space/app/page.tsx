@@ -57,23 +57,8 @@ export default function HomePage() {
           
           <p className="text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
             Connect with skilled goalkeepers in your area. Book instantly, play with confidence. 
-            Professional goalkeepers ready for your amateur football matches across the Netherlands.
+            Goalkeepers ready for your amateur football matches across the Netherlands.
           </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/auth/organizer/signup">
-              <Button size="lg" className="bg-lime-400 text-gray-950 hover:bg-lime-300 font-bold px-8 py-3">
-                <Users className="w-5 h-5 mr-2" />
-                I Need a Goalkeeper
-              </Button>
-            </Link>
-            <Link href="/auth/goalkeeper/signup">
-              <Button size="lg" variant="outline" className="border-2 border-gray-600 text-gray-200 hover:bg-gray-800 hover:border-lime-400/50 px-8 py-3">
-                <Goal className="w-5 h-5 mr-2" />
-                I Am a Goalkeeper
-              </Button>
-            </Link>
-          </div>
         </div>
 
         {/* Hero Image with "Find My Keeper" overlay button */}
@@ -86,7 +71,7 @@ export default function HomePage() {
               className="object-cover"
               priority
             />
-            {/* "Find My Keeper" button overlay - positioned bottom-left to match the image text */}
+            {/* "Find My Keeper" button overlay - positioned bottom-left */}
             <Link
               href="/auth/organizer/signin"
               className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10"
@@ -97,6 +82,20 @@ export default function HomePage() {
               >
                 Find My Keeper
                 <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+            {/* "I Am a Goalkeeper" button overlay - positioned bottom-right */}
+            <Link
+              href="/auth/goalkeeper/signin"
+              className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10"
+            >
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-white text-white hover:bg-white/20 hover:border-lime-400 font-extrabold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg uppercase tracking-wide backdrop-blur-sm bg-black/30"
+              >
+                <Goal className="w-5 h-5 mr-2" />
+                I Am a Goalkeeper
               </Button>
             </Link>
           </div>
@@ -280,7 +279,7 @@ export default function HomePage() {
               </Button>
             </Link>
             <Link href="/auth/goalkeeper/signup">
-              <Button size="lg" variant="outline" className="border-2 border-gray-600 text-gray-200 hover:bg-gray-800 hover:border-lime-400/50 px-8 py-3">
+              <Button size="lg" className="bg-gray-800 text-white border-2 border-gray-600 hover:bg-gray-700 hover:border-lime-400/50 px-8 py-3">
                 <Goal className="w-5 h-5 mr-2" />
                 Sign Up as Goalkeeper
               </Button>
