@@ -91,7 +91,7 @@ export default function NotificationPreferences() {
       <Card>
         <CardContent className="py-12">
           <div className="flex justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            <Loader2 className="h-8 w-8 animate-spin text-lime-400" />
           </div>
         </CardContent>
       </Card>
@@ -102,7 +102,7 @@ export default function NotificationPreferences() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Bell className="h-5 w-5 text-blue-600" />
+          <Bell className="h-5 w-5 text-lime-400" />
           Notification Preferences
         </CardTitle>
         <CardDescription>
@@ -111,14 +111,14 @@ export default function NotificationPreferences() {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Master toggle */}
-        <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <div className="flex items-center justify-between p-4 bg-lime-400/5 rounded-lg border border-gray-700">
           <div className="flex items-center gap-3">
-            <Mail className="h-5 w-5 text-blue-600" />
+            <Mail className="h-5 w-5 text-lime-400" />
             <div>
               <Label htmlFor="emailNotifications" className="text-base font-semibold cursor-pointer">
                 Email Notifications
               </Label>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-400">
                 Enable or disable all email notifications
               </p>
             </div>
@@ -137,7 +137,7 @@ export default function NotificationPreferences() {
               <Label htmlFor="notifyBookingAccepted" className="cursor-pointer">
                 Booking Accepted
               </Label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-400">
                 When a goalkeeper accepts your match
               </p>
             </div>
@@ -154,7 +154,7 @@ export default function NotificationPreferences() {
               <Label htmlFor="notifyBookingCancelled" className="cursor-pointer">
                 Booking Cancelled
               </Label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-400">
                 When a match is cancelled by either party
               </p>
             </div>
@@ -171,7 +171,7 @@ export default function NotificationPreferences() {
               <Label htmlFor="notifyMatchReminder24h" className="cursor-pointer">
                 24-Hour Reminder
               </Label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-400">
                 Reminder 24 hours before the match
               </p>
             </div>
@@ -188,7 +188,7 @@ export default function NotificationPreferences() {
               <Label htmlFor="notifyMatchReminder2h" className="cursor-pointer">
                 2-Hour Reminder
               </Label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-400">
                 Reminder 2 hours before the match
               </p>
             </div>
@@ -205,7 +205,7 @@ export default function NotificationPreferences() {
               <Label htmlFor="notifyPaymentReceived" className="cursor-pointer">
                 Payment Received
               </Label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-400">
                 When you receive a payment (goalkeeper only)
               </p>
             </div>
@@ -222,7 +222,7 @@ export default function NotificationPreferences() {
           <Button 
             onClick={savePreferences}
             disabled={saving}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-lime-400 hover:bg-lime-300 text-gray-950"
           >
             {saving ? (
               <>

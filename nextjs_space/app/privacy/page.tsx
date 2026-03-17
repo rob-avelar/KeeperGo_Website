@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-gray-900 shadow-sm shadow-black/10 border-b">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
           <Link href="/">
             <Button variant="ghost" size="sm">
@@ -13,19 +13,19 @@ export default function PrivacyPage() {
               Back
             </Button>
           </Link>
-          <h1 className="text-xl font-bold text-blue-800">KeeperGo</h1>
+          <h1 className="text-xl font-bold text-white">KeeperGo</h1>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-sm border p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
-          <p className="text-sm text-gray-500 mb-8">Last updated: February 2026</p>
+        <div className="bg-gray-900 rounded-lg shadow-sm border p-8">
+          <h1 className="text-3xl font-bold text-gray-100 mb-2">Privacy Policy</h1>
+          <p className="text-sm text-gray-400 mb-8">Last updated: February 2026</p>
 
           <div className="prose prose-gray max-w-none space-y-6">
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Introduction</h2>
-              <p className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">1. Introduction</h2>
+              <p className="text-gray-300 leading-relaxed">
                 KeeperGo is committed to protecting your privacy. This policy describes how 
                 we collect, use and protect your personal data in accordance with the 
                 General Data Protection Regulation (GDPR).
@@ -33,15 +33,15 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Data Controller</h2>
-              <p className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">2. Data Controller</h2>
+              <p className="text-gray-300 leading-relaxed">
                 KeeperGo, based in the Netherlands, is responsible for the processing of your personal data.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">3. Data Collected</h2>
-              <div className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">3. Data Collected</h2>
+              <div className="text-gray-300 leading-relaxed">
                 <p className="mb-3">We collect the following data:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Identification data:</strong> Name, email address, phone number</li>
@@ -54,8 +54,8 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">4. Purposes of Processing</h2>
-              <div className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">4. Purposes of Processing</h2>
+              <div className="text-gray-300 leading-relaxed">
                 <p className="mb-3">We use your data to:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Provide and manage the platform services</li>
@@ -69,8 +69,8 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">5. Legal Basis</h2>
-              <div className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">5. Legal Basis</h2>
+              <div className="text-gray-300 leading-relaxed">
                 <p className="mb-3">Data processing is based on:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Contract performance:</strong> Necessary to provide the services</li>
@@ -82,8 +82,8 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">6. Data Sharing</h2>
-              <div className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">6. Data Sharing</h2>
+              <div className="text-gray-300 leading-relaxed">
                 <p className="mb-3">We may share data with:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Other users:</strong> Name and ratings are visible on the platform</li>
@@ -95,8 +95,8 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">7. International Transfers</h2>
-              <p className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">7. International Transfers</h2>
+              <p className="text-gray-300 leading-relaxed">
                 Some of our service providers may be located outside the European Economic 
                 Area (EEA). In such cases, we ensure that adequate safeguards are in place, such 
                 as standard contractual clauses approved by the European Commission.
@@ -104,8 +104,8 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">8. Data Retention</h2>
-              <p className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">8. Data Retention</h2>
+              <p className="text-gray-300 leading-relaxed">
                 We retain your data for as long as your account is active or as necessary to 
                 provide you with services. Transaction data is kept for 7 years for tax purposes. 
                 You may request the deletion of your account at any time.
@@ -113,8 +113,8 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Your Rights (GDPR)</h2>
-              <div className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">9. Your Rights (GDPR)</h2>
+              <div className="text-gray-300 leading-relaxed">
                 <p className="mb-3">You have the following rights:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Access:</strong> Obtain a copy of your personal data</li>
@@ -129,8 +129,8 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">10. Security</h2>
-              <p className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">10. Security</h2>
+              <p className="text-gray-300 leading-relaxed">
                 We implement appropriate technical and organisational measures to protect your data, 
                 including encryption, access controls and continuous monitoring. Payments are 
                 processed securely through Stripe, which is PCI DSS certified.
@@ -138,8 +138,8 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">11. Cookies</h2>
-              <p className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">11. Cookies</h2>
+              <p className="text-gray-300 leading-relaxed">
                 We use essential cookies for the operation of the platform and analytics cookies 
                 to improve our services. You can manage your cookie preferences in your 
                 browser settings.
@@ -147,16 +147,16 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">12. Changes to this Policy</h2>
-              <p className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">12. Changes to this Policy</h2>
+              <p className="text-gray-300 leading-relaxed">
                 We may update this policy periodically. We will notify you of significant changes 
                 through the platform or by email.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">13. Contact and Complaints</h2>
-              <div className="text-gray-700 leading-relaxed">
+              <h2 className="text-xl font-semibold text-gray-100 mb-3">13. Contact and Complaints</h2>
+              <div className="text-gray-300 leading-relaxed">
                 <p className="mb-3">
                   To exercise your rights or for privacy-related questions, contact us:
                 </p>
@@ -171,7 +171,7 @@ export default function PrivacyPage() {
         </div>
       </main>
 
-      <footer className="max-w-4xl mx-auto px-4 py-8 text-center text-sm text-gray-500">
+      <footer className="max-w-4xl mx-auto px-4 py-8 text-center text-sm text-gray-400">
         <p>© 2026 KeeperGo. All rights reserved.</p>
       </footer>
     </div>

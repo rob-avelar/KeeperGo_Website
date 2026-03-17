@@ -291,9 +291,9 @@ export default function BetaManagementPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-slate-400">Disponíveis</p>
-                  <p className="text-2xl font-bold text-blue-500">{stats.available}</p>
+                  <p className="text-2xl font-bold text-lime-400">{stats.available}</p>
                 </div>
-                <Clock className="w-8 h-8 text-blue-500" />
+                <Clock className="w-8 h-8 text-lime-400" />
               </div>
             </CardContent>
           </Card>
@@ -436,7 +436,7 @@ export default function BetaManagementPage() {
 
                     <div className="flex items-center gap-4">
                       {invite.role && (
-                        <Badge variant="outline" className={invite.role === 'ORGANIZER' ? 'border-blue-500 text-blue-500' : 'border-purple-500 text-purple-500'}>
+                        <Badge variant="outline" className={invite.role === 'ORGANIZER' ? 'border-lime-400 text-lime-400' : 'border-lime-400 text-lime-400'}>
                           {invite.role === 'ORGANIZER' ? 'Organizador' : 'Guarda-redes'}
                         </Badge>
                       )}
@@ -450,7 +450,7 @@ export default function BetaManagementPage() {
                           </span>
                         </div>
                       ) : (
-                        <Badge className="bg-blue-500/20 text-blue-400 border-blue-500">
+                        <Badge className="bg-lime-400/20 text-blue-400 border-lime-400">
                           Disponível
                         </Badge>
                       )}
@@ -466,7 +466,7 @@ export default function BetaManagementPage() {
                           variant="ghost"
                           size="icon"
                           onClick={() => deleteInvite(invite.id)}
-                          className="text-red-400 hover:text-red-300 hover:bg-red-500/20"
+                          className="text-red-400 hover:text-red-300 hover:bg-red-900/200/20"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

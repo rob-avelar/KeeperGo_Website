@@ -18,14 +18,14 @@ export default async function AnalyticsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+    <div className="min-h-screen bg-transparent">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-gray-900 shadow-sm shadow-black/10 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/organizer/dashboard" className="flex items-center gap-2">
-              <Goal className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-blue-800">KeeperGo</h1>
+              <Goal className="h-8 w-8 text-lime-400" />
+              <h1 className="text-2xl font-bold text-white">KeeperGo</h1>
             </Link>
             <Link href="/organizer/dashboard">
               <Button variant="outline" size="sm">

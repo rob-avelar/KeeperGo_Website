@@ -100,7 +100,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
       {/* Header */}
-      <header className="bg-slate-800 shadow-lg border-b border-slate-700">
+      <header className="bg-slate-800 shadow-lg shadow-black/20 border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
@@ -203,7 +203,7 @@ export default function AdminDashboard() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-bold text-white">{stats?.users.organizers || 0}</span>
-                <UserCheck className="h-8 w-8 text-blue-500" />
+                <UserCheck className="h-8 w-8 text-lime-400" />
               </div>
             </CardContent>
           </Card>
@@ -217,7 +217,7 @@ export default function AdminDashboard() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-bold text-white">{stats?.users.goalkeepers || 0}</span>
-                <Goal className="h-8 w-8 text-purple-500" />
+                <Goal className="h-8 w-8 text-lime-400" />
               </div>
             </CardContent>
           </Card>
@@ -259,9 +259,9 @@ export default function AdminDashboard() {
                   <p className="text-yellow-500 text-sm">Pending</p>
                   <p className="text-2xl font-bold text-yellow-500">{stats?.bookings.pending || 0}</p>
                 </div>
-                <div className="bg-blue-500/10 rounded-lg p-4">
-                  <p className="text-blue-500 text-sm">Confirmed</p>
-                  <p className="text-2xl font-bold text-blue-500">{stats?.bookings.confirmed || 0}</p>
+                <div className="bg-lime-400/50/10 rounded-lg p-4">
+                  <p className="text-lime-400 text-sm">Confirmed</p>
+                  <p className="text-2xl font-bold text-lime-400">{stats?.bookings.confirmed || 0}</p>
                 </div>
                 <div className="bg-emerald-500/10 rounded-lg p-4">
                   <p className="text-emerald-500 text-sm">Completed</p>

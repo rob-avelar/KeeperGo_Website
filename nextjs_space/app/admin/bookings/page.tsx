@@ -79,13 +79,13 @@ export default function AdminBookingsPage() {
       case 'PENDING':
         return 'bg-yellow-500/20 text-yellow-400'
       case 'ACCEPTED':
-        return 'bg-blue-500/20 text-blue-400'
+        return 'bg-lime-400/20 text-blue-400'
       case 'CONFIRMED':
         return 'bg-emerald-500/20 text-emerald-400'
       case 'COMPLETED':
         return 'bg-green-500/20 text-green-400'
       case 'CANCELLED':
-        return 'bg-red-500/20 text-red-400'
+        return 'bg-red-900/200/20 text-red-400'
       default:
         return 'bg-slate-500/20 text-slate-400'
     }
@@ -94,7 +94,7 @@ export default function AdminBookingsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
       {/* Header */}
-      <header className="bg-slate-800 shadow-lg border-b border-slate-700">
+      <header className="bg-slate-800 shadow-lg shadow-black/20 border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
@@ -195,7 +195,7 @@ export default function AdminBookingsPage() {
                           </div>
                           <div>
                             <span className="text-slate-500">Goalkeeper: </span>
-                            <span className="text-purple-400">
+                            <span className="text-lime-300">
                               {booking.goalkeeper
                                 ? booking.goalkeeper.name || booking.goalkeeper.email
                                 : 'Not assigned'}

@@ -173,14 +173,14 @@ export default function SearchGoalkeepersClient() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+    <div className="min-h-screen bg-transparent">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-gray-900 shadow-sm shadow-black/10 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/organizer/dashboard" className="flex items-center gap-2">
-              <Goal className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-blue-800">KeeperGo</h1>
+              <Goal className="h-8 w-8 text-lime-400" />
+              <h1 className="text-2xl font-bold text-white">KeeperGo</h1>
             </Link>
             <Link href="/organizer/dashboard">
               <Button variant="outline" size="sm">
@@ -193,10 +193,10 @@ export default function SearchGoalkeepersClient() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-gray-100 mb-2">
             Find Goalkeepers
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-400">
             Search and filter to find the perfect goalkeeper for your match
           </p>
         </div>
@@ -279,7 +279,7 @@ export default function SearchGoalkeepersClient() {
                 <div className="space-y-2">
                   <Label>Maximum Distance</Label>
                   <div className="flex items-center gap-2 mb-2">
-                    <MapPin className="h-4 w-4 text-blue-600" />
+                    <MapPin className="h-4 w-4 text-lime-400" />
                     <span className="font-semibold">{filters.maxDistance} km</span>
                   </div>
                   <Slider
@@ -307,14 +307,14 @@ export default function SearchGoalkeepersClient() {
           <div className="lg:col-span-3">
             {loading ? (
               <div className="flex justify-center items-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                <Loader2 className="h-8 w-8 animate-spin text-lime-400" />
               </div>
             ) : goalkeepers.length === 0 ? (
               <Card>
                 <CardContent className="py-12 text-center">
                   <Search className="h-12 w-12 mx-auto mb-4 text-gray-400" />
                   <h3 className="text-lg font-semibold mb-2">No goalkeepers found</h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-gray-400 mb-4">
                     Try adjusting your filters to see more results
                   </p>
                   <Button onClick={resetFilters}>
@@ -324,7 +324,7 @@ export default function SearchGoalkeepersClient() {
               </Card>
             ) : (
               <>
-                <div className="mb-4 text-sm text-gray-600">
+                <div className="mb-4 text-sm text-gray-400">
                   Found {goalkeepers.length} goalkeeper{goalkeepers.length !== 1 ? 's' : ''}
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
@@ -333,7 +333,7 @@ export default function SearchGoalkeepersClient() {
                     const isFavorite = favorites.has(gk.user.id)
                     
                     return (
-                      <Card key={gk.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                      <Card key={gk.id} className="overflow-hidden hover:shadow-lg shadow-black/20 transition-shadow">
                         <CardContent className="p-6">
                           <div className="flex items-start gap-4 mb-4">
                             <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
@@ -345,7 +345,7 @@ export default function SearchGoalkeepersClient() {
                                   className="object-cover"
                                 />
                               ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-semibold text-2xl">
+                                <div className="w-full h-full flex items-center justify-center bg-lime-400/10 text-lime-400 font-semibold text-2xl">
                                   {displayName[0]?.toUpperCase()}
                                 </div>
                               )}
@@ -364,7 +364,7 @@ export default function SearchGoalkeepersClient() {
                                     <Loader2 className="h-4 w-4 animate-spin" />
                                   ) : (
                                     <Heart 
-                                      className={`h-4 w-4 ${isFavorite ? 'fill-blue-600 text-blue-600' : 'text-gray-400'}`} 
+                                      className={`h-4 w-4 ${isFavorite ? 'fill-lime-400 text-lime-400' : 'text-gray-400'}`} 
                                     />
                                   )}
                                 </Button>
@@ -399,13 +399,13 @@ export default function SearchGoalkeepersClient() {
                           )}
 
                           {gk.bio && (
-                            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                            <p className="text-sm text-gray-400 mb-4 line-clamp-2">
                               {gk.bio}
                             </p>
                           )}
 
                           <Button
-                            className="w-full bg-blue-600 hover:bg-blue-700"
+                            className="w-full bg-lime-400 hover:bg-lime-300 text-gray-950"
                             onClick={() => inviteGoalkeeper(gk.user.id)}
                           >
                             <Mail className="h-4 w-4 mr-2" />

@@ -157,14 +157,14 @@ export default function BookGoalkeeperForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+    <div className="min-h-screen bg-transparent">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-gray-900 shadow-sm shadow-black/10 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/organizer/dashboard" className="flex items-center gap-2">
-              <Goal className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-blue-800">KeeperGo</h1>
+              <Goal className="h-8 w-8 text-lime-400" />
+              <h1 className="text-2xl font-bold text-white">KeeperGo</h1>
             </Link>
             <Link href="/organizer/dashboard">
               <Button variant="outline" size="sm">
@@ -177,13 +177,13 @@ export default function BookGoalkeeperForm() {
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Book a Goalkeeper</h2>
-          <p className="text-gray-600">
+          <h2 className="text-3xl font-bold text-gray-100 mb-2">Book a Goalkeeper</h2>
+          <p className="text-gray-400">
             Choose between posting an open announcement or booking a specific goalkeeper directly.
           </p>
         </div>
 
-        <Card className="shadow-lg">
+        <Card className="shadow-lg shadow-black/20">
           <CardHeader>
             <CardTitle>Match Details</CardTitle>
             <CardDescription>
@@ -205,7 +205,7 @@ export default function BookGoalkeeperForm() {
                     <SelectItem value="direct">Direct Booking (+25% Premium)</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-400">
                   {formData.bookingType === 'open' 
                     ? 'Post an announcement visible to all goalkeepers. First to accept gets the match.'
                     : 'Choose a specific goalkeeper you prefer. 25% premium fee applies for direct booking convenience.'}
@@ -217,11 +217,11 @@ export default function BookGoalkeeperForm() {
                 <div className="space-y-2">
                   <Label>Select Goalkeeper</Label>
                   {isLoadingGoalkeepers ? (
-                    <div className="text-center py-4 text-gray-500">
+                    <div className="text-center py-4 text-gray-400">
                       Loading goalkeepers...
                     </div>
                   ) : goalkeepers.length === 0 ? (
-                    <div className="text-center py-4 text-gray-500">
+                    <div className="text-center py-4 text-gray-400">
                       No goalkeepers available at the moment.
                     </div>
                   ) : (
@@ -250,12 +250,12 @@ export default function BookGoalkeeperForm() {
                     </Select>
                   )}
                   {formData.selectedGoalkeeperId && goalkeepers.find(gk => gk.id === formData.selectedGoalkeeperId) && (
-                    <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                      <p className="text-sm text-blue-800">
+                    <div className="mt-2 p-3 bg-lime-400/5 rounded-lg border border-gray-700">
+                      <p className="text-sm text-white">
                         <strong>Selected:</strong> {goalkeepers.find(gk => gk.id === formData.selectedGoalkeeperId)?.name}
                       </p>
                       {goalkeepers.find(gk => gk.id === formData.selectedGoalkeeperId)?.profile?.bio && (
-                        <p className="text-xs text-blue-600 mt-1">
+                        <p className="text-xs text-lime-400 mt-1">
                           {goalkeepers.find(gk => gk.id === formData.selectedGoalkeeperId)?.profile?.bio}
                         </p>
                       )}
@@ -297,10 +297,10 @@ export default function BookGoalkeeperForm() {
               </div>
 
               {/* Recurring Matches */}
-              <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="space-y-4 p-4 bg-lime-400/5 rounded-lg border border-gray-700">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Repeat className="h-5 w-5 text-blue-600" />
+                    <Repeat className="h-5 w-5 text-lime-400" />
                     <Label htmlFor="recurring" className="cursor-pointer">
                       Create Recurring Matches
                     </Label>
@@ -314,7 +314,7 @@ export default function BookGoalkeeperForm() {
                 
                 {formData.isRecurring && (
                   <div className="space-y-4 pt-2">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-400">
                       Schedule multiple matches automatically at the same time and location
                     </p>
                     
@@ -356,9 +356,9 @@ export default function BookGoalkeeperForm() {
                       </div>
                     </div>
 
-                    <div className="bg-white p-3 rounded border border-blue-200">
-                      <p className="text-sm font-medium text-blue-900 mb-1">Preview:</p>
-                      <p className="text-sm text-gray-600">
+                    <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                      <p className="text-sm font-medium text-white mb-1">Preview:</p>
+                      <p className="text-sm text-gray-400">
                         {formData.numberOfOccurrences} matches will be created {formData.recurrenceFrequency === 'weekly' ? 'every week' : 'every 2 weeks'}
                         {formData.bookingType === 'direct' && formData.selectedGoalkeeperId && ' with the same goalkeeper'}
                       </p>
@@ -436,13 +436,13 @@ export default function BookGoalkeeperForm() {
                     required
                   />
                 </div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-400">
                   Minimum rate: €20 per hour
                 </p>
                 {formData.pricePerHour && formData.duration && (
-                  <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="mt-2 p-3 bg-gray-800 rounded-lg border border-gray-700">
                     <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-600">Base cost:</span>
+                      <span className="text-gray-400">Base cost:</span>
                       <span className="font-medium">€{parseInt(formData.pricePerHour) * parseInt(formData.duration)}</span>
                     </div>
                     {formData.bookingType === 'direct' && (
@@ -452,15 +452,15 @@ export default function BookGoalkeeperForm() {
                           <span className="font-medium">€{Math.round(parseInt(formData.pricePerHour) * parseInt(formData.duration) * 0.25)}</span>
                         </div>
                         <div className="border-t border-gray-300 mt-2 pt-2 flex justify-between items-center">
-                          <span className="font-semibold text-gray-900">Total:</span>
-                          <span className="font-bold text-blue-600 text-lg">€{calculateTotalPrice()}</span>
+                          <span className="font-semibold text-gray-100">Total:</span>
+                          <span className="font-bold text-lime-400 text-lg">€{calculateTotalPrice()}</span>
                         </div>
                       </>
                     )}
                     {formData.bookingType === 'open' && (
                       <div className="border-t border-gray-300 mt-2 pt-2 flex justify-between items-center">
-                        <span className="font-semibold text-gray-900">Total:</span>
-                        <span className="font-bold text-blue-600 text-lg">€{calculateTotalPrice()}</span>
+                        <span className="font-semibold text-gray-100">Total:</span>
+                        <span className="font-bold text-lime-400 text-lg">€{calculateTotalPrice()}</span>
                       </div>
                     )}
                   </div>
@@ -488,7 +488,7 @@ export default function BookGoalkeeperForm() {
                 </Link>
                 <Button 
                   type="submit" 
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-lime-400 hover:bg-lime-300 text-gray-950"
                   disabled={isLoading}
                 >
                   {isLoading ? (

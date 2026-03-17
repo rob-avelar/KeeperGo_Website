@@ -68,17 +68,17 @@ export default function CompleteRegistrationPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-white p-4">
+    <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">
-            <GoalIcon className="h-8 w-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-blue-800">KeeperGo</h1>
+            <GoalIcon className="h-8 w-8 text-lime-400" />
+            <h1 className="text-3xl font-bold text-white">KeeperGo</h1>
           </Link>
-          <p className="text-gray-600">Complete Your Registration</p>
+          <p className="text-gray-400">Complete Your Registration</p>
         </div>
 
-        <Card className="shadow-lg">
+        <Card className="shadow-lg shadow-black/20">
           <CardHeader>
             <CardTitle className="text-2xl text-center">Choose Your Role</CardTitle>
             <CardDescription className="text-center">
@@ -89,7 +89,7 @@ export default function CompleteRegistrationPage() {
           <CardContent className="space-y-4">
             {email && (
               <div className="text-center mb-6">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-400">
                   Signing in as: <strong>{email}</strong>
                 </p>
               </div>
@@ -98,13 +98,13 @@ export default function CompleteRegistrationPage() {
             <div className="grid md:grid-cols-2 gap-4">
               {/* Organizer Option */}
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-all border-2 hover:border-blue-500"
+                className="cursor-pointer hover:shadow-lg shadow-black/20 transition-all border-2 hover:border-lime-400"
                 onClick={() => !isLoading && handleRoleSelection('ORGANIZER')}
               >
                 <CardHeader>
                   <div className="flex items-center justify-center mb-4">
-                    <div className="h-20 w-20 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Users className="h-10 w-10 text-blue-600" />
+                    <div className="h-20 w-20 bg-lime-400/10 rounded-full flex items-center justify-center">
+                      <Users className="h-10 w-10 text-lime-400" />
                     </div>
                   </div>
                   <CardTitle className="text-xl text-center">Match Organizer</CardTitle>
@@ -114,7 +114,7 @@ export default function CompleteRegistrationPage() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <Button 
-                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    className="w-full bg-lime-400 hover:bg-lime-300 text-gray-950"
                     disabled={isLoading}
                     onClick={(e) => {
                       e.stopPropagation()
@@ -133,13 +133,13 @@ export default function CompleteRegistrationPage() {
 
               {/* Goalkeeper Option */}
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-all border-2 hover:border-purple-500"
+                className="cursor-pointer hover:shadow-lg shadow-black/20 transition-all border-2 hover:border-lime-400"
                 onClick={() => !isLoading && handleRoleSelection('GOALKEEPER')}
               >
                 <CardHeader>
                   <div className="flex items-center justify-center mb-4">
-                    <div className="h-20 w-20 bg-purple-100 rounded-full flex items-center justify-center">
-                      <GoalIcon className="h-10 w-10 text-purple-600" />
+                    <div className="h-20 w-20 bg-lime-400/10 rounded-full flex items-center justify-center">
+                      <GoalIcon className="h-10 w-10 text-lime-400" />
                     </div>
                   </div>
                   <CardTitle className="text-xl text-center">Goalkeeper</CardTitle>
@@ -149,7 +149,7 @@ export default function CompleteRegistrationPage() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <Button 
-                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    className="w-full bg-lime-400 hover:bg-lime-300 text-gray-950"
                     disabled={isLoading}
                     onClick={(e) => {
                       e.stopPropagation()
@@ -167,7 +167,7 @@ export default function CompleteRegistrationPage() {
               </Card>
             </div>
 
-            <div className="text-center text-sm text-gray-500 mt-6">
+            <div className="text-center text-sm text-gray-400 mt-6">
               <p>You can always change your role later in settings</p>
             </div>
           </CardContent>

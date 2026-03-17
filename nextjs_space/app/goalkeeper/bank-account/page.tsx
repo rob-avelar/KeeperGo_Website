@@ -149,15 +149,15 @@ export default function BankAccountPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-lime-400" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-transparent">
+      <header className="bg-gray-900 shadow-sm shadow-black/10 border-b">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/goalkeeper/dashboard">
@@ -166,17 +166,17 @@ export default function BankAccountPage() {
                 Back to Dashboard
               </Button>
             </Link>
-            <h1 className="text-xl font-bold text-purple-800">KeeperGo</h1>
+            <h1 className="text-xl font-bold text-white">KeeperGo</h1>
           </div>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Bank Account & Payments</h2>
+        <h2 className="text-2xl font-bold text-gray-100 mb-6">Bank Account & Payments</h2>
 
         {/* No Account Yet */}
         {!accountStatus?.hasAccount && (
-          <Card className="border-yellow-200 bg-yellow-50">
+          <Card className="border-yellow-700 bg-yellow-50">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <Banknote className="w-8 h-8 text-yellow-600" />
@@ -190,19 +190,19 @@ export default function BankAccountPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="bg-white rounded-lg p-4 border border-yellow-200">
-                  <h4 className="font-semibold text-gray-900 mb-2">How it works:</h4>
-                  <ul className="space-y-2 text-sm text-gray-700">
+                <div className="bg-gray-900 rounded-lg p-4 border border-yellow-700">
+                  <h4 className="font-semibold text-gray-100 mb-2">How it works:</h4>
+                  <ul className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start gap-2">
-                      <span className="font-bold text-purple-600">1.</span>
+                      <span className="font-bold text-lime-400">1.</span>
                       Click the button below to start the setup
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="font-bold text-purple-600">2.</span>
+                      <span className="font-bold text-lime-400">2.</span>
                       Stripe will guide you through providing your details
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="font-bold text-purple-600">3.</span>
+                      <span className="font-bold text-lime-400">3.</span>
                       Once verified, you&apos;ll receive 75% of each booking payment directly
                     </li>
                   </ul>
@@ -210,7 +210,7 @@ export default function BankAccountPage() {
                 <Button
                   onClick={handleConnectAccount}
                   disabled={actionLoading}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                  className="w-full bg-lime-400 hover:bg-lime-300 text-gray-950 text-white"
                   size="lg"
                 >
                   {actionLoading ? (
@@ -226,7 +226,7 @@ export default function BankAccountPage() {
 
         {/* Account Incomplete */}
         {accountStatus?.hasAccount && accountStatus.status === 'incomplete' && (
-          <Card className="border-orange-200 bg-orange-50">
+          <Card className="border-orange-700 bg-orange-50">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <AlertCircle className="w-8 h-8 text-orange-600" />
@@ -241,9 +241,9 @@ export default function BankAccountPage() {
             <CardContent>
               <div className="space-y-4">
                 {accountStatus.requirements?.currently_due && accountStatus.requirements.currently_due.length > 0 && (
-                  <div className="bg-white rounded-lg p-4 border border-orange-200">
-                    <h4 className="font-semibold text-gray-900 mb-2">Information needed:</h4>
-                    <p className="text-sm text-gray-600">Stripe requires additional information to verify your identity and enable payments.</p>
+                  <div className="bg-gray-900 rounded-lg p-4 border border-orange-700">
+                    <h4 className="font-semibold text-gray-100 mb-2">Information needed:</h4>
+                    <p className="text-sm text-gray-400">Stripe requires additional information to verify your identity and enable payments.</p>
                   </div>
                 )}
                 <Button
@@ -265,13 +265,13 @@ export default function BankAccountPage() {
 
         {/* Account Pending */}
         {accountStatus?.hasAccount && accountStatus.status === 'pending' && (
-          <Card className="border-blue-200 bg-blue-50">
+          <Card className="border-gray-700 bg-lime-400/5">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <RefreshCw className="w-8 h-8 text-blue-600" />
+                <RefreshCw className="w-8 h-8 text-lime-400" />
                 <div>
-                  <CardTitle className="text-blue-800">Verification in Progress</CardTitle>
-                  <CardDescription className="text-blue-700">
+                  <CardTitle className="text-white">Verification in Progress</CardTitle>
+                  <CardDescription className="text-lime-500">
                     Your details have been submitted and are being verified by Stripe. This usually takes 1-2 business days.
                   </CardDescription>
                 </div>
@@ -279,25 +279,25 @@ export default function BankAccountPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="bg-white rounded-lg p-4 border border-blue-200 space-y-2">
+                <div className="bg-gray-900 rounded-lg p-4 border border-gray-700 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Details Submitted</span>
+                    <span className="text-sm text-gray-400">Details Submitted</span>
                     <CheckCircle className="w-5 h-5 text-green-500" />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Charges Enabled</span>
+                    <span className="text-sm text-gray-400">Charges Enabled</span>
                     {accountStatus.chargesEnabled ? (
                       <CheckCircle className="w-5 h-5 text-green-500" />
                     ) : (
-                      <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
+                      <Loader2 className="w-5 h-5 text-lime-400 animate-spin" />
                     )}
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Payouts Enabled</span>
+                    <span className="text-sm text-gray-400">Payouts Enabled</span>
                     {accountStatus.payoutsEnabled ? (
                       <CheckCircle className="w-5 h-5 text-green-500" />
                     ) : (
-                      <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
+                      <Loader2 className="w-5 h-5 text-lime-400 animate-spin" />
                     )}
                   </div>
                 </div>
@@ -315,7 +315,7 @@ export default function BankAccountPage() {
 
         {/* Account Complete */}
         {accountStatus?.hasAccount && accountStatus.status === 'complete' && (
-          <Card className="border-green-200 bg-green-50">
+          <Card className="border-green-700 bg-green-50">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <CheckCircle className="w-8 h-8 text-green-600" />
@@ -329,17 +329,17 @@ export default function BankAccountPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="bg-white rounded-lg p-4 border border-green-200 space-y-2">
+                <div className="bg-gray-900 rounded-lg p-4 border border-green-700 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Details Submitted</span>
+                    <span className="text-sm text-gray-400">Details Submitted</span>
                     <CheckCircle className="w-5 h-5 text-green-500" />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Charges Enabled</span>
+                    <span className="text-sm text-gray-400">Charges Enabled</span>
                     <CheckCircle className="w-5 h-5 text-green-500" />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Payouts Enabled</span>
+                    <span className="text-sm text-gray-400">Payouts Enabled</span>
                     <CheckCircle className="w-5 h-5 text-green-500" />
                   </div>
                 </div>

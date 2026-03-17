@@ -289,17 +289,17 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+    <div className="min-h-screen bg-transparent">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-gray-900 shadow-sm shadow-black/10 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <Goal className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-blue-800">KeeperGo</h1>
+              <Goal className="h-8 w-8 text-lime-400" />
+              <h1 className="text-2xl font-bold text-white">KeeperGo</h1>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
+              <span className="text-sm text-gray-400">Welcome, {user?.name}</span>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">
@@ -338,10 +338,10 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-gray-100 mb-2">
             Welcome back, {user?.name?.split(' ')[0]}!
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-400">
             Manage your matches and find the perfect goalkeepers for your games.
           </p>
         </div>
@@ -350,13 +350,13 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
         <div className="mb-8">
           <div className="flex flex-wrap gap-4">
             <Link href="/organizer/book-goalkeeper">
-              <Button className="bg-blue-600 hover:bg-blue-700">
+              <Button className="bg-lime-400 hover:bg-lime-300 text-gray-950">
                 <Plus className="w-4 h-4 mr-2" />
                 Post Match Announcement
               </Button>
             </Link>
             <Link href="/organizer/search-goalkeepers">
-              <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+              <Button variant="outline" className="border-lime-400 text-lime-400 hover:bg-lime-400/5">
                 <Users className="w-4 h-4 mr-2" />
                 Search Goalkeepers
               </Button>
@@ -368,13 +368,13 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-400">
                 Total Matches
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Activity className="h-4 w-4 text-blue-600 mr-2" />
+                <Activity className="h-4 w-4 text-lime-400 mr-2" />
                 <span className="text-2xl font-bold">{bookings?.length || 0}</span>
               </div>
             </CardContent>
@@ -382,13 +382,13 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-400">
                 Upcoming Matches
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Calendar className="h-4 w-4 text-blue-600 mr-2" />
+                <Calendar className="h-4 w-4 text-lime-400 mr-2" />
                 <span className="text-2xl font-bold">{upcomingBookings?.length || 0}</span>
               </div>
             </CardContent>
@@ -396,7 +396,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-400">
                 Success Rate
               </CardTitle>
             </CardHeader>
@@ -405,7 +405,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                 <TrendingUp className={`h-4 w-4 mr-2 ${successRate >= 80 ? 'text-green-600' : successRate >= 60 ? 'text-yellow-600' : 'text-orange-600'}`} />
                 <span className="text-2xl font-bold">{successRate}%</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-400 mt-1">
                 {successfulMatches.length} of {pastBookings.length} completed
               </p>
             </CardContent>
@@ -413,7 +413,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-400">
                 Avg. Rating Given
               </CardTitle>
             </CardHeader>
@@ -445,7 +445,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               {openBookings?.map((booking: any) => (
-                <div key={booking.id} className="border-l-4 border-yellow-500 pl-4 py-2 bg-white rounded-r-lg">
+                <div key={booking.id} className="border-l-4 border-yellow-500 pl-4 py-2 bg-gray-900 rounded-r-lg">
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="font-semibold">
                       Waiting for Goalkeeper
@@ -454,7 +454,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                       OPEN
                     </Badge>
                   </div>
-                  <div className="space-y-1 text-sm text-gray-600">
+                  <div className="space-y-1 text-sm text-gray-400">
                     <div className="flex items-center">
                       <Calendar className="h-3 w-3 mr-1" />
                       {new Date(booking.date).toLocaleDateString()} at {new Date(booking.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -484,7 +484,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Calendar className="h-5 w-5 text-blue-600 mr-2" />
+                <Calendar className="h-5 w-5 text-lime-400 mr-2" />
                 Upcoming Matches
               </CardTitle>
               <CardDescription>
@@ -493,12 +493,12 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               {upcomingBookings?.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">
+                <p className="text-gray-400 text-center py-4">
                   No upcoming matches. Book a goalkeeper to get started!
                 </p>
               ) : (
                 upcomingBookings?.slice(0, 3)?.map((booking: any) => (
-                  <div key={booking.id} className="border-l-4 border-blue-500 pl-4 py-2">
+                  <div key={booking.id} className="border-l-4 border-lime-400 pl-4 py-2">
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-semibold">
                         {booking?.goalkeeper?.name || 'Goalkeeper TBD'}
@@ -507,7 +507,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                         {booking.status}
                       </Badge>
                     </div>
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm text-gray-400">
                       <div className="flex items-center">
                         <Calendar className="h-3 w-3 mr-1" />
                         {new Date(booking.date).toLocaleDateString()}
@@ -525,7 +525,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="w-full text-red-600 hover:text-red-700 hover:bg-red-900/20"
                         onClick={() => handleOpenCancelDialog(booking)}
                       >
                         <X className="h-3 w-3 mr-1" />
@@ -574,7 +574,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                           ⏰ Goalkeeper hasn't confirmed yet
                         </p>
                       )}
-                      <p className="text-xs text-gray-600 mt-1">
+                      <p className="text-xs text-gray-400 mt-1">
                         Deadline: {getTimeUntilDeadline(booking.confirmationDeadline)}
                       </p>
                     </div>
@@ -585,7 +585,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                       {booking.goalkeeperConfirmedAt ? 'Ready to Confirm' : 'Awaiting'}
                     </Badge>
                   </div>
-                  <div className="space-y-1 text-sm text-gray-700">
+                  <div className="space-y-1 text-sm text-gray-300">
                     <div className="flex items-center">
                       <Calendar className="h-3 w-3 mr-1" />
                       {new Date(booking.date).toLocaleDateString()} at {new Date(booking.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -615,7 +615,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-900/20"
                       onClick={() => {
                         setBookingToReport(booking)
                         setNoShowDialogOpen(true)
@@ -635,7 +635,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <TrendingUp className="h-5 w-5 text-blue-600 mr-2" />
+                <TrendingUp className="h-5 w-5 text-lime-400 mr-2" />
                 Recent Activity
               </CardTitle>
               <CardDescription>
@@ -644,12 +644,12 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               {bookings?.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">
+                <p className="text-gray-400 text-center py-4">
                   No activity yet. Start by booking your first goalkeeper!
                 </p>
               ) : (
                 bookings?.slice(0, 5)?.map((booking: any) => (
-                  <div key={booking.id} className="border-l-4 border-blue-500 pl-4 py-2">
+                  <div key={booking.id} className="border-l-4 border-lime-400 pl-4 py-2">
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-medium">
                         Match {booking.isCompleted ? 'Completed' : 'Scheduled'}
@@ -660,7 +660,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                         {booking.status}
                       </Badge>
                     </div>
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm text-gray-400">
                       <div className="flex items-center">
                         <Calendar className="h-3 w-3 mr-1" />
                         {new Date(booking.date).toLocaleDateString()}
@@ -699,23 +699,23 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
           
           {bookingToCancel && cancelFeeInfo && (
             <div className="space-y-4">
-              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="p-4 bg-lime-400/5 rounded-lg border border-gray-700">
                 <h4 className="font-semibold text-sm mb-2">Match Details:</h4>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-300">
                   <strong>Date:</strong> {new Date(bookingToCancel.date).toLocaleDateString()} at {new Date(bookingToCancel.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-300">
                   <strong>Location:</strong> {bookingToCancel.location}
                 </p>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-300">
                   <strong>Time until match:</strong> {cancelFeeInfo.hoursUntilMatch} hours
                 </p>
               </div>
 
               <div className={`p-4 rounded-lg border ${
                 cancelFeeInfo.cancellationFee === 0 
-                  ? 'bg-green-50 border-green-200' 
-                  : 'bg-orange-50 border-orange-200'
+                  ? 'bg-green-50 border-green-700' 
+                  : 'bg-orange-50 border-orange-700'
               }`}>
                 <h4 className="font-semibold text-sm mb-2">
                   {cancelFeeInfo.message}
@@ -796,15 +796,15 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
           </AlertDialogHeader>
           
           {bookingToReport && (
-            <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+            <div className="p-4 bg-red-900/20 rounded-lg border border-red-200">
               <h4 className="font-semibold text-sm mb-2">Match Details:</h4>
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-gray-300">
                 <strong>Goalkeeper:</strong> {bookingToReport?.goalkeeper?.name}
               </p>
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-gray-300">
                 <strong>Date:</strong> {new Date(bookingToReport.date).toLocaleDateString()}
               </p>
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-gray-300">
                 <strong>Amount:</strong> €{(bookingToReport.totalAmount / 100).toFixed(2)}
               </p>
             </div>

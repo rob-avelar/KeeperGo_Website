@@ -352,17 +352,17 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
     )
   }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+    <div className="min-h-screen bg-transparent">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-gray-900 shadow-sm shadow-black/10 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <Goal className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-blue-800">KeeperGo</h1>
+              <Goal className="h-8 w-8 text-lime-400" />
+              <h1 className="text-2xl font-bold text-white">KeeperGo</h1>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
+              <span className="text-sm text-gray-400">Welcome, {user?.name}</span>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">
@@ -401,17 +401,17 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-gray-100 mb-2">
             Welcome back, {user?.name?.split(' ')[0]}!
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-400">
             Manage your bookings and build your goalkeeper reputation.
           </p>
         </div>
 
         {/* Blocked Warning */}
         {isBlocked && (
-          <div className="mb-6 p-4 bg-red-50 border-2 border-red-500 rounded-lg">
+          <div className="mb-6 p-4 bg-red-900/20 border-2 border-red-500 rounded-lg">
             <div className="flex items-start gap-3">
               <AlertCircle className="h-6 w-6 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
@@ -432,7 +432,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
         {!isBlocked && warningCount > 0 && (
           <div className={`mb-6 p-4 rounded-lg border-2 ${
             warningCount >= 5
-              ? 'bg-red-50 border-red-400'
+              ? 'bg-red-900/20 border-red-400'
               : warningCount >= 3
               ? 'bg-orange-50 border-orange-400'
               : 'bg-yellow-50 border-yellow-400'
@@ -491,14 +491,14 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
 
         {/* Awaiting Confirmation Banner */}
         {awaitingConfirmation?.length > 0 && (
-          <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-400 rounded-lg">
+          <div className="mb-6 p-4 bg-lime-400/5 border-2 border-lime-400/30 rounded-lg">
             <div className="flex items-start gap-3">
-              <Bell className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <Bell className="h-5 w-5 text-lime-400 flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-semibold text-blue-900">
+                <h3 className="font-semibold text-white">
                   Reminder: Ask Organizer to Confirm Your Attendance
                 </h3>
-                <p className="text-blue-800 text-sm mt-1">
+                <p className="text-white text-sm mt-1">
                   You have <strong>{awaitingConfirmation.length} match{awaitingConfirmation.length > 1 ? 'es' : ''}</strong> awaiting organizer confirmation.
                   Please remind the organizer to confirm your attendance in the app to release your payment.
                 </p>
@@ -511,7 +511,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
         <div className="mb-8">
           <div className="flex flex-wrap gap-4">
             <Link href="/goalkeeper/profile">
-              <Button className="bg-blue-600 hover:bg-blue-700">
+              <Button className="bg-lime-400 hover:bg-lime-300 text-gray-950">
                 <Settings className="w-4 h-4 mr-2" />
                 Edit Profile
               </Button>
@@ -529,13 +529,13 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-400">
                 Total Matches
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Activity className="h-4 w-4 text-blue-600 mr-2" />
+                <Activity className="h-4 w-4 text-lime-400 mr-2" />
                 <span className="text-2xl font-bold">{profile?.totalMatches || 0}</span>
               </div>
             </CardContent>
@@ -543,7 +543,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-400">
                 Average Rating
               </CardTitle>
             </CardHeader>
@@ -557,13 +557,13 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-400">
                 Total Earnings
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Euro className="h-4 w-4 text-blue-600 mr-2" />
+                <Euro className="h-4 w-4 text-lime-400 mr-2" />
                 <span className="text-2xl font-bold">€{(totalEarnings / 100).toFixed(0)}</span>
               </div>
             </CardContent>
@@ -571,7 +571,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-400">
                 Pending Requests
               </CardTitle>
             </CardHeader>
@@ -586,7 +586,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
 
         {/* Profile Status */}
         {(!profile?.bio || !profile?.experienceLevel || !profile?.address || !profile?.city || !profile?.postalCode) && (
-          <Card className="mb-8 border-orange-200 bg-orange-50">
+          <Card className="mb-8 border-orange-700 bg-orange-50">
             <CardHeader>
               <CardTitle className="text-orange-800 flex items-center">
                 <Award className="h-5 w-5 mr-2" />
@@ -614,13 +614,13 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
 
         {/* Bank Account Status */}
         {!profile?.stripePayoutsEnabled && (
-          <Card className="mb-8 border-purple-200 bg-purple-50">
+          <Card className="mb-8 border-gray-700 bg-lime-400/5">
             <CardHeader>
-              <CardTitle className="text-purple-800 flex items-center">
+              <CardTitle className="text-white flex items-center">
                 <Euro className="h-5 w-5 mr-2" />
                 Bank Account Required
               </CardTitle>
-              <CardDescription className="text-purple-700">
+              <CardDescription className="text-lime-500">
                 {!profile?.stripeAccountId 
                   ? 'Connect your bank account to receive payments for your goalkeeper services'
                   : 'Complete your bank account setup to start receiving payments'
@@ -629,7 +629,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
             </CardHeader>
             <CardContent>
               <Link href="/goalkeeper/bank-account">
-                <Button className="bg-purple-600 hover:bg-purple-700">
+                <Button className="bg-lime-400 hover:bg-lime-300 text-gray-950">
                   {!profile?.stripeAccountId ? 'Connect Bank Account' : 'Complete Setup'}
                 </Button>
               </Link>
@@ -638,7 +638,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
         )}
 
         {profile?.stripePayoutsEnabled && (
-          <Card className="mb-8 border-green-200 bg-green-50">
+          <Card className="mb-8 border-green-700 bg-green-50">
             <CardHeader>
               <CardTitle className="text-green-800 flex items-center">
                 <CheckCircle className="h-5 w-5 mr-2" />
@@ -660,31 +660,31 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
 
         {/* Available Matches - First Come First Served */}
         {availableBookings?.length > 0 && (
-          <Card className="mb-8 border-blue-300 bg-blue-50/50">
+          <Card className="mb-8 border-lime-400/20 bg-lime-400/5">
             <CardHeader>
-              <CardTitle className="text-blue-800 flex items-center">
+              <CardTitle className="text-white flex items-center">
                 <Bell className="h-5 w-5 mr-2" />
                 Available Matches
               </CardTitle>
-              <CardDescription className="text-blue-700">
+              <CardDescription className="text-lime-500">
                 New match announcements from organizers. Be the first to accept!
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {availableBookings?.map((booking: any) => (
-                <div key={booking.id} className="border-l-4 border-blue-600 pl-4 py-3 bg-white rounded-r-lg shadow-sm">
+                <div key={booking.id} className="border-l-4 border-lime-400 pl-4 py-3 bg-gray-800 rounded-r-lg shadow-sm">
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <h4 className="font-semibold text-lg">
                         {booking?.organizer?.name}
                       </h4>
-                      <Badge variant="outline" className="text-blue-600 mt-1">
+                      <Badge variant="outline" className="text-lime-400 mt-1">
                         <CheckCircle className="h-3 w-3 mr-1" />
                         First to accept gets it!
                       </Badge>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-3">
+                  <div className="grid grid-cols-2 gap-2 text-sm text-gray-400 mb-3">
                     <div className="flex items-center">
                       <Calendar className="h-3 w-3 mr-1" />
                       {new Date(booking.date).toLocaleDateString()} at {new Date(booking.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -702,17 +702,17 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                       €{((booking.totalAmount * 0.75) / 100).toFixed(0)} earnings
                     </div>
                   </div>
-                  <div className="text-sm text-gray-600 mb-3">
+                  <div className="text-sm text-gray-400 mb-3">
                     <strong>Field Type:</strong> {booking.fieldType}
                   </div>
                   {booking.specialRequests && (
-                    <div className="text-sm text-gray-600 mb-3 p-2 bg-gray-50 rounded">
+                    <div className="text-sm text-gray-400 mb-3 p-2 bg-gray-800 rounded">
                       <strong>Notes:</strong> {booking.specialRequests}
                     </div>
                   )}
                   <Button 
                     size="sm" 
-                    className="bg-blue-600 hover:bg-blue-700 w-full"
+                    className="bg-lime-400 hover:bg-lime-300 text-gray-950 w-full"
                     onClick={() => handleAcceptBooking(booking.id)}
                     disabled={loadingBookingId === booking.id}
                   >
@@ -760,7 +760,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                         Action Needed
                       </Badge>
                     </div>
-                    <div className="space-y-1 text-sm text-gray-700">
+                    <div className="space-y-1 text-sm text-gray-300">
                       <div className="flex items-center">
                         <Calendar className="h-3 w-3 mr-1" />
                         {new Date(booking.date).toLocaleDateString()} at {new Date(booking.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -791,8 +791,8 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                         )}
                       </Button>
                     </div>
-                    <div className="mt-2 p-2 bg-white rounded border border-green-200">
-                      <p className="text-xs text-gray-600">
+                    <div className="mt-2 p-2 bg-gray-900 rounded border border-green-700">
+                      <p className="text-xs text-gray-400">
                         💡 <strong>Note:</strong> After you confirm, the organizer will validate and rate your performance to release payment.
                       </p>
                     </div>
@@ -815,7 +815,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
             </CardHeader>
             <CardContent className="space-y-4">
               {pendingBookings?.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">
+                <p className="text-gray-400 text-center py-4">
                   No pending requests at the moment.
                 </p>
               ) : (
@@ -829,7 +829,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                         PENDING
                       </Badge>
                     </div>
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm text-gray-400">
                       <div className="flex items-center">
                         <Calendar className="h-3 w-3 mr-1" />
                         {new Date(booking.date).toLocaleDateString()}
@@ -844,7 +844,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3">
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                      <Button size="sm" className="bg-lime-400 hover:bg-lime-300 text-gray-950">
                         Accept
                       </Button>
                       <Button size="sm" variant="outline">
@@ -860,10 +860,10 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
 
           {/* Awaiting Confirmation */}
           {awaitingConfirmation?.length > 0 && (
-            <Card className="border-blue-300">
-              <CardHeader className="bg-blue-50">
+            <Card className="border-lime-400/20">
+              <CardHeader className="bg-lime-400/5">
                 <CardTitle className="flex items-center">
-                  <Bell className="h-5 w-5 text-blue-600 mr-2" />
+                  <Bell className="h-5 w-5 text-lime-400 mr-2" />
                   Awaiting Organizer Confirmation
                 </CardTitle>
                 <CardDescription>
@@ -872,21 +872,21 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
               </CardHeader>
               <CardContent className="space-y-4 mt-4">
                 {awaitingConfirmation.map((booking: any) => (
-                  <div key={booking.id} className="border-l-4 border-blue-500 pl-4 py-3 bg-blue-50">
+                  <div key={booking.id} className="border-l-4 border-lime-400 pl-4 py-3 bg-lime-400/5">
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <h4 className="font-semibold">
                           {booking?.organizer?.name || 'Organizer'}
                         </h4>
-                        <p className="text-xs text-blue-700 font-medium mt-1">
+                        <p className="text-xs text-lime-500 font-medium mt-1">
                           ⏰ Payment auto-releases in: {getTimeUntilDeadline(booking.confirmationDeadline)}
                         </p>
                       </div>
-                      <Badge variant="outline" className="bg-blue-100">
+                      <Badge variant="outline" className="bg-lime-400/10">
                         Awaiting
                       </Badge>
                     </div>
-                    <div className="space-y-1 text-sm text-gray-700">
+                    <div className="space-y-1 text-sm text-gray-300">
                       <div className="flex items-center">
                         <Calendar className="h-3 w-3 mr-1" />
                         {new Date(booking.date).toLocaleDateString()} at {new Date(booking.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -900,8 +900,8 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                         You earn: €{((booking.totalAmount * 0.75) / 100).toFixed(2)}
                       </div>
                     </div>
-                    <div className="mt-2 p-2 bg-white rounded border border-blue-200">
-                      <p className="text-xs text-gray-600">
+                    <div className="mt-2 p-2 bg-gray-900 rounded border border-gray-700">
+                      <p className="text-xs text-gray-400">
                         💡 <strong>Tip:</strong> Contact the organizer via phone/email to remind them to confirm your attendance in the app.
                       </p>
                     </div>
@@ -914,7 +914,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Calendar className="h-5 w-5 text-blue-600 mr-2" />
+                <Calendar className="h-5 w-5 text-lime-400 mr-2" />
                 Upcoming Matches
               </CardTitle>
               <CardDescription>
@@ -923,21 +923,21 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
             </CardHeader>
             <CardContent className="space-y-4">
               {upcomingBookings?.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">
+                <p className="text-gray-400 text-center py-4">
                   No upcoming matches scheduled.
                 </p>
               ) : (
                 upcomingBookings?.slice(0, 3)?.map((booking: any) => (
-                  <div key={booking.id} className="border-l-4 border-blue-500 pl-4 py-2">
+                  <div key={booking.id} className="border-l-4 border-lime-400 pl-4 py-2">
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-semibold">
                         Match with {booking?.organizer?.name}
                       </h4>
-                      <Badge className="bg-blue-600">
+                      <Badge className="bg-lime-400 text-gray-950">
                         CONFIRMED
                       </Badge>
                     </div>
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm text-gray-400">
                       <div className="flex items-center">
                         <Calendar className="h-3 w-3 mr-1" />
                         {new Date(booking.date).toLocaleDateString()}
@@ -959,7 +959,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="w-full text-red-600 hover:text-red-700 hover:bg-red-900/20"
                         onClick={() => handleOpenCancelDialog(booking)}
                       >
                         <X className="h-3 w-3 mr-1" />
@@ -989,40 +989,40 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
           
           {bookingToCancel && cancelFeeInfo && (
             <div className="space-y-4">
-              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="p-4 bg-lime-400/5 rounded-lg border border-gray-700">
                 <h4 className="font-semibold text-sm mb-2">Match Details:</h4>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-300">
                   <strong>Organizer:</strong> {bookingToCancel.organizer?.name}
                 </p>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-300">
                   <strong>Date:</strong> {new Date(bookingToCancel.date).toLocaleDateString()} at {new Date(bookingToCancel.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-300">
                   <strong>Location:</strong> {bookingToCancel.location}
                 </p>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-300">
                   <strong>Time until match:</strong> {cancelFeeInfo.hoursUntilMatch} hours
                 </p>
               </div>
 
               <div className={`p-4 rounded-lg border ${
                 cancelFeeInfo.warningLevel === 'NONE' 
-                  ? 'bg-green-50 border-green-200' 
+                  ? 'bg-green-50 border-green-700' 
                   : cancelFeeInfo.warningLevel === 'LIGHT'
-                  ? 'bg-yellow-50 border-yellow-200'
+                  ? 'bg-yellow-50 border-yellow-700'
                   : cancelFeeInfo.warningLevel === 'MODERATE'
-                  ? 'bg-orange-50 border-orange-200'
-                  : 'bg-red-50 border-red-200'
+                  ? 'bg-orange-50 border-orange-700'
+                  : 'bg-red-900/20 border-red-200'
               }`}>
                 <h4 className="font-semibold text-sm mb-2">
                   {cancelFeeInfo.message}
                 </h4>
                 <div className="space-y-1 text-sm">
-                  <p className="flex justify-between text-gray-600">
+                  <p className="flex justify-between text-gray-400">
                     <span>You would have earned:</span>
                     <span className="font-medium">€{(cancelFeeInfo.goalkeeperEarnings / 100).toFixed(2)}</span>
                   </p>
-                  <p className="flex justify-between border-t pt-1 text-xs text-gray-600">
+                  <p className="flex justify-between border-t pt-1 text-xs text-gray-400">
                     <span>Organizer receives full refund:</span>
                     <span>€{(bookingToCancel.totalAmount / 100).toFixed(2)}</span>
                   </p>

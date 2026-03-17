@@ -93,13 +93,13 @@ export default function FavoritesSection() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Heart className="h-5 w-5 text-blue-600" />
+            <Heart className="h-5 w-5 text-lime-400" />
             Favorite Goalkeepers
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+            <Loader2 className="h-6 w-6 animate-spin text-lime-400" />
           </div>
         </CardContent>
       </Card>
@@ -111,7 +111,7 @@ export default function FavoritesSection() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Heart className="h-5 w-5 text-blue-600" />
+            <Heart className="h-5 w-5 text-lime-400" />
             Favorite Goalkeepers
           </CardTitle>
           <CardDescription>
@@ -133,7 +133,7 @@ export default function FavoritesSection() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Heart className="h-5 w-5 text-blue-600 fill-blue-600" />
+          <Heart className="h-5 w-5 text-lime-400 fill-lime-400" />
           Favorite Goalkeepers
           <Badge variant="secondary" className="ml-auto">{favorites.length}</Badge>
         </CardTitle>
@@ -160,7 +160,7 @@ export default function FavoritesSection() {
                           className="object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-semibold text-lg">
+                        <div className="w-full h-full flex items-center justify-center bg-lime-400/10 text-lime-400 font-semibold text-lg">
                           {displayName[0]?.toUpperCase()}
                         </div>
                       )}
@@ -197,7 +197,7 @@ export default function FavoritesSection() {
                   <div className="flex gap-2">
                     <Button
                       size="sm"
-                      className="flex-1 bg-blue-600 hover:bg-blue-700"
+                      className="flex-1 bg-lime-400 hover:bg-lime-300 text-gray-950"
                       onClick={() => inviteGoalkeeper(favorite.goalkeeperId)}
                     >
                       <Mail className="h-3 w-3 mr-1" />
@@ -212,7 +212,7 @@ export default function FavoritesSection() {
                       {removing === favorite.goalkeeperId ? (
                         <Loader2 className="h-3 w-3 animate-spin" />
                       ) : (
-                        <Heart className="h-3 w-3 fill-blue-600 text-blue-600" />
+                        <Heart className="h-3 w-3 fill-lime-400 text-lime-400" />
                       )}
                     </Button>
                   </div>

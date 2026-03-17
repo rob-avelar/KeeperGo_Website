@@ -121,7 +121,7 @@ export default function AnalyticsDashboard() {
       <Card>
         <CardContent className="py-12">
           <div className="flex justify-center items-center">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            <Loader2 className="h-8 w-8 animate-spin text-lime-400" />
           </div>
         </CardContent>
       </Card>
@@ -132,7 +132,7 @@ export default function AnalyticsDashboard() {
     return (
       <Card>
         <CardContent className="py-12 text-center">
-          <p className="text-gray-600">No analytics data available</p>
+          <p className="text-gray-400">No analytics data available</p>
         </CardContent>
       </Card>
     )
@@ -218,8 +218,8 @@ export default function AnalyticsDashboard() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h2>
-          <p className="text-gray-600">Insights into your match activity and performance</p>
+          <h2 className="text-2xl font-bold text-gray-100">Analytics Dashboard</h2>
+          <p className="text-gray-400">Insights into your match activity and performance</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => exportData('csv')}>
@@ -237,7 +237,7 @@ export default function AnalyticsDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
+            <CardTitle className="text-sm font-medium text-gray-400">
               Total Matches
             </CardTitle>
           </CardHeader>
@@ -245,16 +245,16 @@ export default function AnalyticsDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-2xl font-bold">{summary.totalMatches}</div>
-                <p className="text-xs text-gray-500 mt-1">Completed</p>
+                <p className="text-xs text-gray-400 mt-1">Completed</p>
               </div>
-              <Activity className="h-8 w-8 text-blue-600 opacity-20" />
+              <Activity className="h-8 w-8 text-lime-400 opacity-20" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
+            <CardTitle className="text-sm font-medium text-gray-400">
               Total Hours Played
             </CardTitle>
           </CardHeader>
@@ -262,16 +262,16 @@ export default function AnalyticsDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-2xl font-bold">{summary.totalHoursPlayed}h</div>
-                <p className="text-xs text-gray-500 mt-1">All time</p>
+                <p className="text-xs text-gray-400 mt-1">All time</p>
               </div>
-              <Clock className="h-8 w-8 text-blue-600 opacity-20" />
+              <Clock className="h-8 w-8 text-lime-400 opacity-20" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
+            <CardTitle className="text-sm font-medium text-gray-400">
               Avg Match Duration
             </CardTitle>
           </CardHeader>
@@ -279,16 +279,16 @@ export default function AnalyticsDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-2xl font-bold">{summary.avgMatchDuration}h</div>
-                <p className="text-xs text-gray-500 mt-1">Per match</p>
+                <p className="text-xs text-gray-400 mt-1">Per match</p>
               </div>
-              <BarChart3 className="h-8 w-8 text-blue-600 opacity-20" />
+              <BarChart3 className="h-8 w-8 text-lime-400 opacity-20" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
+            <CardTitle className="text-sm font-medium text-gray-400">
               This Month
             </CardTitle>
           </CardHeader>
@@ -309,7 +309,7 @@ export default function AnalyticsDashboard() {
                   </div>
                 )}
               </div>
-              <Trophy className="h-8 w-8 text-blue-600 opacity-20" />
+              <Trophy className="h-8 w-8 text-lime-400 opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -334,7 +334,7 @@ export default function AnalyticsDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-blue-600" />
+              <Clock className="h-5 w-5 text-lime-400" />
               Peak Match Hours
             </CardTitle>
             <CardDescription>Most common match times</CardDescription>
@@ -351,7 +351,7 @@ export default function AnalyticsDashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-blue-600" />
+                <MapPin className="h-5 w-5 text-lime-400" />
                 Field Type Distribution
               </CardTitle>
               <CardDescription>Preferred field types</CardDescription>
@@ -370,7 +370,7 @@ export default function AnalyticsDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-blue-600" />
+              <Trophy className="h-5 w-5 text-lime-400" />
               Most Booked Goalkeepers
             </CardTitle>
             <CardDescription>Your go-to goalkeepers</CardDescription>
@@ -378,27 +378,27 @@ export default function AnalyticsDashboard() {
           <CardContent>
             <div className="space-y-3">
               {charts.topGoalkeepers.length === 0 ? (
-                <p className="text-sm text-gray-500 text-center py-4">
+                <p className="text-sm text-gray-400 text-center py-4">
                   No data available yet
                 </p>
               ) : (
                 charts.topGoalkeepers.map((gk, index) => (
-                  <div key={gk.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={gk.id} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-semibold">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-lime-400/10 text-lime-400 font-semibold">
                         {index + 1}
                       </div>
                       <div>
                         <p className="font-medium">{gk.name}</p>
-                        <p className="text-sm text-gray-500">{gk.matches} matches</p>
+                        <p className="text-sm text-gray-400">{gk.matches} matches</p>
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                        <p className="font-semibold text-gray-900">{gk.avgRating > 0 ? gk.avgRating.toFixed(1) : 'N/A'}</p>
+                        <p className="font-semibold text-gray-100">{gk.avgRating > 0 ? gk.avgRating.toFixed(1) : 'N/A'}</p>
                       </div>
-                      <p className="text-xs text-gray-500">avg rating</p>
+                      <p className="text-xs text-gray-400">avg rating</p>
                     </div>
                   </div>
                 ))

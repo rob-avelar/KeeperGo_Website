@@ -102,14 +102,14 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+    <div className="min-h-screen bg-transparent">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-gray-900 shadow-sm shadow-black/10 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/goalkeeper/dashboard" className="flex items-center gap-2">
-              <Goal className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-blue-800">KeeperGo</h1>
+              <Goal className="h-8 w-8 text-lime-400" />
+              <h1 className="text-2xl font-bold text-white">KeeperGo</h1>
             </Link>
             <Link href="/goalkeeper/dashboard">
               <Button variant="outline" size="sm">
@@ -122,18 +122,18 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Your Profile</h2>
-          <p className="text-gray-600">
+          <h2 className="text-3xl font-bold text-gray-100 mb-2">Your Profile</h2>
+          <p className="text-gray-400">
             Complete your profile to receive more booking requests from organizers.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information */}
-          <Card className="shadow-lg">
+          <Card className="shadow-lg shadow-black/20">
             <CardHeader>
               <CardTitle className="flex items-center">
-                <User className="h-5 w-5 text-blue-600 mr-2" />
+                <User className="h-5 w-5 text-lime-400 mr-2" />
                 Basic Information
               </CardTitle>
               <CardDescription>
@@ -163,7 +163,7 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
                       onChange={(e) => setProfilePhoto(e.target.files?.[0] || null)}
                       className="max-w-xs"
                     />
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-gray-400 mt-1">
                       Upload a professional photo to increase bookings
                     </p>
                   </div>
@@ -215,7 +215,7 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
           </Card>
 
           {/* Preferences */}
-          <Card className="shadow-lg">
+          <Card className="shadow-lg shadow-black/20">
             <CardHeader>
               <CardTitle>Field Preferences</CardTitle>
               <CardDescription>
@@ -244,10 +244,10 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
           </Card>
 
           {/* Rates and Service Area */}
-          <Card className="shadow-lg">
+          <Card className="shadow-lg shadow-black/20">
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Euro className="h-5 w-5 text-blue-600 mr-2" />
+                <Euro className="h-5 w-5 text-lime-400 mr-2" />
                 Rates & Service Area
               </CardTitle>
               <CardDescription>
@@ -291,7 +291,7 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
                   value={formData.serviceRadius}
                   onChange={(e) => handleChange('serviceRadius', parseInt(e.target.value))}
                 />
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-400">
                   Maximum distance you're willing to travel for matches
                 </p>
               </div>
@@ -299,10 +299,10 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
           </Card>
 
           {/* Location */}
-          <Card className="shadow-lg">
+          <Card className="shadow-lg shadow-black/20">
             <CardHeader>
               <CardTitle className="flex items-center">
-                <MapPin className="h-5 w-5 text-blue-600 mr-2" />
+                <MapPin className="h-5 w-5 text-lime-400 mr-2" />
                 Location
               </CardTitle>
               <CardDescription>
@@ -353,7 +353,7 @@ export default function GoalkeeperProfileForm({ user }: GoalkeeperProfileFormPro
             </Link>
             <Button 
               type="submit" 
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-lime-400 hover:bg-lime-300 text-gray-950"
               disabled={isLoading}
             >
               {isLoading ? (

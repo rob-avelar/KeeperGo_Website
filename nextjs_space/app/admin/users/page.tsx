@@ -185,7 +185,7 @@ export default function AdminUsersPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
       {/* Header */}
-      <header className="bg-slate-800 shadow-lg border-b border-slate-700">
+      <header className="bg-slate-800 shadow-lg shadow-black/20 border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
@@ -275,7 +275,7 @@ export default function AdminUsersPage() {
                             <p className="text-white font-medium">{user.name || 'Unnamed'}</p>
                             <Badge
                               variant={user.role === 'ORGANIZER' ? 'default' : 'secondary'}
-                              className={user.role === 'ORGANIZER' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}
+                              className={user.role === 'ORGANIZER' ? 'bg-lime-400/20 text-lime-400' : 'bg-lime-400/20 text-lime-300'}
                             >
                               {user.role}
                             </Badge>
@@ -402,7 +402,7 @@ export default function AdminUsersPage() {
                 </div>
                 <div>
                   <Label className="text-slate-400">Role</Label>
-                  <Badge className={selectedUser.role === 'ORGANIZER' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}>
+                  <Badge className={selectedUser.role === 'ORGANIZER' ? 'bg-lime-400/20 text-lime-400' : 'bg-lime-400/20 text-lime-300'}>
                     {selectedUser.role}
                   </Badge>
                 </div>
@@ -445,7 +445,7 @@ export default function AdminUsersPage() {
 
               {selectedUser.organizerBookings?.length > 0 && (
                 <div>
-                  <h4 className="text-lg font-semibold mb-3 text-blue-500">Recent Bookings (as Organizer)</h4>
+                  <h4 className="text-lg font-semibold mb-3 text-lime-400">Recent Bookings (as Organizer)</h4>
                   <div className="space-y-2">
                     {selectedUser.organizerBookings.slice(0, 5).map((booking: any) => (
                       <div key={booking.id} className="bg-slate-700/50 rounded-lg p-3 text-sm">

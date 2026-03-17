@@ -67,14 +67,14 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white p-4">
+    <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-800 mb-2">KeeperGo</h1>
-          <p className="text-gray-600">Sign in to your account</p>
+          <h1 className="text-3xl font-bold text-white mb-2">KeeperGo</h1>
+          <p className="text-gray-400">Sign in to your account</p>
         </div>
 
-        <Card className="shadow-lg">
+        <Card className="shadow-lg shadow-black/20">
           <CardHeader>
             <CardTitle className="text-2xl text-center">Welcome Back</CardTitle>
             <CardDescription className="text-center">
@@ -85,7 +85,7 @@ export default function SignInPage() {
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               {error && (
-                <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+                <div className="flex items-center gap-2 text-red-600 text-sm bg-red-900/20 p-3 rounded-lg">
                   <AlertCircle className="w-4 h-4" />
                   {error}
                 </div>
@@ -127,7 +127,7 @@ export default function SignInPage() {
             <CardFooter className="flex flex-col gap-4">
               <Button 
                 type="submit" 
-                className="w-full bg-blue-600 hover:bg-blue-700" 
+                className="w-full bg-lime-400 hover:bg-lime-300 text-gray-950" 
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -141,10 +141,10 @@ export default function SignInPage() {
               </Button>
 
               <div className="text-center text-sm">
-                <span className="text-gray-600">Don't have an account? </span>
+                <span className="text-gray-400">Don't have an account? </span>
                 <Link 
                   href="/auth/signup" 
-                  className="text-blue-600 hover:text-blue-700 font-medium"
+                  className="text-lime-400 hover:text-lime-500 font-medium"
                 >
                   Sign up
                 </Link>

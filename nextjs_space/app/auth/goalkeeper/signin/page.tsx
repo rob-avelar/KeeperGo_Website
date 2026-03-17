@@ -72,21 +72,21 @@ export default function GoalkeeperSignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white p-4">
+    <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">
-            <GoalIcon className="h-8 w-8 text-purple-600" />
-            <h1 className="text-3xl font-bold text-purple-800">KeeperGo</h1>
+            <GoalIcon className="h-8 w-8 text-lime-400" />
+            <h1 className="text-3xl font-bold text-white">KeeperGo</h1>
           </Link>
-          <p className="text-gray-600">Goalkeeper Sign In</p>
+          <p className="text-gray-400">Goalkeeper Sign In</p>
         </div>
 
-        <Card className="shadow-lg border-purple-200">
+        <Card className="shadow-lg shadow-black/20 border-gray-700">
           <CardHeader>
             <div className="flex items-center justify-center mb-4">
-              <div className="h-16 w-16 bg-purple-100 rounded-full flex items-center justify-center">
-                <GoalIcon className="h-8 w-8 text-purple-600" />
+              <div className="h-16 w-16 bg-lime-400/10 rounded-full flex items-center justify-center">
+                <GoalIcon className="h-8 w-8 text-lime-400" />
               </div>
             </div>
             <CardTitle className="text-2xl text-center">Welcome Back, Goalkeeper</CardTitle>
@@ -98,7 +98,7 @@ export default function GoalkeeperSignInPage() {
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               {error && (
-                <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+                <div className="flex items-center gap-2 text-red-600 text-sm bg-red-900/20 p-3 rounded-lg">
                   <AlertCircle className="w-4 h-4" />
                   {error}
                 </div>
@@ -140,7 +140,7 @@ export default function GoalkeeperSignInPage() {
             <CardFooter className="flex flex-col gap-4">
               <Button 
                 type="submit" 
-                className="w-full bg-purple-600 hover:bg-purple-700" 
+                className="w-full bg-lime-400 hover:bg-lime-300 text-gray-950" 
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -194,19 +194,19 @@ export default function GoalkeeperSignInPage() {
 
               <div className="text-center text-sm space-y-2">
                 <div>
-                  <span className="text-gray-600">Don't have an account? </span>
+                  <span className="text-gray-400">Don't have an account? </span>
                   <Link 
                     href="/auth/goalkeeper/signup" 
-                    className="text-purple-600 hover:text-purple-700 font-medium"
+                    className="text-lime-400 hover:text-lime-500 font-medium"
                   >
                     Sign up
                   </Link>
                 </div>
                 <div>
-                  <span className="text-gray-600">Are you an organizer? </span>
+                  <span className="text-gray-400">Are you an organizer? </span>
                   <Link 
                     href="/auth/organizer/signin" 
-                    className="text-purple-600 hover:text-purple-700 font-medium"
+                    className="text-lime-400 hover:text-lime-500 font-medium"
                   >
                     Sign in here
                   </Link>

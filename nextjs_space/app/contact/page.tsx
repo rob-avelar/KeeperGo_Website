@@ -63,10 +63,10 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-gray-900 shadow-sm shadow-black/10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Goal className="h-8 w-8 text-purple-600" />
+            <Goal className="h-8 w-8 text-lime-400" />
             <span className="font-bold text-xl">KeeperGo</span>
           </Link>
           <Link href="/">
@@ -93,7 +93,7 @@ export default function ContactPage() {
             </CardHeader>
             <CardContent>
               <Link href="/">
-                <Button className="bg-purple-600 hover:bg-purple-700">
+                <Button className="bg-lime-400 hover:bg-lime-300 text-gray-950">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Home
                 </Button>
@@ -103,8 +103,8 @@ export default function ContactPage() {
         ) : (
           <Card>
             <CardHeader className="text-center">
-              <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                <MessageSquare className="h-8 w-8 text-purple-600" />
+              <div className="mx-auto w-16 h-16 bg-lime-400/10 rounded-full flex items-center justify-center mb-4">
+                <MessageSquare className="h-8 w-8 text-lime-400" />
               </div>
               <CardTitle className="text-2xl">Contact Us</CardTitle>
               <CardDescription className="text-lg">
@@ -115,7 +115,7 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-gray-500" />
+                    <User className="h-4 w-4 text-gray-400" />
                     Name
                   </Label>
                   <Input
@@ -131,7 +131,7 @@ export default function ContactPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="email" className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-gray-500" />
+                    <Mail className="h-4 w-4 text-gray-400" />
                     Email
                   </Label>
                   <Input
@@ -147,7 +147,7 @@ export default function ContactPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="message" className="flex items-center gap-2">
-                    <MessageSquare className="h-4 w-4 text-gray-500" />
+                    <MessageSquare className="h-4 w-4 text-gray-400" />
                     Message
                   </Label>
                   <Textarea
@@ -163,7 +163,7 @@ export default function ContactPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-purple-600 hover:bg-purple-700"
+                  className="w-full bg-lime-400 hover:bg-lime-300 text-gray-950"
                   disabled={isLoading}
                 >
                   {isLoading ? (

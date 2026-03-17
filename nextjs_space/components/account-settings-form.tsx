@@ -27,7 +27,7 @@ export default function AccountSettingsForm({ userRole }: AccountSettingsFormPro
     confirmPassword: '',
   })
 
-  const colorScheme = userRole === 'ORGANIZER' ? 'blue' : 'purple'
+  const colorScheme = 'lime'
 
   useEffect(() => {
     fetchUserData()
@@ -178,7 +178,7 @@ export default function AccountSettingsForm({ userRole }: AccountSettingsFormPro
               placeholder="Enter your email"
               required
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-400 mt-1">
               Changing your email will require you to sign in again
             </p>
           </div>
@@ -236,7 +236,7 @@ export default function AccountSettingsForm({ userRole }: AccountSettingsFormPro
             />
           </div>
 
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-400">
             Leave password fields empty if you don't want to change your password
           </p>
         </CardContent>
@@ -247,11 +247,7 @@ export default function AccountSettingsForm({ userRole }: AccountSettingsFormPro
         <Button
           type="submit"
           disabled={loading}
-          className={`${
-            colorScheme === 'blue'
-              ? 'bg-blue-600 hover:bg-blue-700'
-              : 'bg-purple-600 hover:bg-purple-700'
-          }`}
+          className="bg-lime-400 hover:bg-lime-300 text-gray-950"
         >
           {loading ? (
             <>
