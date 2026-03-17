@@ -75,10 +75,10 @@ export default function HomePage() {
               />
               {/* Fade edges into background */}
               <div className="absolute inset-0 pointer-events-none" style={{
-                boxShadow: 'inset 0 0 80px 40px rgb(3 7 18)',
+                boxShadow: 'inset 0 0 60px 30px rgb(3 7 18)',
               }} />
-              {/* Stronger bottom fade */}
-              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-950 via-gray-950/70 to-transparent pointer-events-none" />
+              {/* Subtle bottom fade */}
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-950/80 to-transparent pointer-events-none" />
               {/* Top fade */}
               <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-gray-950 via-gray-950/40 to-transparent pointer-events-none" />
               {/* Left fade */}
