@@ -61,42 +61,53 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Hero Image with "Find My Keeper" overlay button */}
-        <div className="max-w-4xl mx-auto">
-          <div className="relative aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-2xl shadow-lime-400/10 border border-gray-800">
-            <Image
-              src="/og-image.jpg"
-              alt="KeeperGo - Never play without a keeper again"
-              fill
-              className="object-cover"
-              priority
-            />
-            {/* "Find My Keeper" button overlay - positioned where the yellow text box was */}
-            <Link
-              href="/auth/organizer/signin"
-              className="absolute bottom-[18%] left-4 sm:bottom-[18%] sm:left-8"
-            >
-              <Button
-                size="lg"
-                className="bg-lime-400 text-gray-950 hover:bg-lime-300 font-extrabold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg shadow-lime-400/30 uppercase tracking-wide"
-              >
-                Find My Keeper
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
-            {/* "I'm Keeper" button overlay - positioned bottom-right */}
-            <Link
-              href="/auth/goalkeeper/signin"
-              className="absolute bottom-[18%] right-4 sm:bottom-[18%] sm:right-8"
-            >
-              <Button
-                size="lg"
-                className="bg-white text-gray-950 hover:bg-gray-100 font-extrabold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg uppercase tracking-wide"
-              >
-                {"I'm Keeper"}
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
+        {/* Hero Image - merges into background */}
+        <div className="max-w-5xl mx-auto relative">
+          {/* Gradient overlays to blend image into background */}
+          <div className="relative">
+            <div className="relative aspect-video">
+              <Image
+                src="/og-image.jpg"
+                alt="KeeperGo - Never play without a keeper again"
+                fill
+                className="object-cover"
+                priority
+              />
+              {/* Fade edges into background */}
+              <div className="absolute inset-0 pointer-events-none" style={{
+                boxShadow: 'inset 0 0 80px 40px rgb(3 7 18)',
+              }} />
+              {/* Stronger bottom fade */}
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-950 via-gray-950/70 to-transparent pointer-events-none" />
+              {/* Top fade */}
+              <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-gray-950 via-gray-950/40 to-transparent pointer-events-none" />
+              {/* Left fade */}
+              <div className="absolute top-0 bottom-0 left-0 w-20 bg-gradient-to-r from-gray-950 via-gray-950/40 to-transparent pointer-events-none" />
+              {/* Right fade */}
+              <div className="absolute top-0 bottom-0 right-0 w-20 bg-gradient-to-l from-gray-950 via-gray-950/40 to-transparent pointer-events-none" />
+            </div>
+
+            {/* Buttons overlaid on image - same size */}
+            <div className="absolute bottom-12 sm:bottom-16 left-0 right-0 flex justify-between px-4 sm:px-10">
+              <Link href="/auth/organizer/signin" className="w-[48%] sm:w-auto">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-[220px] bg-lime-400 text-gray-950 hover:bg-lime-300 font-extrabold text-sm sm:text-base px-4 sm:px-6 py-3 sm:py-4 shadow-lg shadow-lime-400/30 uppercase tracking-wide"
+                >
+                  Find My Keeper
+                  <ArrowRight className="w-5 h-5 ml-2 flex-shrink-0" />
+                </Button>
+              </Link>
+              <Link href="/auth/goalkeeper/signin" className="w-[48%] sm:w-auto">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-[220px] bg-lime-400 text-gray-950 hover:bg-lime-300 font-extrabold text-sm sm:text-base px-4 sm:px-6 py-3 sm:py-4 shadow-lg shadow-lime-400/30 uppercase tracking-wide"
+                >
+                  {"I'm Goalkeeper"}
+                  <ArrowRight className="w-5 h-5 ml-2 flex-shrink-0" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
