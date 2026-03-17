@@ -71,10 +71,10 @@ export default function HomePage() {
               className="object-cover"
               priority
             />
-            {/* "Find My Keeper" button overlay - positioned bottom-left */}
+            {/* "Find My Keeper" button overlay - positioned where the yellow text box was */}
             <Link
               href="/auth/organizer/signin"
-              className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10"
+              className="absolute bottom-[18%] left-4 sm:bottom-[18%] sm:left-8"
             >
               <Button
                 size="lg"
@@ -84,18 +84,17 @@ export default function HomePage() {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            {/* "I Am a Goalkeeper" button overlay - positioned bottom-right */}
+            {/* "I'm Keeper" button overlay - positioned bottom-right */}
             <Link
               href="/auth/goalkeeper/signin"
-              className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10"
+              className="absolute bottom-[18%] right-4 sm:bottom-[18%] sm:right-8"
             >
               <Button
                 size="lg"
-                variant="outline"
-                className="border-2 border-white text-white hover:bg-white/20 hover:border-lime-400 font-extrabold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg uppercase tracking-wide backdrop-blur-sm bg-black/30"
+                className="bg-white text-gray-950 hover:bg-gray-100 font-extrabold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 shadow-lg uppercase tracking-wide"
               >
-                <Goal className="w-5 h-5 mr-2" />
-                I Am a Goalkeeper
+                {"I'm Keeper"}
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
           </div>
