@@ -79,7 +79,7 @@ export default function HomePage() {
         <div className="mt-16 max-w-4xl mx-auto">
           <div className="relative aspect-video bg-muted rounded-lg overflow-hidden shadow-2xl">
             <Image
-              src="/og-image.png"
+              src="/og-image.jpg"
               alt="KeeperGo Platform"
               fill
               className="object-cover"

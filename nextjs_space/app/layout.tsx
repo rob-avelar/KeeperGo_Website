@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: 'KeeperGo',
     images: [
       {
-        url: '/og-image.png',
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'KeeperGo - Goalkeeper Rental Platform',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'KeeperGo - Goalkeeper Rental Platform',
     description: 'Find and book professional goalkeepers for your football matches in the Netherlands.',
-    images: ['/og-image.png'],
+    images: ['/og-image.jpg'],
   },
   icons: {
     icon: '/favicon.svg',
