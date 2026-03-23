@@ -2,7 +2,7 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn, getSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -40,24 +40,18 @@ export default function OrganizerSignInPage() {
           variant: 'destructive',
         })
       } else {
-        const session = await getSession()
-        
-        // Check if user is actually an organizer
-        if (session?.user?.role !== 'ORGANIZER') {
-          toast({
-            title: 'Error',
-            description: 'This account is not registered as an organizer. Please use the goalkeeper login.',
-            variant: 'destructive',
-          })
-          await signIn('logout', { redirect: false })
-          setError('Invalid account type')
-        } else {
-          toast({
-            title: 'Success',
-            description: 'Successfully signed in!',
-          })
-          router.replace('/organizer/dashboard')
-        }
+        // Switch active role to ORGANIZER
+        await fetch('/api/switch-role', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: 'ORGANIZER' }),
+        })
+
+        toast({
+          title: 'Success',
+          description: 'Successfully signed in!',
+        })
+        router.replace('/organizer/dashboard')
       }
     } catch (error) {
       setError('Something went wrong')

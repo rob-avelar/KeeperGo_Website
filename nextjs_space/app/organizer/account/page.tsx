@@ -13,9 +13,6 @@ export default async function OrganizerAccountPage() {
     redirect('/auth/signin')
   }
 
-  if (session.user.role !== 'ORGANIZER') {
-    redirect('/goalkeeper/dashboard')
-  }
 
   return (
     <div className="min-h-screen bg-transparent">

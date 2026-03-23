@@ -10,9 +10,6 @@ export default async function BookGoalkeeperPage() {
     redirect('/auth/signin')
   }
 
-  if (session.user.role !== 'ORGANIZER') {
-    redirect('/goalkeeper/dashboard')
-  }
 
   return <BookGoalkeeperForm />
 }

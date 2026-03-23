@@ -11,8 +11,12 @@ export default async function OrganizerDashboardPage() {
     redirect('/auth/signin')
   }
 
+  // Auto-switch role to ORGANIZER when accessing this dashboard
   if (session.user.role !== 'ORGANIZER') {
-    redirect('/goalkeeper/dashboard')
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { role: 'ORGANIZER' }
+    })
   }
 
   const user = await prisma.user.findUnique({

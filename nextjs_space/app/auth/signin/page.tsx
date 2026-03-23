@@ -48,10 +48,14 @@ export default function SignInPage() {
         
         if (session?.user?.role === 'ADMIN') {
           router.replace('/admin/dashboard')
-        } else if (session?.user?.role === 'GOALKEEPER') {
-          router.replace('/goalkeeper/dashboard')
         } else {
-          router.replace('/organizer/dashboard')
+          // Redirect based on current role (role can be switched from dashboards)
+          const role = session?.user?.role
+          if (role === 'GOALKEEPER') {
+            router.replace('/goalkeeper/dashboard')
+          } else {
+            router.replace('/organizer/dashboard')
+          }
         }
       }
     } catch (error) {

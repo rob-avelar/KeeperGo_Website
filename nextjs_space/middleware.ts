@@ -15,20 +15,14 @@ export default withAuth(
       return NextResponse.redirect(url)
     }
 
-    // Require admin role for admin routes
+    // Require admin role for admin routes (strict)
     if (pathname.startsWith('/admin/') && token?.role !== 'ADMIN') {
       return NextResponse.redirect(new URL('/auth/signin', req.url))
     }
 
-    // Require organizer role for organizer routes
-    if (pathname.startsWith('/organizer/') && token?.role !== 'ORGANIZER') {
-      return NextResponse.redirect(new URL('/auth/signin', req.url))
-    }
-
-    // Require goalkeeper role for goalkeeper routes
-    if (pathname.startsWith('/goalkeeper/') && token?.role !== 'GOALKEEPER') {
-      return NextResponse.redirect(new URL('/auth/signin', req.url))
-    }
+    // For organizer/goalkeeper routes: only require authentication
+    // Role switching is handled by the pages themselves via /api/switch-role
+    // The JWT callback in getServerSession will fetch the fresh role from DB
   },
   {
     callbacks: {
@@ -39,6 +33,7 @@ export default withAuth(
             req.nextUrl.pathname.startsWith('/api/auth/') ||
             req.nextUrl.pathname.startsWith('/api/signup') ||
             req.nextUrl.pathname.startsWith('/api/complete-google-registration') ||
+            req.nextUrl.pathname.startsWith('/api/switch-role') ||
             req.nextUrl.pathname.startsWith('/api/contact') ||
             req.nextUrl.pathname.startsWith('/api/beta/')) {
           return true

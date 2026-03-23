@@ -11,9 +11,6 @@ export default async function GoalkeeperProfilePage() {
     redirect('/auth/signin')
   }
 
-  if (session.user.role !== 'GOALKEEPER') {
-    redirect('/organizer/dashboard')
-  }
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },

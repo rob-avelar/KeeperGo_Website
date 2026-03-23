@@ -13,9 +13,6 @@ export default async function GoalkeeperAccountPage() {
     redirect('/auth/signin')
   }
 
-  if (session.user.role !== 'GOALKEEPER') {
-    redirect('/organizer/dashboard')
-  }
 
   return (
     <div className="min-h-screen bg-transparent">

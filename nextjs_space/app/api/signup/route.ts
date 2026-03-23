@@ -73,14 +73,60 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    const normalizedRole = role?.toString()?.toUpperCase() as 'ORGANIZER' | 'GOALKEEPER'
+
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
+      include: { goalkeeperProfile: true }
     })
 
     if (existingUser) {
+      // If user exists, verify password and allow adding a new role
+      if (!existingUser.password) {
+        // Google SSO user - they should use Google to sign in
+        return NextResponse.json(
+          { error: 'This email is registered with Google. Please use Google sign-in.' },
+          { status: 400 }
+        )
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, existingUser.password)
+      if (!isPasswordValid) {
+        return NextResponse.json(
+          { error: 'Email already registered. If this is your account, use the correct password to add this role.' },
+          { status: 400 }
+        )
+      }
+
+      // Switch user to the requested role
+      await prisma.user.update({
+        where: { id: existingUser.id },
+        data: { role: normalizedRole }
+      })
+
+      // Create goalkeeper profile if switching to goalkeeper and profile doesn't exist
+      if (normalizedRole === 'GOALKEEPER' && !existingUser.goalkeeperProfile) {
+        await prisma.goalkeeperProfile.create({
+          data: {
+            userId: existingUser.id,
+          }
+        })
+      }
+
+      // Mark invite as used
+      if (invite) {
+        await prisma.betaInvite.update({
+          where: { id: invite.id },
+          data: {
+            usedBy: existingUser.id,
+            usedAt: new Date()
+          }
+        })
+      }
+
       return NextResponse.json(
-        { error: 'User already exists' },
-        { status: 400 }
+        { message: 'Role updated successfully', userId: existingUser.id, roleAdded: true },
+        { status: 200 }
       )
     }
 
@@ -91,7 +137,7 @@ export async function POST(request: NextRequest) {
         email,
         password: hashedPassword,
         name,
-        role: role?.toString()?.toUpperCase() as 'ORGANIZER' | 'GOALKEEPER',
+        role: normalizedRole,
       }
     })
 
@@ -107,7 +153,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create goalkeeper profile if user is a goalkeeper
-    if (role?.toString()?.toUpperCase() === 'GOALKEEPER') {
+    if (normalizedRole === 'GOALKEEPER') {
       await prisma.goalkeeperProfile.create({
         data: {
           userId: user.id,
