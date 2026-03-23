@@ -16,8 +16,21 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { auth } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 
-export default function HomePage() {
+export default async function HomePage() {
+  // If user is already logged in, redirect to their dashboard
+  const session = await auth()
+  if (session?.user?.role === 'ADMIN') {
+    redirect('/admin/dashboard')
+  } else if (session?.user?.role === 'GOALKEEPER') {
+    redirect('/goalkeeper/dashboard')
+  } else if (session?.user?.role === 'ORGANIZER') {
+    redirect('/organizer/dashboard')
+  } else if (session?.user && !session?.user?.role) {
+    redirect('/auth/complete-registration?email=' + encodeURIComponent(session.user.email || ''))
+  }
   return (
     <div className="min-h-screen bg-gray-950">
       {/* Header */}
