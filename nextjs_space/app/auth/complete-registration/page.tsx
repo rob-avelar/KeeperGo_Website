@@ -50,12 +50,9 @@ export default function CompleteRegistrationPage() {
         description: 'Registration completed. Redirecting...',
       })
 
-      // Redirect based on role
-      if (role === 'GOALKEEPER') {
-        router.replace('/goalkeeper/dashboard')
-      } else {
-        router.replace('/organizer/dashboard')
-      }
+      // Re-login with Google to refresh the session with the new role
+      const dashboard = role === 'GOALKEEPER' ? '/goalkeeper/dashboard' : '/organizer/dashboard'
+      await signIn('google', { callbackUrl: dashboard })
     } catch (error: any) {
       toast({
         title: 'Error',

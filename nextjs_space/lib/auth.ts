@@ -69,28 +69,19 @@ export const authOptions: NextAuthOptions = {
         return true
       }
 
-      // Handle Google OAuth
+      // Handle Google OAuth — always return true so PrismaAdapter creates the user
       if (account?.provider === 'google') {
-        // Check if user already exists
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email! }
-        })
-
-        // If user exists, update their Google account connection
-        if (existingUser) {
-          // If user has a role, allow login
-          if (existingUser.role) {
-            return true
-          }
-          // If no role, they need to complete registration
-          return '/auth/complete-registration?email=' + encodeURIComponent(user.email!)
-        }
-
-        // New Google user needs to select role
-        return '/auth/complete-registration?email=' + encodeURIComponent(user.email!)
+        return true
       }
 
       return true
+    },
+    async redirect({ url, baseUrl }) {
+      // If redirecting to a dashboard but user needs role selection,
+      // the middleware will handle redirecting to complete-registration
+      if (url.startsWith('/')) return `${baseUrl}${url}`
+      if (url.startsWith(baseUrl)) return url
+      return baseUrl
     },
     async jwt({ token, user, account, trigger }) {
       // Initial sign in
@@ -98,13 +89,14 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role
       }
 
-      // Fetch fresh user data if needed
-      if (token.sub && !token.role) {
+      // Always fetch fresh user data to pick up role changes
+      if (token.sub) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.sub }
         })
-        if (dbUser?.role) {
-          token.role = dbUser.role
+        if (dbUser) {
+          token.role = dbUser.role || null
+          token.email = dbUser.email
         }
       }
 
