@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { sendBookingCancelledEmail } from '@/lib/email';
 
 // Cancellation rules for organizers
 function calculateOrganizerRefund(hoursUntilMatch: number, totalAmount: number) {
@@ -151,6 +152,18 @@ export async function POST(
         return { updatedBooking };
       });
 
+      // Send cancellation email to goalkeeper
+      if (booking.goalkeeper?.email && booking.goalkeeper.emailNotifications) {
+        sendBookingCancelledEmail(
+          booking.goalkeeper.email,
+          booking.goalkeeper.name || 'Goalkeeper',
+          'GOALKEEPER',
+          matchTime,
+          booking.location,
+          reason
+        ).catch(err => console.error('[Cancel] Email send error:', err))
+      }
+
       return NextResponse.json({
         success: true,
         message: `Booking cancelled. Refund: €${(refundAmount / 100).toFixed(2)} (${refundCalc.refundPercent}%)`,
@@ -262,6 +275,18 @@ export async function POST(
 
         return { updatedBooking, updatedProfile };
       });
+
+      // Send cancellation email to organizer
+      if (booking.organizer?.email && booking.organizer.emailNotifications) {
+        sendBookingCancelledEmail(
+          booking.organizer.email,
+          booking.organizer.name || 'Organizer',
+          'ORGANIZER',
+          matchTime,
+          booking.location,
+          reason
+        ).catch(err => console.error('[Cancel] Email send error:', err))
+      }
 
       return NextResponse.json({
         success: true,

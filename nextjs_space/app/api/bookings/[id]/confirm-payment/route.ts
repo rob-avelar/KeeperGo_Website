@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { retrievePaymentIntent } from '@/lib/stripe'
+import { sendPaymentReceivedEmail } from '@/lib/email'
 
 export async function POST(
   request: NextRequest,
@@ -26,7 +27,7 @@ export async function POST(
           take: 1
         },
         goalkeeper: {
-          select: { id: true, name: true }
+          select: { id: true, name: true, email: true, emailNotifications: true }
         }
       }
     })
@@ -97,6 +98,17 @@ export async function POST(
         }
       })
     })
+
+    // Send payment received email to goalkeeper
+    if (booking.goalkeeper?.email && booking.goalkeeper.emailNotifications) {
+      sendPaymentReceivedEmail(
+        booking.goalkeeper.email,
+        booking.goalkeeper.name || 'Goalkeeper',
+        booking.totalAmount,
+        booking.date,
+        booking.location
+      ).catch(err => console.error('[ConfirmPayment] Email send error:', err))
+    }
 
     return NextResponse.json({ success: true, message: 'Payment confirmed and booking updated' })
   } catch (error) {

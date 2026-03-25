@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { sendEmail, emailTemplates } from '@/lib/email'
+import { sendMatchReminderEmail } from '@/lib/email'
 
 export const dynamic = 'force-dynamic'
 
@@ -76,37 +76,27 @@ export async function GET() {
     for (const booking of bookingsFor24HourReminder) {
       // Send to organizer
       if (booking.organizer.emailNotifications && booking.organizer.notifyMatchReminder24h) {
-        const template = emailTemplates.matchReminder(
+        await sendMatchReminderEmail(
+          booking.organizer.email,
           booking.organizer.name || 'there',
           'ORGANIZER',
           booking.date,
           booking.location,
           24
         )
-        await sendEmail({
-          to: booking.organizer.email,
-          subject: template.subject,
-          html: template.html,
-          text: template.text
-        })
         sentCount++
       }
 
       // Send to goalkeeper
       if (booking.goalkeeper && booking.goalkeeper.emailNotifications && booking.goalkeeper.notifyMatchReminder24h) {
-        const template = emailTemplates.matchReminder(
+        await sendMatchReminderEmail(
+          booking.goalkeeper.email,
           booking.goalkeeper.name || 'there',
           'GOALKEEPER',
           booking.date,
           booking.location,
           24
         )
-        await sendEmail({
-          to: booking.goalkeeper.email,
-          subject: template.subject,
-          html: template.html,
-          text: template.text
-        })
         sentCount++
       }
 
@@ -138,37 +128,27 @@ export async function GET() {
     for (const booking of bookingsFor2HourReminder) {
       // Send to organizer
       if (booking.organizer.emailNotifications && booking.organizer.notifyMatchReminder2h) {
-        const template = emailTemplates.matchReminder(
+        await sendMatchReminderEmail(
+          booking.organizer.email,
           booking.organizer.name || 'there',
           'ORGANIZER',
           booking.date,
           booking.location,
           2
         )
-        await sendEmail({
-          to: booking.organizer.email,
-          subject: template.subject,
-          html: template.html,
-          text: template.text
-        })
         sentCount++
       }
 
       // Send to goalkeeper
       if (booking.goalkeeper && booking.goalkeeper.emailNotifications && booking.goalkeeper.notifyMatchReminder2h) {
-        const template = emailTemplates.matchReminder(
+        await sendMatchReminderEmail(
+          booking.goalkeeper.email,
           booking.goalkeeper.name || 'there',
           'GOALKEEPER',
           booking.date,
           booking.location,
           2
         )
-        await sendEmail({
-          to: booking.goalkeeper.email,
-          subject: template.subject,
-          html: template.html,
-          text: template.text
-        })
         sentCount++
       }
 
