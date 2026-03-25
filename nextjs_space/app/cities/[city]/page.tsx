@@ -1,9 +1,10 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Goal, MapPin, Users, Star, Shield, Clock, ArrowRight, CheckCircle, Euro } from 'lucide-react'
+import { Goal, MapPin, Users, Star, Shield, ArrowRight, CheckCircle, Euro } from 'lucide-react'
 import { notFound } from 'next/navigation'
 
 const CITIES: Record<string, {
@@ -53,7 +54,7 @@ const CITIES: Record<string, {
     ],
     whyHere: [
       'Over 200 sports locations managed by Sportbedrijf Rotterdam',
-      'Affordable field rental — from \u20ac29/hr for half a field via sportbedrijfrotterdam.nl',
+      'Affordable field rental \u2014 from \u20ac29/hr for half a field via sportbedrijfrotterdam.nl',
       'Active amateur football and futsal community',
       'Multiple artificial grass fields available across the city',
     ],
@@ -75,7 +76,7 @@ const CITIES: Record<string, {
     ],
     whyHere: [
       '24 municipal sports parks with football fields available for rent',
-      'Central location — easy to reach from across the Netherlands',
+      'Central location \u2014 easy to reach from across the Netherlands',
       'Active student football community from Utrecht University and HU',
       'Field rental starts at \u20ac12.31/hr for associations via utrecht.nl',
     ],
@@ -96,7 +97,7 @@ const CITIES: Record<string, {
     ],
     whyHere: [
       '16 sports halls and 160+ outdoor fields managed by the municipality',
-      'Sportcampus Zuiderpark — open 7 days a week for events and matches',
+      'Sportcampus Zuiderpark \u2014 open 7 days a week for events and matches',
       'Large international community with many expat football teams',
       'Active recreational football scene across all neighborhoods',
     ],
@@ -133,45 +134,88 @@ export default async function CityPage({ params }: { params: { city: string } })
   return (
     <div className="min-h-screen bg-gray-950">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-950/95 backdrop-blur">
+      <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-950/95 backdrop-blur supports-[backdrop-filter]:bg-gray-950/60">
         <div className="max-w-6xl mx-auto flex h-14 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
             <Goal className="h-6 w-6 text-lime-400" />
             <span className="font-bold text-xl text-white">KeeperGo</span>
           </Link>
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-2 sm:gap-4">
             <Link href="/auth/organizer/signin">
-              <Button size="sm" className="bg-lime-400 text-gray-950 hover:bg-lime-300">
-                Find a Keeper
+              <Button variant="ghost" size="sm" className="text-gray-300 hover:text-lime-400 hover:bg-gray-800">
+                <Users className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Organizer</span> Login
+              </Button>
+            </Link>
+            <Link href="/auth/goalkeeper/signin">
+              <Button variant="ghost" size="sm" className="text-gray-300 hover:text-lime-400 hover:bg-gray-800">
+                <Goal className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Goalkeeper</span> Login
               </Button>
             </Link>
           </nav>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="py-16 px-4 text-center border-b border-gray-800">
-        <div className="max-w-4xl mx-auto">
-          <Badge className="mb-4 bg-lime-400/10 text-lime-400 border-lime-400/30">
+      {/* Hero with Goalkeeper Image */}
+      <section className="relative py-16 px-4 text-center">
+        <div className="max-w-4xl mx-auto mb-10">
+          <Badge className="mb-4 bg-lime-400/10 text-lime-400 border-lime-400/30 hover:bg-lime-400/20">
             <MapPin className="w-3 h-3 mr-1" /> {city.nameFull}
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {city.heroTitle}
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+            {city.heroTitle.replace('Find a Goalkeeper in ', 'Find the Perfect ')}
+            <span className="text-lime-400"> Goalkeeper</span>
+            <br />
+            <span className="text-3xl md:text-4xl">in {city.name}</span>
           </h1>
-          <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-400 mb-0 max-w-2xl mx-auto">
             {city.heroSubtitle}
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/auth/organizer/signup">
-              <Button size="lg" className="bg-lime-400 text-gray-950 hover:bg-lime-300">
-                Sign Up as Organizer <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="/auth/goalkeeper/signup">
-              <Button size="lg" variant="outline" className="border-gray-700 text-gray-300 hover:border-lime-400 hover:text-lime-400">
-                Register as Goalkeeper
-              </Button>
-            </Link>
+        </div>
+
+        {/* Hero Image */}
+        <div className="max-w-5xl mx-auto relative">
+          <div className="relative">
+            <div className="relative aspect-video">
+              <Image
+                src="/city-hero.jpg"
+                alt={`Goalkeeper making a save - KeeperGo ${city.name}`}
+                fill
+                className="object-cover"
+                priority
+              />
+              {/* Fade edges into background */}
+              <div className="absolute inset-0 pointer-events-none" style={{
+                boxShadow: 'inset 0 0 60px 30px rgb(3 7 18)',
+              }} />
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-950/80 to-transparent pointer-events-none" />
+              <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-gray-950 via-gray-950/40 to-transparent pointer-events-none" />
+              <div className="absolute top-0 bottom-0 left-0 w-20 bg-gradient-to-r from-gray-950 via-gray-950/40 to-transparent pointer-events-none" />
+              <div className="absolute top-0 bottom-0 right-0 w-20 bg-gradient-to-l from-gray-950 via-gray-950/40 to-transparent pointer-events-none" />
+            </div>
+
+            {/* Buttons overlaid on image */}
+            <div className="absolute bottom-12 sm:bottom-16 left-0 right-0 flex justify-between px-4 sm:px-10">
+              <Link href="/auth/organizer/signin" className="w-[48%] sm:w-auto">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-[220px] bg-lime-400 text-gray-950 hover:bg-lime-300 font-extrabold text-sm sm:text-base px-4 sm:px-6 py-3 sm:py-4 shadow-lg shadow-lime-400/30 uppercase tracking-wide"
+                >
+                  Find My Keeper
+                  <ArrowRight className="w-5 h-5 ml-2 flex-shrink-0" />
+                </Button>
+              </Link>
+              <Link href="/auth/goalkeeper/signin" className="w-[48%] sm:w-auto">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-[220px] bg-lime-400 text-gray-950 hover:bg-lime-300 font-extrabold text-sm sm:text-base px-4 sm:px-6 py-3 sm:py-4 shadow-lg shadow-lime-400/30 uppercase tracking-wide"
+                >
+                  {"I'm Goalkeeper"}
+                  <ArrowRight className="w-5 h-5 ml-2 flex-shrink-0" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -301,7 +345,7 @@ export default async function CityPage({ params }: { params: { city: string } })
           <p className="text-gray-400 mb-8">Sign up for free and post your first match in under a minute.</p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/auth/organizer/signup">
-              <Button size="lg" className="bg-lime-400 text-gray-950 hover:bg-lime-300">
+              <Button size="lg" className="bg-lime-400 text-gray-950 hover:bg-lime-300 font-bold shadow-lg shadow-lime-400/20">
                 Sign Up as Organizer <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -342,8 +386,6 @@ export default async function CityPage({ params }: { params: { city: string } })
           <div className="flex gap-6 text-sm text-gray-400">
             <Link href="/contact" className="hover:text-lime-400">Contact</Link>
             <Link href="/partnerships" className="hover:text-lime-400">Partnerships</Link>
-            <Link href="/privacy" className="hover:text-lime-400">Privacy</Link>
-            <Link href="/terms" className="hover:text-lime-400">Terms</Link>
           </div>
           <p className="text-sm text-gray-500">\u00a9 2026 KeeperGo. All rights reserved.</p>
         </div>
