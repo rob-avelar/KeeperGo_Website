@@ -311,6 +311,27 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Cities Section */}
+      <section className="py-12 px-4 bg-gray-900/50 border-t border-gray-800">
+        <div className="max-w-6xl mx-auto text-center">
+          <h3 className="text-lg font-semibold text-white mb-4">Available in</h3>
+          <div className="flex flex-wrap gap-3 justify-center">
+            {[
+              { slug: 'amsterdam', name: 'Amsterdam' },
+              { slug: 'rotterdam', name: 'Rotterdam' },
+              { slug: 'utrecht', name: 'Utrecht' },
+              { slug: 'den-haag', name: 'The Hague' },
+            ].map(city => (
+              <Link key={city.slug} href={`/cities/${city.slug}`}>
+                <Badge className="bg-gray-800 text-gray-300 border-gray-700 hover:border-lime-400 hover:text-lime-400 cursor-pointer text-sm py-1.5 px-4">
+                  <MapPin className="w-3 h-3 mr-1" /> {city.name}
+                </Badge>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-gray-950 border-t border-gray-800 text-white py-12 px-4">
         <div className="max-w-6xl mx-auto">
@@ -320,14 +341,17 @@ export default async function HomePage() {
               <span className="font-bold text-xl">KeeperGo</span>
             </div>
             <div className="flex items-center gap-6 text-gray-500">
-              <Link href="/terms" className="hover:text-lime-400 transition-colors">
-                Terms of Service
-              </Link>
-              <Link href="/privacy" className="hover:text-lime-400 transition-colors">
-                Privacy Policy
+              <Link href="/partnerships" className="hover:text-lime-400 transition-colors">
+                Partnerships
               </Link>
               <Link href="/contact" className="hover:text-lime-400 transition-colors">
                 Contact Us
+              </Link>
+              <Link href="/privacy" className="hover:text-lime-400 transition-colors">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-lime-400 transition-colors">
+                Terms
               </Link>
             </div>
           </div>

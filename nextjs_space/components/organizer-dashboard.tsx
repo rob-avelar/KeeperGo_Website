@@ -2,6 +2,7 @@
 'use client'
 
 import { useState } from 'react'
+import ReferralCard from '@/components/referral-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -733,6 +734,11 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      {/* Referral Program */}
+      <div className="mb-8">
+        <ReferralCard />
       </div>
 
       {/* Cancellation Dialog */}

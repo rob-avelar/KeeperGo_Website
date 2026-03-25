@@ -71,6 +71,10 @@ model User {
   favoriteGoalkeepers FavoriteGoalkeeper[] @relation("OrganizerFavorites")
   favoritedBy         FavoriteGoalkeeper[] @relation("GoalkeeperFavorites")
   betaInvite          BetaInvite[]
+  referralCode        String?             @unique
+  referredByCode      String?
+  referralsMade       Referral[]          @relation("ReferralsMade")
+  referralsReceived   Referral[]          @relation("ReferralsReceived")
 
   @@map("users")
 }
@@ -300,6 +304,30 @@ model BetaInvite {
   notes       String?
   
   user        User?     @relation(fields: [usedBy], references: [id])
+}
+
+model Referral {
+  id              String    @id @default(cuid())
+  referrerId      String
+  referredId      String?
+  referralCode    String    @unique
+  status          ReferralStatus @default(PENDING)
+  rewardAmount    Int       @default(500) // in cents (€5)
+  referrerRewarded Boolean  @default(false)
+  referredRewarded Boolean  @default(false)
+  createdAt       DateTime  @default(now())
+  usedAt          DateTime?
+
+  referrer        User      @relation("ReferralsMade", fields: [referrerId], references: [id], onDelete: Cascade)
+  referred        User?     @relation("ReferralsReceived", fields: [referredId], references: [id], onDelete: SetNull)
+
+  @@map("referrals")
+}
+
+enum ReferralStatus {
+  PENDING
+  SIGNED_UP
+  COMPLETED  // referred user completed first booking
 }
 
 model AppSettings {

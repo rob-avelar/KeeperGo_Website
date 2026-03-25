@@ -35,6 +35,7 @@ export default withAuth(
             req.nextUrl.pathname.startsWith('/api/complete-google-registration') ||
             req.nextUrl.pathname.startsWith('/api/switch-role') ||
             req.nextUrl.pathname.startsWith('/api/contact') ||
+            req.nextUrl.pathname.startsWith('/api/referral') ||
             req.nextUrl.pathname.startsWith('/api/beta/')) {
           return true
         }
