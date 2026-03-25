@@ -67,9 +67,8 @@ export default function TermsPage() {
               <h2 className="text-xl font-semibold text-gray-100 mb-3">5. Payments and Commissions</h2>
               <div className="text-gray-300 leading-relaxed">
                 <p className="mb-2">The minimum hourly rate is €20.</p>
-                <p className="mb-2">The platform retains a 25% commission on each transaction.</p>
-                <p className="mb-2">Goalkeepers receive 75% of the total amount.</p>
-                <p>Direct bookings include a 25% surcharge on the base price.</p>
+                <p className="mb-2">A service fee is included in each transaction to cover platform costs.</p>
+                <p>Direct bookings may include an additional premium on the base price.</p>
               </div>
             </section>
 
