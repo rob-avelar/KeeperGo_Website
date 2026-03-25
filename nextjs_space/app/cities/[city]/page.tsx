@@ -13,57 +13,93 @@ const CITIES: Record<string, {
   metaDescription: string
   heroTitle: string
   heroSubtitle: string
-  venues: string[]
-  stats: { keepers: string; matches: string; rating: string }
-  highlights: string[]
+  venues: { name: string; type: string }[]
+  whyHere: string[]
   neighborhoods: string[]
 }> = {
   amsterdam: {
     name: 'Amsterdam',
     nameFull: 'Amsterdam',
-    description: 'The capital city and football heart of the Netherlands. With hundreds of amateur clubs and recreational fields, Amsterdam is the perfect market for goalkeeper rentals.',
-    metaDescription: 'Hire professional goalkeepers for your football matches in Amsterdam. KeeperGo connects you with skilled goalkeepers in Amsterdam-Noord, Zuid, Oost, West and more.',
-    heroTitle: 'Goalkeeper Rental in Amsterdam',
-    heroSubtitle: 'Find skilled goalkeepers for your amateur matches across all Amsterdam neighborhoods. From Vondelpark fields to Johan Cruyff Arena pitches.',
-    venues: ['Olympic Stadium Fields', 'Sportpark Sloten', 'Sportpark De Toekomst', 'Sportcentrum Voorland', 'De Boelelaan Sportcentre'],
-    stats: { keepers: '50+', matches: '200+', rating: '4.8' },
-    highlights: ['Largest goalkeeper network in Amsterdam', 'Coverage across all districts', 'Average response time under 2 hours', 'Available for indoor (zaalvoetbal) and outdoor'],
-    neighborhoods: ['Amsterdam-Noord', 'Amsterdam-Zuid', 'Amsterdam-Oost', 'Amsterdam-West', 'De Pijp', 'Jordaan', 'Amstelveen']
+    description: 'Amsterdam has a thriving amateur football scene with dozens of sports parks across the city. Whether you play outdoors at a sportpark or indoors at a sporthal, finding a complete team — especially a goalkeeper — can be a challenge. KeeperGo helps bridge that gap.',
+    metaDescription: 'Hire a goalkeeper for your football match in Amsterdam. KeeperGo connects organizers with available goalkeepers across Amsterdam neighborhoods.',
+    heroTitle: 'Find a Goalkeeper in Amsterdam',
+    heroSubtitle: 'Connecting match organizers with available goalkeepers across Amsterdam — indoors and outdoors.',
+    venues: [
+      { name: 'Het Marnix (Sporthal & Oostenburg)', type: 'Indoor' },
+      { name: 'Footy Park Amsterdam', type: '5-a-side' },
+      { name: 'Indoor Soccer Events (Rhoneweg)', type: 'Indoor' },
+      { name: 'Sportcentrum VU (Amstelveen)', type: 'Indoor' },
+      { name: 'Municipal Sports Parks (24+ locations)', type: 'Outdoor' },
+    ],
+    whyHere: [
+      'Dozens of sports parks and indoor halls available for rent via amsterdam.nl',
+      'Large expat community — many international teams looking for goalkeepers',
+      'Active amateur and recreational football scene year-round',
+      'Strong indoor (zaalvoetbal) culture during winter months',
+    ],
+    neighborhoods: ['Amsterdam-Noord', 'Amsterdam-Zuid', 'Amsterdam-Oost', 'Amsterdam-West', 'Amstelveen', 'Nieuw-West']
   },
   rotterdam: {
     name: 'Rotterdam',
     nameFull: 'Rotterdam',
-    description: 'The port city with a vibrant football culture. Rotterdam\'s competitive amateur scene makes it a hotspot for goalkeeper demand.',
-    metaDescription: 'Hire professional goalkeepers for your football matches in Rotterdam. KeeperGo connects you with skilled goalkeepers across Rotterdam-Zuid, Kralingen, Delfshaven and more.',
-    heroTitle: 'Goalkeeper Rental in Rotterdam',
-    heroSubtitle: 'Connect with experienced goalkeepers for your matches in Rotterdam. From Kralingen to Feijenoord, we\'ve got you covered.',
-    venues: ['Sportcomplex Varkenoord', 'Sportpark Neptunus', 'Sportpark Woudestein', 'Goals Soccer Centre Rotterdam'],
-    stats: { keepers: '35+', matches: '120+', rating: '4.7' },
-    highlights: ['Growing goalkeeper community', 'Strong futsal (zaalvoetbal) presence', 'Corporate football specialist goalkeepers', 'Quick bookings for last-minute matches'],
-    neighborhoods: ['Rotterdam-Zuid', 'Kralingen', 'Delfshaven', 'Hillegersberg', 'Blijdorp', 'Feijenoord']
+    description: 'Rotterdam is a city with deep football roots and a competitive amateur scene. Sportbedrijf Rotterdam manages over 200 sports locations across the city, offering both outdoor fields and indoor sports halls for rent. KeeperGo helps teams in Rotterdam find the goalkeeper they need.',
+    metaDescription: 'Hire a goalkeeper for your football match in Rotterdam. KeeperGo connects organizers with available goalkeepers across Rotterdam.',
+    heroTitle: 'Find a Goalkeeper in Rotterdam',
+    heroSubtitle: 'Connecting match organizers with available goalkeepers across Rotterdam\u2019s many sports parks and indoor halls.',
+    venues: [
+      { name: 'Sportbedrijf Rotterdam (200+ locations)', type: 'Outdoor & Indoor' },
+      { name: 'Topsportcentrum Rotterdam', type: 'Indoor' },
+      { name: 'WION Complex (artificial & natural grass)', type: 'Outdoor' },
+    ],
+    whyHere: [
+      'Over 200 sports locations managed by Sportbedrijf Rotterdam',
+      'Affordable field rental — from \u20ac29/hr for half a field via sportbedrijfrotterdam.nl',
+      'Active amateur football and futsal community',
+      'Multiple artificial grass fields available across the city',
+    ],
+    neighborhoods: ['Rotterdam-Zuid', 'Kralingen', 'Delfshaven', 'Hillegersberg', 'Feijenoord', 'Overschie']
   },
   utrecht: {
     name: 'Utrecht',
     nameFull: 'Utrecht',
-    description: 'The central hub of the Netherlands with a growing recreational football scene. Utrecht\'s compact size means goalkeepers can reach any venue quickly.',
-    metaDescription: 'Hire professional goalkeepers for your football matches in Utrecht. KeeperGo connects you with skilled goalkeepers in Utrecht-stad, De Meern, Leidsche Rijn and more.',
-    heroTitle: 'Goalkeeper Rental in Utrecht',
-    heroSubtitle: 'Find goalkeepers for your amateur matches in Utrecht. Central location means fast availability across the entire city.',
-    venues: ['Sportpark Zoudenbalch', 'Sportpark Olympos', 'Sportcentrum Nieuw Welgelegen', 'De Galgenwaard area fields'],
-    stats: { keepers: '25+', matches: '80+', rating: '4.9' },
-    highlights: ['Highest-rated goalkeepers in the Netherlands', 'University leagues specialist', 'Central location \u2014 quick travel times', 'Indoor and outdoor availability'],
-    neighborhoods: ['Utrecht Centrum', 'Leidsche Rijn', 'De Meern', 'Overvecht', 'Lunetten', 'Zuilen']
+    description: 'Utrecht offers 24 municipal sports parks with football fields available for rent via the city. Its central location in the Netherlands means goalkeepers can reach venues quickly. KeeperGo connects teams across Utrecht with available goalkeepers.',
+    metaDescription: 'Hire a goalkeeper for your football match in Utrecht. KeeperGo connects organizers with available goalkeepers across Utrecht and surrounding areas.',
+    heroTitle: 'Find a Goalkeeper in Utrecht',
+    heroSubtitle: 'Connecting match organizers with available goalkeepers across Utrecht\u2019s sports parks and indoor halls.',
+    venues: [
+      { name: 'Sportpark Zoudenbalch', type: 'Outdoor' },
+      { name: 'Sportpark Maarschalkerweerd', type: 'Outdoor' },
+      { name: 'Footy Park Utrecht', type: '5-a-side' },
+      { name: 'Sportpark Papendorp (Leidsche Rijn)', type: 'Outdoor' },
+      { name: 'Municipal Sports Parks (24 locations)', type: 'Outdoor' },
+    ],
+    whyHere: [
+      '24 municipal sports parks with football fields available for rent',
+      'Central location — easy to reach from across the Netherlands',
+      'Active student football community from Utrecht University and HU',
+      'Field rental starts at \u20ac12.31/hr for associations via utrecht.nl',
+    ],
+    neighborhoods: ['Utrecht Centrum', 'Leidsche Rijn', 'De Meern', 'Overvecht', 'Zuilen', 'Vleuten']
   },
   'den-haag': {
     name: 'Den Haag',
     nameFull: 'The Hague (Den Haag)',
-    description: 'The political capital with a thriving amateur football community. Den Haag offers diverse football cultures from beach football to traditional 11v11.',
-    metaDescription: 'Hire professional goalkeepers for your football matches in The Hague (Den Haag). KeeperGo connects you with skilled goalkeepers in Scheveningen, Loosduinen, and more.',
-    heroTitle: 'Goalkeeper Rental in The Hague',
-    heroSubtitle: 'Book goalkeepers for your matches in Den Haag. From beach football in Scheveningen to indoor arenas in Ypenburg.',
-    venues: ['Sportcampus Zuiderpark', 'Sportpark Berestein', 'Sportpark Ockenburgh', 'Kick Den Haag'],
-    stats: { keepers: '20+', matches: '60+', rating: '4.8' },
-    highlights: ['Beach football goalkeepers available', 'Expat-friendly community', 'Diplomatic & corporate match specialists', 'Weekend warrior packages'],
+    description: 'The Hague has 16 sports halls and over 160 sports fields available for rent. From Sportcampus Zuiderpark to neighborhood sports halls, there\u2019s no shortage of places to play. KeeperGo helps teams in Den Haag find a goalkeeper when they need one.',
+    metaDescription: 'Hire a goalkeeper for your football match in The Hague (Den Haag). KeeperGo connects organizers with available goalkeepers across Den Haag.',
+    heroTitle: 'Find a Goalkeeper in The Hague',
+    heroSubtitle: 'Connecting match organizers with available goalkeepers across Den Haag\u2019s sports halls and outdoor fields.',
+    venues: [
+      { name: 'Sportcampus Zuiderpark', type: 'Multi-sport' },
+      { name: 'Ons Eibernest (Morgenstond)', type: 'Indoor & Outdoor' },
+      { name: '16 municipal sports halls across the city', type: 'Indoor' },
+      { name: '160+ municipal sports fields', type: 'Outdoor' },
+    ],
+    whyHere: [
+      '16 sports halls and 160+ outdoor fields managed by the municipality',
+      'Sportcampus Zuiderpark — open 7 days a week for events and matches',
+      'Large international community with many expat football teams',
+      'Active recreational football scene across all neighborhoods',
+    ],
     neighborhoods: ['Scheveningen', 'Loosduinen', 'Ypenburg', 'Leidschenveen', 'Centrum', 'Laak']
   }
 }
@@ -126,52 +162,31 @@ export default async function CityPage({ params }: { params: { city: string } })
             {city.heroSubtitle}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/auth/organizer/signin">
+            <Link href="/auth/organizer/signup">
               <Button size="lg" className="bg-lime-400 text-gray-950 hover:bg-lime-300">
-                Find My Keeper <ArrowRight className="ml-2 h-4 w-4" />
+                Sign Up as Organizer <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link href="/auth/goalkeeper/signin">
+            <Link href="/auth/goalkeeper/signup">
               <Button size="lg" variant="outline" className="border-gray-700 text-gray-300 hover:border-lime-400 hover:text-lime-400">
-                I\u2019m a Goalkeeper
+                Register as Goalkeeper
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-12 px-4 border-b border-gray-800">
-        <div className="max-w-4xl mx-auto grid grid-cols-3 gap-6">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-lime-400">{city.stats.keepers}</div>
-            <p className="text-sm text-gray-400 mt-1">Active Goalkeepers</p>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-lime-400">{city.stats.matches}</div>
-            <p className="text-sm text-gray-400 mt-1">Matches Played</p>
-          </div>
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-1">
-              <Star className="h-6 w-6 text-yellow-400 fill-yellow-400" />
-              <span className="text-3xl font-bold text-white">{city.stats.rating}</span>
-            </div>
-            <p className="text-sm text-gray-400 mt-1">Average Rating</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Why KeeperGo in this city */}
+      {/* About this city */}
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-2">Why KeeperGo in {city.name}?</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">Football in {city.name}</h2>
           <p className="text-gray-400 mb-8">{city.description}</p>
           
           <div className="grid md:grid-cols-2 gap-4">
-            {city.highlights.map((highlight, i) => (
+            {city.whyHere.map((item, i) => (
               <div key={i} className="flex items-start gap-3 bg-gray-900 border border-gray-800 rounded-lg p-4">
                 <CheckCircle className="h-5 w-5 text-lime-400 mt-0.5 shrink-0" />
-                <span className="text-gray-300">{highlight}</span>
+                <span className="text-gray-300">{item}</span>
               </div>
             ))}
           </div>
@@ -188,21 +203,21 @@ export default async function CityPage({ params }: { params: { city: string } })
                 <Users className="h-6 w-6 text-lime-400" />
               </div>
               <h3 className="font-semibold text-white mb-2">1. Post Your Match</h3>
-              <p className="text-sm text-gray-400">Describe your match details, location, date, and budget.</p>
+              <p className="text-sm text-gray-400">Describe your match: date, time, location, and budget. It takes less than a minute.</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 rounded-full bg-lime-400/10 flex items-center justify-center mx-auto mb-4">
                 <Goal className="h-6 w-6 text-lime-400" />
               </div>
-              <h3 className="font-semibold text-white mb-2">2. Goalkeeper Accepts</h3>
-              <p className="text-sm text-gray-400">A qualified goalkeeper from {city.name} accepts your match.</p>
+              <h3 className="font-semibold text-white mb-2">2. A Goalkeeper Accepts</h3>
+              <p className="text-sm text-gray-400">Goalkeepers in {city.name} see your match and the first one to accept gets it.</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 rounded-full bg-lime-400/10 flex items-center justify-center mx-auto mb-4">
                 <Shield className="h-6 w-6 text-lime-400" />
               </div>
-              <h3 className="font-semibold text-white mb-2">3. Play & Pay</h3>
-              <p className="text-sm text-gray-400">Secure payment via Stripe. No-show protection included.</p>
+              <h3 className="font-semibold text-white mb-2">3. Play & Pay Securely</h3>
+              <p className="text-sm text-gray-400">Payment via Stripe. Full refund if the goalkeeper doesn\u2019t show up.</p>
             </div>
           </div>
         </div>
@@ -211,13 +226,17 @@ export default async function CityPage({ params }: { params: { city: string } })
       {/* Venues */}
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-6">Popular Venues in {city.name}</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">Where to Play in {city.name}</h2>
+          <p className="text-gray-400 mb-6">You choose the venue — we help you find the goalkeeper. Here are some options for renting fields in {city.name}:</p>
           <div className="grid md:grid-cols-2 gap-4">
             {city.venues.map((venue, i) => (
               <Card key={i} className="bg-gray-900 border-gray-800">
-                <CardContent className="py-4 flex items-center gap-3">
-                  <MapPin className="h-5 w-5 text-lime-400 shrink-0" />
-                  <span className="text-gray-200">{venue}</span>
+                <CardContent className="py-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-5 w-5 text-lime-400 shrink-0" />
+                    <span className="text-gray-200">{venue.name}</span>
+                  </div>
+                  <Badge className="bg-gray-800 text-gray-400 border-gray-700 text-xs">{venue.type}</Badge>
                 </CardContent>
               </Card>
             ))}
@@ -225,10 +244,10 @@ export default async function CityPage({ params }: { params: { city: string } })
         </div>
       </section>
 
-      {/* Neighborhoods */}
+      {/* Areas Covered */}
       <section className="py-16 px-4 bg-gray-900/50 border-t border-b border-gray-800">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-6">We Cover All {city.name} Areas</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">Areas in {city.name}</h2>
           <div className="flex flex-wrap gap-3">
             {city.neighborhoods.map((n, i) => (
               <Badge key={i} className="bg-gray-800 text-gray-300 border-gray-700 text-sm py-1.5 px-3">
@@ -243,7 +262,7 @@ export default async function CityPage({ params }: { params: { city: string } })
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-white mb-4">Simple, Transparent Pricing</h2>
-          <p className="text-gray-400 mb-8">Starting from \u20ac20/hour. No hidden fees.</p>
+          <p className="text-gray-400 mb-8">Starting from \u20ac20/hour. No hidden fees. 25% platform commission included.</p>
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="bg-gray-900 border-gray-800">
               <CardContent className="pt-6 text-center">
@@ -258,7 +277,7 @@ export default async function CityPage({ params }: { params: { city: string } })
                 <Star className="h-8 w-8 text-lime-400 mx-auto mb-3" />
                 <h3 className="font-semibold text-white mb-1">Direct Booking</h3>
                 <p className="text-2xl font-bold text-lime-400 mb-2">From \u20ac25/hr</p>
-                <p className="text-xs text-gray-400">Choose your preferred goalkeeper directly</p>
+                <p className="text-xs text-gray-400">Invite a specific goalkeeper of your choice</p>
               </CardContent>
             </Card>
             <Card className="bg-gray-900 border-gray-800">
@@ -266,7 +285,7 @@ export default async function CityPage({ params }: { params: { city: string } })
                 <Shield className="h-8 w-8 text-lime-400 mx-auto mb-3" />
                 <h3 className="font-semibold text-white mb-1">No-Show Protection</h3>
                 <p className="text-2xl font-bold text-lime-400 mb-2">100%</p>
-                <p className="text-xs text-gray-400">Full refund if goalkeeper doesn\u2019t show up</p>
+                <p className="text-xs text-gray-400">Full refund if the goalkeeper doesn\u2019t show up</p>
               </CardContent>
             </Card>
           </div>
@@ -277,9 +296,9 @@ export default async function CityPage({ params }: { params: { city: string } })
       <section className="py-16 px-4 border-t border-gray-800">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to play in {city.name}?
+            Ready to find a goalkeeper in {city.name}?
           </h2>
-          <p className="text-gray-400 mb-8">Join hundreds of organizers and goalkeepers already using KeeperGo.</p>
+          <p className="text-gray-400 mb-8">Sign up for free and post your first match in under a minute.</p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/auth/organizer/signup">
               <Button size="lg" className="bg-lime-400 text-gray-950 hover:bg-lime-300">
@@ -326,7 +345,7 @@ export default async function CityPage({ params }: { params: { city: string } })
             <Link href="/privacy" className="hover:text-lime-400">Privacy</Link>
             <Link href="/terms" className="hover:text-lime-400">Terms</Link>
           </div>
-          <p className="text-sm text-gray-500">\u00a9 {new Date().getFullYear()} KeeperGo. All rights reserved.</p>
+          <p className="text-sm text-gray-500">\u00a9 2026 KeeperGo. All rights reserved.</p>
         </div>
       </footer>
     </div>
