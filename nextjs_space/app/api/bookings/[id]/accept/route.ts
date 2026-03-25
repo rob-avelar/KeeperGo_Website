@@ -72,13 +72,13 @@ export async function POST(
       const confirmationDeadline = new Date(matchEndTime);
       confirmationDeadline.setHours(confirmationDeadline.getHours() + 48);
 
-      // Update booking with goalkeeper assignment
+      // Update booking with goalkeeper assignment (ACCEPTED = awaiting payment)
       const updatedBooking = await tx.booking.update({
         where: { id: bookingId },
         data: {
           goalkeeperId: session.user.id,
           goalkeeperProfileId: goalkeeperProfile.id,
-          status: 'CONFIRMED',
+          status: 'ACCEPTED',
           confirmationDeadline,
         },
         include: {

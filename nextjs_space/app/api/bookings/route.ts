@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
         pricePerHour: parseInt(pricePerHour),
         totalAmount,
         specialRequests,
-        status: bookingType === 'direct' ? 'CONFIRMED' : 'PENDING', // Direct bookings are confirmed immediately
+        status: bookingType === 'direct' ? 'ACCEPTED' : 'PENDING', // Direct bookings go to ACCEPTED (awaiting payment)
         confirmationDeadline,
       }
     })
@@ -155,9 +155,9 @@ export async function POST(request: NextRequest) {
       await prisma.notification.create({
         data: {
           userId: goalkeeperId,
-          type: 'BOOKING_CONFIRMED',
-          title: 'Direct Booking Confirmed',
-          message: `You have been directly booked for a match on ${new Date(date).toLocaleDateString()}`,
+          type: 'BOOKING_ACCEPTED',
+          title: 'Direct Booking - Awaiting Payment',
+          message: `You have been directly booked for a match on ${new Date(date).toLocaleDateString()}. Awaiting organizer payment.`,
           bookingId: booking.id
         }
       })

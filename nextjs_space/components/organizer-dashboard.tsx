@@ -42,7 +42,8 @@ import {
   Settings,
   User,
   Bell,
-  ArrowLeftRight
+  ArrowLeftRight,
+  CreditCard
 } from 'lucide-react'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
@@ -524,13 +525,16 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                 </p>
               ) : (
                 upcomingBookings?.slice(0, 3)?.map((booking: any) => (
-                  <div key={booking.id} className="border-l-4 border-lime-400 pl-4 py-2">
+                  <div key={booking.id} className={`border-l-4 ${booking.status === 'ACCEPTED' ? 'border-yellow-400' : 'border-lime-400'} pl-4 py-2`}>
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-semibold">
                         {booking?.goalkeeper?.name || 'Goalkeeper TBD'}
                       </h4>
-                      <Badge variant="outline">
-                        {booking.status}
+                      <Badge
+                        variant="outline"
+                        className={booking.status === 'ACCEPTED' ? 'text-yellow-400 border-yellow-400/50' : ''}
+                      >
+                        {booking.status === 'ACCEPTED' ? 'AWAITING PAYMENT' : booking.status}
                       </Badge>
                     </div>
                     <div className="space-y-1 text-sm text-gray-400">
@@ -546,8 +550,22 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                         <Clock className="h-3 w-3 mr-1" />
                         {booking.duration} hours
                       </div>
+                      <div className="flex items-center">
+                        <Euro className="h-3 w-3 mr-1" />
+                        €{(booking.totalAmount / 100).toFixed(2)}
+                      </div>
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-3 space-y-2">
+                      {booking.status === 'ACCEPTED' && (
+                        <Button
+                          size="sm"
+                          className="w-full bg-lime-400 hover:bg-lime-300 text-gray-950 font-bold"
+                          onClick={() => router.push(`/organizer/pay/${booking.id}`)}
+                        >
+                          <CreditCard className="h-3 w-3 mr-1" />
+                          Pay Now — €{(booking.totalAmount / 100).toFixed(2)}
+                        </Button>
+                      )}
                       <Button
                         variant="outline"
                         size="sm"

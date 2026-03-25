@@ -103,3 +103,42 @@ export async function createTransfer(
     throw error
   }
 }
+
+// Helper function to create a PaymentIntent with destination charge for a booking
+export async function createPaymentIntentForBooking(
+  amount: number, // total amount in cents
+  bookingId: string,
+  goalkeeperStripeAccountId?: string | null
+) {
+  const applicationFee = Math.floor(amount * 0.25) // 25% platform fee
+
+  const params: Stripe.PaymentIntentCreateParams = {
+    amount,
+    currency: 'eur',
+    automatic_payment_methods: { enabled: true },
+    metadata: {
+      bookingId,
+      type: 'booking_payment',
+    },
+  }
+
+  // If goalkeeper has Stripe Connect account, use destination charge
+  if (goalkeeperStripeAccountId) {
+    params.transfer_data = {
+      destination: goalkeeperStripeAccountId,
+    }
+    params.application_fee_amount = applicationFee
+  }
+
+  return stripe.paymentIntents.create(params)
+}
+
+// Helper to retrieve a PaymentIntent
+export async function retrievePaymentIntent(paymentIntentId: string) {
+  return stripe.paymentIntents.retrieve(paymentIntentId)
+}
+
+// Helper to construct webhook event
+export function constructWebhookEvent(body: string, signature: string, secret: string) {
+  return stripe.webhooks.constructEvent(body, signature, secret)
+}

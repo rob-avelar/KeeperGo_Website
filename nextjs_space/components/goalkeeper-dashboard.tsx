@@ -954,14 +954,20 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                 </p>
               ) : (
                 upcomingBookings?.slice(0, 3)?.map((booking: any) => (
-                  <div key={booking.id} className="border-l-4 border-lime-400 pl-4 py-2">
+                  <div key={booking.id} className={`border-l-4 ${booking.status === 'ACCEPTED' ? 'border-yellow-400' : 'border-lime-400'} pl-4 py-2`}>
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-semibold">
                         Match with {booking?.organizer?.name}
                       </h4>
-                      <Badge className="bg-lime-400 text-gray-950">
-                        CONFIRMED
-                      </Badge>
+                      {booking.status === 'ACCEPTED' ? (
+                        <Badge variant="outline" className="text-yellow-400 border-yellow-400/50">
+                          AWAITING PAYMENT
+                        </Badge>
+                      ) : (
+                        <Badge className="bg-lime-400 text-gray-950">
+                          CONFIRMED
+                        </Badge>
+                      )}
                     </div>
                     <div className="space-y-1 text-sm text-gray-400">
                       <div className="flex items-center">
