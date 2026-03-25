@@ -698,15 +698,20 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
             </CardHeader>
             <CardContent className="space-y-4">
               {availableBookings?.map((booking: any) => (
-                <div key={booking.id} className="border-l-4 border-lime-400 pl-4 py-3 bg-gray-800 rounded-r-lg shadow-sm">
+                <div key={booking.id} className={`border-l-4 ${booking.isPriority ? 'border-red-500 bg-red-500/10' : 'border-lime-400 bg-gray-800'} pl-4 py-3 rounded-r-lg shadow-sm`}>
                   <div className="flex justify-between items-start mb-3">
                     <div>
+                      {booking.isPriority && (
+                        <Badge className="bg-red-500/20 text-red-400 border-red-500/30 mb-2">
+                          🚨 PRIORITY — Goalkeeper needed urgently!
+                        </Badge>
+                      )}
                       <h4 className="font-semibold text-lg">
                         {booking?.organizer?.name}
                       </h4>
-                      <Badge variant="outline" className="text-lime-400 mt-1">
+                      <Badge variant="outline" className={booking.isPriority ? 'text-red-400 border-red-500/30 mt-1' : 'text-lime-400 mt-1'}>
                         <CheckCircle className="h-3 w-3 mr-1" />
-                        First to accept gets it!
+                        {booking.isPriority ? 'Urgent — match is soon!' : 'First to accept gets it!'}
                       </Badge>
                     </div>
                   </div>

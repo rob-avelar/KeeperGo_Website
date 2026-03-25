@@ -174,6 +174,8 @@ export async function POST(
     }
 
     // Handle GOALKEEPER cancellation
+    // Booking goes back to PENDING (available for other goalkeepers)
+    // If < 6h before match, it becomes a PRIORITY booking
     if (isGoalkeeper) {
       if (!booking.goalkeeperProfile) {
         return NextResponse.json(
@@ -185,27 +187,37 @@ export async function POST(
       const warningCalc = getGoalkeeperWarning(hoursUntilMatch);
       warningData = warningCalc;
 
-      // Full refund to organizer
-      refundAmount = booking.totalAmount;
+      const isPriority = hoursUntilMatch <= 6;
+      const priorityReason = isPriority
+        ? `Goalkeeper cancelled ${hoursUntilMatch.toFixed(1)}h before match`
+        : null;
 
       const result = await prisma.$transaction(async (tx) => {
-        // Update booking
+        // Reset booking to PENDING — remove goalkeeper, make available again
         const updatedBooking = await tx.booking.update({
           where: { id },
           data: {
-            status: 'CANCELLED',
-            cancelledAt: now,
-            cancelledBy: session.user.id,
-            cancellationReason: reason || 'Goalkeeper cancelled',
-            refundAmount,
+            status: 'PENDING',
+            goalkeeperId: null,
+            goalkeeperProfileId: null,
+            confirmationDeadline: null,
+            goalkeeperConfirmedAt: null,
+            isPriority,
+            priorityReason,
+            // Clear previous cancellation data
+            cancelledAt: null,
+            cancelledBy: null,
+            cancellationReason: null,
+            cancellationFee: null,
+            refundAmount: null,
           },
         });
 
-        // Full refund to organizer
+        // Refund any existing payments
         await tx.payment.updateMany({
           where: {
             bookingId: id,
-            status: 'PENDING',
+            status: { in: ['PENDING', 'COMPLETED'] },
           },
           data: {
             status: 'REFUNDED',
@@ -233,23 +245,25 @@ export async function POST(
         });
 
         // Check if should be permanently blocked (3+ severe warnings)
-        if (updatedProfile.warningCount >= 9) { // 3 severe warnings
+        if (updatedProfile.warningCount >= 9) {
           await tx.goalkeeperProfile.update({
             where: { id: booking.goalkeeperProfile!.id },
             data: {
               isActive: false,
-              blockedUntil: new Date('2099-12-31'), // Effectively permanent
+              blockedUntil: new Date('2099-12-31'),
             },
           });
         }
 
-        // Notify organizer
+        // Notify organizer — match is back available
         await tx.notification.create({
           data: {
             userId: booking.organizerId,
             bookingId: id,
-            title: 'Match Cancelled by Goalkeeper',
-            message: `The goalkeeper cancelled the match on ${matchTime.toLocaleDateString()}. Full refund of €${(refundAmount / 100).toFixed(2)} will be issued.`,
+            title: isPriority ? '🚨 Goalkeeper Left — Priority Match!' : 'Goalkeeper Left — Match Re-opened',
+            message: isPriority
+              ? `The goalkeeper cancelled your match on ${matchTime.toLocaleDateString()} (${hoursUntilMatch.toFixed(0)}h before kickoff). Your match is now listed as PRIORITY and visible to all available goalkeepers. Any previous payment will be refunded.`
+              : `The goalkeeper cancelled your match on ${matchTime.toLocaleDateString()}. Your match is now back in the available listings for other goalkeepers to accept. Any previous payment will be refunded.`,
             type: 'BOOKING_CANCELLED',
           },
         });
@@ -276,7 +290,7 @@ export async function POST(
         return { updatedBooking, updatedProfile };
       });
 
-      // Send cancellation email to organizer
+      // Send email to organizer
       if (booking.organizer?.email && booking.organizer.emailNotifications) {
         sendBookingCancelledEmail(
           booking.organizer.email,
@@ -284,16 +298,18 @@ export async function POST(
           'ORGANIZER',
           matchTime,
           booking.location,
-          reason
+          reason || (isPriority ? 'Goalkeeper left — your match is now priority!' : 'Goalkeeper left — match re-opened for new goalkeepers')
         ).catch(err => console.error('[Cancel] Email send error:', err))
       }
 
       return NextResponse.json({
         success: true,
-        message: `Booking cancelled. Organizer will receive full refund.${warningData.warning > 0 ? ` Warning issued: ${warningData.warningLevel}` : ''}`,
+        message: isPriority
+          ? `Match re-opened as PRIORITY. Organizer will be refunded. Warning: ${warningData.warningLevel}`
+          : `Match re-opened for other goalkeepers.${warningData.warning > 0 ? ` Warning: ${warningData.warningLevel}` : ''}`,
         booking: result.updatedBooking,
         warning: warningData,
-        refundAmount,
+        isPriority,
       });
     }
 

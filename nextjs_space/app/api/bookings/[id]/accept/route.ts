@@ -80,6 +80,8 @@ export async function POST(
           goalkeeperProfileId: goalkeeperProfile.id,
           status: 'ACCEPTED',
           confirmationDeadline,
+          isPriority: false,
+          priorityReason: null,
         },
         include: {
           organizer: {

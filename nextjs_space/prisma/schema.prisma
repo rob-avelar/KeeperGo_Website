@@ -146,6 +146,10 @@ model Booking {
   cancellationFee     Int?          // in cents
   refundAmount        Int?          // in cents
   
+  // Priority fields (when goalkeeper cancels, booking goes back to available)
+  isPriority              Boolean      @default(false)
+  priorityReason          String?      // e.g. "Goalkeeper cancelled 3h before match"
+
   // Confirmation fields
   confirmationDeadline    DateTime?    // 48h after match time
   goalkeeperConfirmedAt   DateTime?    // when goalkeeper confirmed their attendance

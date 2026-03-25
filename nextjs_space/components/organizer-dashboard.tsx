@@ -472,13 +472,20 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               {openBookings?.map((booking: any) => (
-                <div key={booking.id} className="border-l-4 border-yellow-500 pl-4 py-2 bg-gray-900 rounded-r-lg">
+                <div key={booking.id} className={`border-l-4 ${booking.isPriority ? 'border-red-500 bg-red-500/10' : 'border-yellow-500 bg-gray-900'} pl-4 py-2 rounded-r-lg`}>
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-semibold">
-                      Waiting for Goalkeeper
-                    </h4>
-                    <Badge variant="outline" className="text-yellow-600">
-                      OPEN
+                    <div>
+                      {booking.isPriority && (
+                        <Badge className="bg-red-500/20 text-red-400 border-red-500/30 mb-1 text-xs">
+                          🚨 PRIORITY
+                        </Badge>
+                      )}
+                      <h4 className="font-semibold">
+                        {booking.isPriority ? 'Goalkeeper left — searching new one' : 'Waiting for Goalkeeper'}
+                      </h4>
+                    </div>
+                    <Badge variant="outline" className={booking.isPriority ? 'text-red-400 border-red-500/30' : 'text-yellow-600'}>
+                      {booking.isPriority ? 'URGENT' : 'OPEN'}
                     </Badge>
                   </div>
                   <div className="space-y-1 text-sm text-gray-400">

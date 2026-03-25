@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get all available bookings (no goalkeeper assigned, future dates, pending status)
+    // Priority bookings (goalkeeper cancelled close to match) appear first
     const availableBookings = await prisma.booking.findMany({
       where: {
         goalkeeperId: null,
@@ -31,9 +32,10 @@ export async function GET(request: NextRequest) {
           }
         }
       },
-      orderBy: {
-        date: 'asc' // Show earliest matches first
-      }
+      orderBy: [
+        { isPriority: 'desc' },  // Priority bookings first
+        { date: 'asc' }          // Then by earliest date
+      ]
     })
 
     return NextResponse.json(availableBookings)
