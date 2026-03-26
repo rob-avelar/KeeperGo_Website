@@ -31,8 +31,43 @@ export default async function HomePage() {
   } else if (session?.user && !session?.user?.role) {
     redirect('/auth/complete-registration?email=' + encodeURIComponent(session.user.email || ''))
   }
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'KeeperGo',
+    url: 'https://keepergo.nl',
+    description: 'Hire a goalkeeper for your amateur football match in the Netherlands.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://keepergo.nl/cities/{search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
+  const orgJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'KeeperGo',
+    url: 'https://keepergo.nl',
+    logo: 'https://keepergo.nl/og-image.jpg',
+    description: 'The goalkeeper rental platform for amateur football in the Netherlands.',
+    areaServed: {
+      '@type': 'Country',
+      name: 'Netherlands',
+    },
+    serviceType: 'Goalkeeper Rental',
+  }
+
   return (
     <div className="min-h-screen bg-gray-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-950/95 backdrop-blur supports-[backdrop-filter]:bg-gray-950/60">
         <div className="max-w-6xl mx-auto flex h-14 items-center justify-between px-4">

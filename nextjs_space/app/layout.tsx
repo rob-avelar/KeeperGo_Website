@@ -14,13 +14,26 @@ export const dynamic = "force-dynamic"
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXTAUTH_URL || 'http://localhost:3000'),
-  title: 'KeeperGo - Goalkeeper Rental Platform',
-  description: 'Find and book professional goalkeepers for your football matches in the Netherlands. Connect with skilled goalkeepers in your area.',
-  keywords: 'goalkeeper, rental, football, soccer, Netherlands, booking, sports',
+  metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://keepergo.nl'),
+  title: {
+    default: 'KeeperGo - Hire a Goalkeeper for Your Match | Netherlands',
+    template: '%s | KeeperGo',
+  },
+  description: 'Hire a goalkeeper for your amateur football match in the Netherlands. KeeperGo connects match organizers with available goalkeepers in Amsterdam, Rotterdam, Utrecht, and The Hague. Book instantly, pay securely.',
+  keywords: 'goalkeeper hire, keeper huren, doelman huren, goalkeeper rental, football Netherlands, amateur football, zaalvoetbal, goalkeeper booking, Amsterdam, Rotterdam, Utrecht, Den Haag, keeper zoeken',
+  authors: [{ name: 'KeeperGo' }],
+  creator: 'KeeperGo',
+  publisher: 'KeeperGo',
+  formatDetection: {
+    email: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: 'KeeperGo - Goalkeeper Rental Platform',
-    description: 'Find and book professional goalkeepers for your football matches in the Netherlands.',
+    title: 'KeeperGo - Hire a Goalkeeper for Your Match',
+    description: 'Find and book goalkeepers for your amateur football matches across the Netherlands. Secure payments, verified ratings, instant booking.',
     url: '/',
     siteName: 'KeeperGo',
     images: [
@@ -28,17 +41,29 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'KeeperGo - Goalkeeper Rental Platform',
+        alt: 'KeeperGo - Hire a Goalkeeper for Your Match in the Netherlands',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NL',
+    alternateLocale: ['nl_NL'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'KeeperGo - Goalkeeper Rental Platform',
-    description: 'Find and book professional goalkeepers for your football matches in the Netherlands.',
+    title: 'KeeperGo - Hire a Goalkeeper for Your Match',
+    description: 'Find and book goalkeepers for your amateur football matches across the Netherlands.',
     images: ['/og-image.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
   icons: {
     icon: [
@@ -60,6 +85,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script src="https://apps.abacus.ai/chatllm/appllm-lib.js" defer></script>
+      </head>
       <body className={inter.className}>
         <SessionProvider session={session}>
           <ThemeProvider
