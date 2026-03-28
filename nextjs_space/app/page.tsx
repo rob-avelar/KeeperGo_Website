@@ -385,6 +385,9 @@ export default async function HomePage() {
               <Link href="/privacy" className="hover:text-lime-400 transition-colors">
                 Privacy
               </Link>
+              <Link href="/cookies" className="hover:text-lime-400 transition-colors">
+                Cookies
+              </Link>
               <Link href="/terms" className="hover:text-lime-400 transition-colors">
                 Terms
               </Link>

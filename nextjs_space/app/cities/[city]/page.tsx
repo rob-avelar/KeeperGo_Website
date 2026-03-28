@@ -484,6 +484,9 @@ export default async function CityPage({ params }: { params: { city: string } })
               <Link href="/privacy" className="hover:text-lime-400 transition-colors">
                 Privacy
               </Link>
+              <Link href="/cookies" className="hover:text-lime-400 transition-colors">
+                Cookies
+              </Link>
               <Link href="/terms" className="hover:text-lime-400 transition-colors">
                 Terms
               </Link>

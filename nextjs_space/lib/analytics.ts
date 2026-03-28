@@ -41,7 +41,7 @@ export function trackPageView(url: string) {
 declare global {
   interface Window {
     gtag?: (
-      command: 'config' | 'event' | 'js',
+      command: 'config' | 'event' | 'js' | 'consent',
       targetId: string | Date,
       config?: Record<string, any>
     ) => void

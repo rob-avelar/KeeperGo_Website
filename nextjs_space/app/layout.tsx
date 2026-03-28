@@ -8,6 +8,7 @@ import { SessionProvider } from '@/components/session-provider'
 import { auth } from '@/lib/auth'
 import GoogleAnalytics from '@/components/google-analytics'
 import WebVitals from '@/components/web-vitals'
+import { CookieConsentBanner } from '@/components/cookie-consent'
 
 export const dynamic = "force-dynamic"
 
@@ -100,6 +101,7 @@ export default async function RootLayout({
               {children}
             </div>
             <Toaster />
+            <CookieConsentBanner />
             <GoogleAnalytics />
             <WebVitals />
           </ThemeProvider>

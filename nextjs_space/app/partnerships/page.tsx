@@ -272,6 +272,7 @@ export default function PartnershipsPage() {
           <div className="flex gap-6 text-sm text-gray-400">
             <Link href="/contact" className="hover:text-lime-400">Contact</Link>
             <Link href="/privacy" className="hover:text-lime-400">Privacy</Link>
+            <Link href="/cookies" className="hover:text-lime-400">Cookies</Link>
             <Link href="/terms" className="hover:text-lime-400">Terms</Link>
           </div>
           <p className="text-sm text-gray-500">\u00a9 {new Date().getFullYear()} KeeperGo. All rights reserved.</p>
