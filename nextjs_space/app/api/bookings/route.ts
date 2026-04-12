@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic"
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { sendNewBookingAvailableEmail } from '@/lib/email'
 
 export async function GET(request: NextRequest) {
   try {
@@ -163,9 +164,67 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Send email notification to all active goalkeepers about the new booking
+    // Do this in the background (don't await) so the response isn't delayed
+    notifyGoalkeepers(booking, bookingType, goalkeeperId).catch((err) =>
+      console.error('[Booking] Error notifying goalkeepers:', err)
+    )
+
     return NextResponse.json(booking, { status: 201 })
   } catch (error) {
     console.error('Error creating booking:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
+}
+
+// Notify all active goalkeepers (except the one already directly booked) about a new match
+async function notifyGoalkeepers(
+  booking: { date: Date; location: string; fieldType: string; pricePerHour: number; duration: number },
+  bookingType: string,
+  directGoalkeeperId?: string
+) {
+  // Find all active goalkeepers with profiles
+  const goalkeepers = await prisma.user.findMany({
+    where: {
+      role: 'GOALKEEPER',
+      ...(directGoalkeeperId ? { id: { not: directGoalkeeperId } } : {}),
+      goalkeeperProfile: {
+        isActive: true,
+        blockedUntil: null,
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+  })
+
+  if (goalkeepers.length === 0) {
+    console.log('[Booking] No active goalkeepers to notify')
+    return
+  }
+
+  console.log(`[Booking] Notifying ${goalkeepers.length} goalkeeper(s) about new match`)
+
+  // Send emails in parallel (max 5 at a time to avoid overwhelming the API)
+  const batchSize = 5
+  for (let i = 0; i < goalkeepers.length; i += batchSize) {
+    const batch = goalkeepers.slice(i, i + batchSize)
+    await Promise.allSettled(
+      batch.map((gk) =>
+        sendNewBookingAvailableEmail(
+          gk.email,
+          gk.name || 'Goalkeeper',
+          booking.date,
+          booking.location,
+          booking.fieldType,
+          booking.pricePerHour,
+          booking.duration
+        )
+      )
+    )
+  }
+
+  console.log(`[Booking] Finished notifying goalkeepers`)
 }
