@@ -62,7 +62,7 @@ export default function ReferralCard() {
   const shareLink = () => {
     if (!data) return
     const link = `${window.location.origin}?ref=${data.referralCode}`
-    const text = 'Join KeeperGo - the #1 goalkeeper rental platform in the Netherlands! Use my referral link and we both get \u20ac5 off:'
+    const text = 'Join KeeperGo - the #1 goalkeeper rental platform in the Netherlands! Use my referral link and we both get €5 off:'
     if (navigator.share) {
       navigator.share({ title: 'KeeperGo Referral', text, url: link })
     } else {
@@ -90,9 +90,9 @@ export default function ReferralCard() {
             <Gift className="h-5 w-5 text-lime-400" />
           </div>
           <div>
-            <CardTitle className="text-gray-100">Invite Friends & Earn \u20ac5</CardTitle>
+            <CardTitle className="text-gray-100">Invite Friends & Earn €5</CardTitle>
             <CardDescription className="text-gray-400">
-              Share your link — you both get \u20ac5 off after their first booking
+              Share your link — you both get €5 off after their first booking
             </CardDescription>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function ReferralCard() {
           </div>
           <div className="bg-gray-800 rounded-lg p-3 text-center">
             <Euro className="h-4 w-4 text-gray-400 mx-auto mb-1" />
-            <p className="text-lg font-bold text-lime-400">\u20ac{(data.totalEarned / 100).toFixed(0)}</p>
+            <p className="text-lg font-bold text-lime-400">€{(data.totalEarned / 100).toFixed(0)}</p>
             <p className="text-xs text-gray-400">Earned</p>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default function ReferralCard() {
                     ref.status === 'SIGNED_UP' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' :
                     'bg-gray-700 text-gray-400 border-gray-600'
                   }>
-                    {ref.status === 'COMPLETED' ? '\u20ac5 Earned' : ref.status === 'SIGNED_UP' ? 'Signed Up' : 'Pending'}
+                    {ref.status === 'COMPLETED' ? '€5 Earned' : ref.status === 'SIGNED_UP' ? 'Signed Up' : 'Pending'}
                   </Badge>
                 </div>
               ))}

@@ -95,7 +95,7 @@ function PaymentForm({ bookingId, totalAmount }: { bookingId: string; totalAmoun
         ) : (
           <>
             <CreditCard className="h-5 w-5 mr-2" />
-            Pay \u20ac{(totalAmount / 100).toFixed(2)}
+            Pay €{(totalAmount / 100).toFixed(2)}
           </>
         )}
       </Button>
@@ -217,7 +217,7 @@ export default function PaymentCheckout({
           <div className="bg-gray-800 rounded-lg p-4 space-y-2 text-sm">
             <div className="flex justify-between text-gray-300">
               <span>Amount paid</span>
-              <span className="font-bold text-white">\u20ac{(totalAmount / 100).toFixed(2)}</span>
+              <span className="font-bold text-white">€{(totalAmount / 100).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-gray-400">
               <span>Date</span>
@@ -337,11 +337,11 @@ export default function PaymentCheckout({
           <div className="border-t border-gray-700 pt-4 space-y-2">
             <div className="flex justify-between text-sm text-gray-400">
               <span>Goalkeeper fee (75%)</span>
-              <span>\u20ac{(goalkeeperEarning / 100).toFixed(2)}</span>
+              <span>€{(goalkeeperEarning / 100).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm text-gray-400">
               <span>Platform fee (25%)</span>
-              <span>\u20ac{(platformFee / 100).toFixed(2)}</span>
+              <span>€{(platformFee / 100).toFixed(2)}</span>
             </div>
             <div className="flex justify-between font-bold text-lg border-t border-gray-700 pt-2 mt-2">
               <span className="text-gray-100">Total</span>

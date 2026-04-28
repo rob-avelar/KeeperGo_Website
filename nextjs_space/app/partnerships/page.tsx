@@ -222,7 +222,7 @@ export default function PartnershipsPage() {
                 <Badge className="mb-3 bg-gray-700 text-gray-300 border-gray-600">Bronze</Badge>
                 <h3 className="text-lg font-bold text-white mb-2">Community Sponsor</h3>
                 <p className="text-sm text-gray-400 mb-4">Logo on footer, mentioned in monthly newsletter.</p>
-                <p className="text-2xl font-bold text-lime-400">\u20ac100<span className="text-sm font-normal text-gray-400">/month</span></p>
+                <p className="text-2xl font-bold text-lime-400">€100<span className="text-sm font-normal text-gray-400">/month</span></p>
               </CardContent>
             </Card>
             <Card className="bg-gray-900 border-lime-400/30">
@@ -230,7 +230,7 @@ export default function PartnershipsPage() {
                 <Badge className="mb-3 bg-lime-400/10 text-lime-400 border-lime-400/30">Silver</Badge>
                 <h3 className="text-lg font-bold text-white mb-2">Match Sponsor</h3>
                 <p className="text-sm text-gray-400 mb-4">Logo on match pages, branded notifications, social media mentions.</p>
-                <p className="text-2xl font-bold text-lime-400">\u20ac300<span className="text-sm font-normal text-gray-400">/month</span></p>
+                <p className="text-2xl font-bold text-lime-400">€300<span className="text-sm font-normal text-gray-400">/month</span></p>
               </CardContent>
             </Card>
             <Card className="bg-gray-900 border-gray-800">
