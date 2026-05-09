@@ -10,10 +10,20 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { Calendar, MapPin, Clock, Euro, ArrowRight, Goal, Star, Heart, Repeat } from 'lucide-react'
+import { Calendar, MapPin, Clock, Euro, ArrowRight, Goal, Star, Heart, Repeat, Plus, Building2 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+
+interface Venue {
+  id: string
+  name: string
+  address: string | null
+  city: string
+  type: string
+  isCustom: boolean
+}
 
 export default function BookGoalkeeperForm() {
   const searchParams = useSearchParams()
@@ -27,15 +37,26 @@ export default function BookGoalkeeperForm() {
     fieldType: '',
     pricePerHour: '',
     specialRequests: '',
-    bookingType: inviteGoalkeeperId ? 'direct' : 'open', // 'open' or 'direct'
+    bookingType: inviteGoalkeeperId ? 'direct' : 'open',
     selectedGoalkeeperId: inviteGoalkeeperId || '',
     isRecurring: false,
-    recurrenceFrequency: 'weekly', // 'weekly' or 'biweekly'
+    recurrenceFrequency: 'weekly',
     numberOfOccurrences: '4'
   })
   const [goalkeepers, setGoalkeepers] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingGoalkeepers, setIsLoadingGoalkeepers] = useState(false)
+  
+  // Venue state
+  const [venues, setVenues] = useState<Venue[]>([])
+  const [venueCities, setVenueCities] = useState<string[]>([])
+  const [selectedCity, setSelectedCity] = useState('')
+  const [selectedVenueId, setSelectedVenueId] = useState('')
+  const [isLoadingVenues, setIsLoadingVenues] = useState(false)
+  const [showAddVenueDialog, setShowAddVenueDialog] = useState(false)
+  const [newVenue, setNewVenue] = useState({ name: '', address: '', city: '' })
+  const [isCreatingVenue, setIsCreatingVenue] = useState(false)
+  
   const router = useRouter()
   const { toast } = useToast()
 
@@ -45,6 +66,84 @@ export default function BookGoalkeeperForm() {
       fetchGoalkeepers()
     }
   }, [formData.bookingType])
+
+  // Load venues on mount
+  useEffect(() => {
+    fetchVenues()
+  }, [])
+
+  // Fetch venues filtered by city
+  const fetchVenues = async (city?: string) => {
+    setIsLoadingVenues(true)
+    try {
+      const url = city ? `/api/venues?city=${encodeURIComponent(city)}` : '/api/venues'
+      const response = await fetch(url)
+      if (response.ok) {
+        const data = await response.json()
+        setVenues(data.venues || [])
+        if (!city) setVenueCities(data.cities || [])
+      }
+    } catch (error) {
+      console.error('Failed to fetch venues:', error)
+    } finally {
+      setIsLoadingVenues(false)
+    }
+  }
+
+  // When city changes, re-fetch venues
+  useEffect(() => {
+    if (selectedCity && selectedCity !== 'all') {
+      fetchVenues(selectedCity)
+    } else {
+      fetchVenues()
+    }
+    setSelectedVenueId('')
+    setFormData(prev => ({ ...prev, location: '' }))
+  }, [selectedCity])
+
+  // When venue selection changes, update location
+  useEffect(() => {
+    if (selectedVenueId && selectedVenueId !== 'custom') {
+      const venue = venues.find(v => v.id === selectedVenueId)
+      if (venue) {
+        const locationStr = venue.address ? `${venue.name} — ${venue.address}` : venue.name
+        setFormData(prev => ({ ...prev, location: locationStr }))
+      }
+    }
+  }, [selectedVenueId, venues])
+
+  const handleCreateVenue = async () => {
+    if (!newVenue.name || !newVenue.city) {
+      toast({ title: 'Error', description: 'Name and city are required.', variant: 'destructive' })
+      return
+    }
+    setIsCreatingVenue(true)
+    try {
+      const response = await fetch('/api/venues', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newVenue),
+      })
+      if (response.ok) {
+        const data = await response.json()
+        const created = data.venue as Venue
+        // Refresh venues list
+        await fetchVenues(selectedCity || undefined)
+        setSelectedVenueId(created.id)
+        const locationStr = created.address ? `${created.name} — ${created.address}` : created.name
+        setFormData(prev => ({ ...prev, location: locationStr }))
+        setShowAddVenueDialog(false)
+        setNewVenue({ name: '', address: '', city: '' })
+        toast({ title: 'Venue added!', description: `${created.name} has been added to the list.` })
+      } else {
+        toast({ title: 'Error', description: 'Failed to add venue.', variant: 'destructive' })
+      }
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to add venue.', variant: 'destructive' })
+    } finally {
+      setIsCreatingVenue(false)
+    }
+  }
 
   const fetchGoalkeepers = async () => {
     setIsLoadingGoalkeepers(true)
@@ -71,6 +170,16 @@ export default function BookGoalkeeperForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validate venue selection
+    if (!formData.location) {
+      toast({
+        title: 'Error',
+        description: 'Please select a venue for your match.',
+        variant: 'destructive'
+      })
+      return
+    }
 
     // Validate direct booking
     if (formData.bookingType === 'direct' && !formData.selectedGoalkeeperId) {
@@ -401,22 +510,140 @@ export default function BookGoalkeeperForm() {
                 </div>
               </div>
 
-              {/* Location */}
-              <div className="space-y-2">
-                <Label htmlFor="location">Match Location</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="location"
-                    type="text"
-                    placeholder="Enter the match location (e.g., Sports Center Amsterdam)"
-                    value={formData.location}
-                    onChange={(e) => handleChange('location', e.target.value)}
-                    className="pl-10"
-                    required
-                  />
+              {/* Venue Selection */}
+              <div className="space-y-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                <div className="flex items-center gap-2 mb-1">
+                  <Building2 className="h-5 w-5 text-lime-400" />
+                  <Label className="text-base font-semibold">Match Venue</Label>
                 </div>
+
+                {/* City Filter */}
+                <div className="space-y-2">
+                  <Label className="text-sm text-gray-400">City</Label>
+                  <Select value={selectedCity} onValueChange={setSelectedCity}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All cities" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All cities</SelectItem>
+                      {venueCities.map(city => (
+                        <SelectItem key={city} value={city}>{city}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Venue Select */}
+                <div className="space-y-2">
+                  <Label className="text-sm text-gray-400">Venue</Label>
+                  {isLoadingVenues ? (
+                    <div className="text-center py-3 text-gray-400 text-sm">Loading venues...</div>
+                  ) : (
+                    <Select value={selectedVenueId} onValueChange={(val) => {
+                      if (val === 'custom') {
+                        setShowAddVenueDialog(true)
+                        setNewVenue({ name: '', address: '', city: (selectedCity && selectedCity !== 'all') ? selectedCity : '' })
+                      } else {
+                        setSelectedVenueId(val)
+                      }
+                    }}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a venue" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {venues.map(v => (
+                          <SelectItem key={v.id} value={v.id}>
+                            <div className="flex items-center gap-2">
+                              <span>{v.name}</span>
+                              <span className="text-xs text-gray-500">— {v.city}</span>
+                              {v.type !== 'Custom' && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0">{v.type}</Badge>
+                              )}
+                            </div>
+                          </SelectItem>
+                        ))}
+                        <SelectItem value="custom">
+                          <div className="flex items-center gap-2 text-lime-400">
+                            <Plus className="h-3 w-3" />
+                            <span>Add new venue manually...</span>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+
+                {/* Selected venue info */}
+                {selectedVenueId && selectedVenueId !== 'custom' && venues.find(v => v.id === selectedVenueId) && (
+                  <div className="p-3 bg-lime-400/5 rounded-lg border border-lime-400/20">
+                    <div className="flex items-start gap-2">
+                      <MapPin className="h-4 w-4 text-lime-400 mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-white">{venues.find(v => v.id === selectedVenueId)?.name}</p>
+                        {venues.find(v => v.id === selectedVenueId)?.address && (
+                          <p className="text-xs text-gray-400 mt-0.5">{venues.find(v => v.id === selectedVenueId)?.address}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Hidden required input for form validation */}
+                <input type="hidden" value={formData.location} required />
+                {!formData.location && selectedVenueId === '' && (
+                  <p className="text-xs text-gray-500">Please select a venue or add a new one.</p>
+                )}
               </div>
+
+              {/* Add Venue Dialog */}
+              <Dialog open={showAddVenueDialog} onOpenChange={setShowAddVenueDialog}>
+                <DialogContent className="bg-gray-900 border-gray-700">
+                  <DialogHeader>
+                    <DialogTitle className="text-white">Add New Venue</DialogTitle>
+                    <DialogDescription className="text-gray-400">
+                      {"Can't find your venue? Add it manually and it will be available for future bookings."}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Venue Name *</Label>
+                      <Input
+                        placeholder="e.g., Sportpark De Toekomst"
+                        value={newVenue.name}
+                        onChange={(e) => setNewVenue(prev => ({ ...prev, name: e.target.value }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Address</Label>
+                      <Input
+                        placeholder="e.g., Borchlandweg 16, Amsterdam"
+                        value={newVenue.address}
+                        onChange={(e) => setNewVenue(prev => ({ ...prev, address: e.target.value }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>City *</Label>
+                      <Input
+                        placeholder="e.g., Amsterdam"
+                        value={newVenue.city}
+                        onChange={(e) => setNewVenue(prev => ({ ...prev, city: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setShowAddVenueDialog(false)}>
+                      Cancel
+                    </Button>
+                    <Button
+                      className="bg-lime-400 hover:bg-lime-300 text-gray-950"
+                      onClick={handleCreateVenue}
+                      disabled={isCreatingVenue}
+                    >
+                      {isCreatingVenue ? 'Adding...' : 'Add Venue'}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
 
               {/* Price Per Hour */}
               <div className="space-y-2">

@@ -345,6 +345,20 @@ model PasswordReset {
   @@map("password_resets")
 }
 
+model Venue {
+  id        String   @id @default(cuid())
+  name      String
+  address   String?
+  city      String
+  type      String   // Indoor, Outdoor, 5-a-side, Multi-sport, etc.
+  isActive  Boolean  @default(true)
+  isCustom  Boolean  @default(false)  // true = added by user, false = platform-curated
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("venues")
+}
+
 model AppSettings {
   id              String   @id @default("settings")
   betaModeEnabled Boolean  @default(true)

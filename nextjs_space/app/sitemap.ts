@@ -8,8 +8,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const host = headersList.get('x-forwarded-host') || 'keepergo.nl'
   const baseUrl = `https://${host}`
 
-  const cities = ['amsterdam', 'rotterdam', 'utrecht', 'den-haag']
-
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -61,12 +59,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  const cityPages: MetadataRoute.Sitemap = cities.map(city => ({
-    url: `${baseUrl}/cities/${city}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.9,
-  }))
-
-  return [...staticPages, ...cityPages]
+  return staticPages
 }
