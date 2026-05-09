@@ -48,6 +48,21 @@ async function main() {
 
   console.log('✓ Created admin user (admin@keepergo.com / admin123)')
 
+  // Create test user
+  const testAccount = await prisma.user.upsert({
+    where: { email: 'test@keepergo.nl' },
+    update: {},
+    create: {
+      email: 'test@keepergo.nl',
+      password: await bcrypt.hash('test123', 12),
+      name: 'Test User',
+      role: 'ORGANIZER',
+      roles: ['ORGANIZER'],
+    }
+  })
+
+  console.log('✓ Created test user (test@keepergo.nl / test123)')
+
   // Create sample organizers
   const organizer1 = await prisma.user.upsert({
     where: { email: 'mike.organizer@example.com' },
