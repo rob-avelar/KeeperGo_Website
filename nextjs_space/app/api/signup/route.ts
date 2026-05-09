@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
-      include: { goalkeeperProfile: true }
+      select: { id: true, email: true, password: true, role: true, roles: true, goalkeeperProfile: true }
     })
 
     if (existingUser) {
@@ -98,13 +98,21 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Switch user to the requested role
+      // Add the new role to the user's roles array (merge, don't overwrite)
+      const currentRoles = (existingUser as any).roles || []
+      const updatedRoles = currentRoles.includes(normalizedRole) 
+        ? currentRoles 
+        : [...currentRoles, normalizedRole]
+
       await prisma.user.update({
         where: { id: existingUser.id },
-        data: { role: normalizedRole }
+        data: { 
+          role: normalizedRole,
+          roles: updatedRoles
+        }
       })
 
-      // Create goalkeeper profile if switching to goalkeeper and profile doesn't exist
+      // Create goalkeeper profile if adding goalkeeper role and profile doesn't exist
       if (normalizedRole === 'GOALKEEPER' && !existingUser.goalkeeperProfile) {
         await prisma.goalkeeperProfile.create({
           data: {
@@ -138,6 +146,7 @@ export async function POST(request: NextRequest) {
         password: hashedPassword,
         name,
         role: normalizedRole,
+        roles: [normalizedRole],
       }
     })
 

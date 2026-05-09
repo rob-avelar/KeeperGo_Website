@@ -303,31 +303,33 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-400">Welcome, {user?.name}</span>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-lime-400/50 text-lime-400 hover:bg-lime-400/10 hover:text-lime-300"
-                onClick={async () => {
-                  try {
-                    const res = await fetch('/api/switch-role', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ targetRole: 'GOALKEEPER' }),
-                    })
-                    if (!res.ok) {
-                      const data = await res.json()
-                      toast({ title: 'Error', description: data.error || 'Could not switch role', variant: 'destructive' })
-                      return
+              {user?.roles?.includes('GOALKEEPER') && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-lime-400/50 text-lime-400 hover:bg-lime-400/10 hover:text-lime-300"
+                  onClick={async () => {
+                    try {
+                      const res = await fetch('/api/switch-role', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ role: 'GOALKEEPER' }),
+                      })
+                      if (!res.ok) {
+                        const data = await res.json()
+                        toast({ title: 'Error', description: data.error || 'Could not switch role', variant: 'destructive' })
+                        return
+                      }
+                      router.push('/goalkeeper/dashboard')
+                    } catch {
+                      toast({ title: 'Error', description: 'Could not switch role', variant: 'destructive' })
                     }
-                    router.push('/goalkeeper/dashboard')
-                  } catch {
-                    toast({ title: 'Error', description: 'Could not switch role', variant: 'destructive' })
-                  }
-                }}
-              >
-                <ArrowLeftRight className="h-4 w-4 mr-1.5" />
-                Goalkeeper Mode
-              </Button>
+                  }}
+                >
+                  <ArrowLeftRight className="h-4 w-4 mr-1.5" />
+                  Goalkeeper Mode
+                </Button>
+              )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">

@@ -11,30 +11,41 @@ export default async function GoalkeeperDashboardPage() {
     redirect('/auth/signin')
   }
 
-  // Auto-switch role to GOALKEEPER when accessing this dashboard
-  if (session.user.role !== 'GOALKEEPER') {
+  // Check if user has GOALKEEPER role
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { roles: true, role: true }
+  })
+
+  if (!dbUser || !dbUser.roles.includes('GOALKEEPER')) {
+    // User doesn't have goalkeeper role — redirect to signup
+    redirect('/auth/goalkeeper/signup')
+  }
+
+  // Set active role to GOALKEEPER if not already
+  if (dbUser.role !== 'GOALKEEPER') {
     await prisma.user.update({
       where: { id: session.user.id },
       data: { role: 'GOALKEEPER' }
     })
+  }
 
-    // Ensure goalkeeper profile exists
-    const existingProfile = await prisma.goalkeeperProfile.findUnique({
-      where: { userId: session.user.id }
+  // Ensure goalkeeper profile exists
+  const existingProfile = await prisma.goalkeeperProfile.findUnique({
+    where: { userId: session.user.id }
+  })
+  if (!existingProfile) {
+    await prisma.goalkeeperProfile.create({
+      data: {
+        userId: session.user.id,
+        bio: '',
+        experienceLevel: 'BEGINNER',
+        preferredFields: [],
+        serviceRadius: 10,
+        hourlyRateMin: 2000,
+        hourlyRateMax: 3000,
+      }
     })
-    if (!existingProfile) {
-      await prisma.goalkeeperProfile.create({
-        data: {
-          userId: session.user.id,
-          bio: '',
-          experienceLevel: 'BEGINNER',
-          preferredFields: [],
-          serviceRadius: 10,
-          hourlyRateMin: 2000,
-          hourlyRateMax: 3000,
-        }
-      })
-    }
   }
 
   const user = await prisma.user.findUnique({

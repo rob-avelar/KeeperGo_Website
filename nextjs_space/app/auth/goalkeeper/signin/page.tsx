@@ -40,12 +40,22 @@ export default function GoalkeeperSignInPage() {
           variant: 'destructive',
         })
       } else {
-        // Switch active role to GOALKEEPER
-        await fetch('/api/switch-role', {
+        // Set active role to GOALKEEPER (only works if user has this role)
+        const switchRes = await fetch('/api/switch-role', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ role: 'GOALKEEPER' }),
         })
+
+        if (!switchRes.ok) {
+          toast({
+            title: 'Not registered as goalkeeper',
+            description: 'This account is not registered as a goalkeeper. Please sign up as goalkeeper first.',
+            variant: 'destructive',
+          })
+          router.replace('/auth/goalkeeper/signup')
+          return
+        }
 
         toast({
           title: 'Success',

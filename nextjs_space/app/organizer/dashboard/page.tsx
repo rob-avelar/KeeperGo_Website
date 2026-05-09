@@ -11,8 +11,19 @@ export default async function OrganizerDashboardPage() {
     redirect('/auth/signin')
   }
 
-  // Auto-switch role to ORGANIZER when accessing this dashboard
-  if (session.user.role !== 'ORGANIZER') {
+  // Check if user has ORGANIZER role
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { roles: true, role: true }
+  })
+
+  if (!dbUser || !dbUser.roles.includes('ORGANIZER')) {
+    // User doesn't have organizer role — redirect to signup
+    redirect('/auth/organizer/signup')
+  }
+
+  // Set active role to ORGANIZER if not already
+  if (dbUser.role !== 'ORGANIZER') {
     await prisma.user.update({
       where: { id: session.user.id },
       data: { role: 'ORGANIZER' }

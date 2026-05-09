@@ -14,43 +14,37 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { role } = body
+    const { role, targetRole } = body
+    const requestedRole = role || targetRole
 
-    if (!role || !['ORGANIZER', 'GOALKEEPER'].includes(role)) {
+    if (!requestedRole || !['ORGANIZER', 'GOALKEEPER'].includes(requestedRole)) {
       return NextResponse.json({ error: 'Invalid role' }, { status: 400 })
     }
 
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
-      include: { goalkeeperProfile: true }
+      select: { id: true, roles: true, role: true }
     })
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Update the active role
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { role }
-    })
-
-    // If switching to GOALKEEPER, ensure goalkeeper profile exists
-    if (role === 'GOALKEEPER' && !user.goalkeeperProfile) {
-      await prisma.goalkeeperProfile.create({
-        data: {
-          userId: user.id,
-          bio: '',
-          experienceLevel: 'BEGINNER',
-          preferredFields: [],
-          serviceRadius: 10,
-          hourlyRateMin: 2000,
-          hourlyRateMax: 3000,
-        }
-      })
+    // Only allow switching to a role the user already has
+    if (!user.roles.includes(requestedRole)) {
+      return NextResponse.json(
+        { error: `You don't have the ${requestedRole} role. Please register as ${requestedRole.toLowerCase()} first.` },
+        { status: 403 }
+      )
     }
 
-    return NextResponse.json({ success: true, role }, { status: 200 })
+    // Update the active role (don't modify roles[])
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { role: requestedRole }
+    })
+
+    return NextResponse.json({ success: true, role: requestedRole }, { status: 200 })
   } catch (error) {
     console.error('Error switching role:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

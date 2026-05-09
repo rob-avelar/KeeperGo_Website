@@ -40,12 +40,22 @@ export default function OrganizerSignInPage() {
           variant: 'destructive',
         })
       } else {
-        // Switch active role to ORGANIZER
-        await fetch('/api/switch-role', {
+        // Set active role to ORGANIZER (only works if user has this role)
+        const switchRes = await fetch('/api/switch-role', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ role: 'ORGANIZER' }),
         })
+
+        if (!switchRes.ok) {
+          toast({
+            title: 'Not registered as organizer',
+            description: 'This account is not registered as an organizer. Please sign up as organizer first.',
+            variant: 'destructive',
+          })
+          router.replace('/auth/organizer/signup')
+          return
+        }
 
         toast({
           title: 'Success',

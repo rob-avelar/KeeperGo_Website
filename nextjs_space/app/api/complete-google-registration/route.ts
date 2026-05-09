@@ -39,10 +39,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Update user with role
+    // Update user with role — add to roles[] (merge, don't overwrite)
+    const currentRoles: string[] = (user as any).roles || []
+    const updatedRoles = currentRoles.includes(role) ? currentRoles : [...currentRoles, role]
+
     await prisma.user.update({
       where: { id: user.id },
-      data: { role }
+      data: { role, roles: updatedRoles }
     })
 
     // If role is GOALKEEPER, create a goalkeeper profile

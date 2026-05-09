@@ -8,17 +8,20 @@ declare module 'next-auth' {
       email: string
       name: string
       role: string
+      roles: string[]
       image?: string
     }
   }
 
   interface User {
     role: string
+    roles: string[]
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     role: string
+    roles: string[]
   }
 }

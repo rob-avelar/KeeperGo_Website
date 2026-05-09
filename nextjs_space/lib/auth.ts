@@ -51,6 +51,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
+          roles: user.roles || [],
           image: user.image,
         }
       }
@@ -97,6 +98,7 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           token.role = dbUser.role || null
           token.email = dbUser.email
+          token.roles = dbUser.roles || []
         }
       }
 
@@ -106,6 +108,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.sub as string
         session.user.role = token.role as string
+        session.user.roles = (token.roles as string[]) || []
       }
       return session
     }
