@@ -76,6 +76,7 @@ model User {
   referredByCode      String?
   referralsMade       Referral[]          @relation("ReferralsMade")
   referralsReceived   Referral[]          @relation("ReferralsReceived")
+  passwordResets      PasswordReset[]
 
   @@map("users")
 }
@@ -329,6 +330,19 @@ enum ReferralStatus {
   PENDING
   SIGNED_UP
   COMPLETED  // referred user completed first booking
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_resets")
 }
 
 model AppSettings {

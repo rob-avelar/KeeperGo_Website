@@ -170,6 +170,11 @@ export default function SignInPage() {
               </Button>
 
               <div className="text-center text-sm">
+                <Link href="/auth/forgot-password" className="text-gray-400 hover:text-lime-400">
+                  Forgot your password?
+                </Link>
+              </div>
+              <div>
                 <span className="text-gray-400">Don&apos;t have an account? </span>
                 <Link 
                   href="/auth/signup" 

@@ -36,17 +36,18 @@ async function main() {
 
   // Create admin user for backoffice access
   const adminUser = await prisma.user.upsert({
-    where: { email: 'admin@keepergo.com' },
+    where: { email: 'admin@keepergo.nl' },
     update: {},
     create: {
-      email: 'admin@keepergo.com',
-      password: await bcrypt.hash('admin123', 12),
-      name: 'Admin KeeperGo',
-      role: 'ADMIN'
+      email: 'admin@keepergo.nl',
+      password: await bcrypt.hash('Kg!Adm1n#2026Nl', 12),
+      name: 'Robson Avelar',
+      role: 'ADMIN',
+      roles: ['ADMIN', 'GOALKEEPER'],
     }
   })
 
-  console.log('✓ Created admin user (admin@keepergo.com / admin123)')
+  console.log('✓ Created admin user (admin@keepergo.nl)')
 
   // Create test user
   const testAccount = await prisma.user.upsert({

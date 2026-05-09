@@ -198,6 +198,11 @@ export default function GoalkeeperSignInPage() {
 
               <div className="text-center text-sm space-y-2">
                 <div>
+                  <Link href="/auth/forgot-password" className="text-gray-400 hover:text-lime-400">
+                    Forgot your password?
+                  </Link>
+                </div>
+                <div>
                   <span className="text-gray-400">Don't have an account? </span>
                   <Link 
                     href="/auth/goalkeeper/signup" 
