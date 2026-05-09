@@ -151,6 +151,24 @@ export const emailTemplates = {
     return { subject: `🆕 New match available in ${location} — €${totalGoalkeeperEarnings} to earn!`, html }
   },
 
+  newBookingAdminAlert: (organizerName: string, organizerEmail: string, date: Date, location: string, fieldType: string, pricePerHour: number, duration: number, bookingType: string) => {
+    const totalPrice = pricePerHour * duration
+    const html = emailLayout(`
+      <h2 style="color: #a3e635; margin: 0 0 8px;">New Booking Created 📋</h2>
+      <p style="color: #d1d5db; margin: 0 0 16px;">A new booking was just placed on the platform.</p>
+      <div style="background: #1f2937; border-radius: 8px; padding: 16px; margin: 16px 0;">
+        <p style="color: #9ca3af; margin: 0 0 8px;"><strong style="color: #e5e7eb;">Organizer:</strong> ${organizerName} (${organizerEmail})</p>
+        <p style="color: #9ca3af; margin: 0 0 8px;"><strong style="color: #e5e7eb;">Date:</strong> ${date.toLocaleDateString('nl-NL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at ${date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}</p>
+        <p style="color: #9ca3af; margin: 0 0 8px;"><strong style="color: #e5e7eb;">Location:</strong> ${location}</p>
+        <p style="color: #9ca3af; margin: 0 0 8px;"><strong style="color: #e5e7eb;">Field Type:</strong> ${fieldType}</p>
+        <p style="color: #9ca3af; margin: 0 0 8px;"><strong style="color: #e5e7eb;">Duration:</strong> ${duration}h</p>
+        <p style="color: #9ca3af; margin: 0 0 8px;"><strong style="color: #e5e7eb;">Total Price:</strong> €${(totalPrice / 100).toFixed(2)}</p>
+        <p style="color: #9ca3af; margin: 0;"><strong style="color: #e5e7eb;">Type:</strong> ${bookingType === 'direct' ? 'Direct Booking' : 'Open Match'}</p>
+      </div>
+    `)
+    return { subject: `New Booking — ${organizerName} on ${date.toLocaleDateString('nl-NL')}`, html }
+  },
+
   paymentReceived: (goalkeeperName: string, amount: number, date: Date, location: string) => {
     const html = emailLayout(`
       <h2 style="color: #a3e635; margin: 0 0 8px;">Payment Received! 💰</h2>
@@ -249,5 +267,24 @@ export async function sendPaymentReceivedEmail(
     subject: template.subject,
     htmlBody: template.html,
     notificationId: process.env.NOTIF_ID_PAYMENT_RECEIVED || '',
+  })
+}
+
+export async function sendNewBookingAdminAlert(
+  organizerName: string,
+  organizerEmail: string,
+  date: Date,
+  location: string,
+  fieldType: string,
+  pricePerHour: number,
+  duration: number,
+  bookingType: string
+): Promise<boolean> {
+  const template = emailTemplates.newBookingAdminAlert(organizerName, organizerEmail, date, location, fieldType, pricePerHour, duration, bookingType)
+  return sendNotificationEmail({
+    recipientEmail: 'admin@keepergo.nl',
+    subject: template.subject,
+    htmlBody: template.html,
+    notificationId: process.env.NOTIF_ID_NEW_BOOKING_ADMIN_ALERT || '',
   })
 }

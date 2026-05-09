@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic"
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { sendNewBookingAvailableEmail } from '@/lib/email'
+import { sendNewBookingAvailableEmail, sendNewBookingAdminAlert } from '@/lib/email'
 
 export async function GET(request: NextRequest) {
   try {
@@ -169,6 +169,18 @@ export async function POST(request: NextRequest) {
     notifyGoalkeepers(booking, bookingType, goalkeeperId).catch((err) =>
       console.error('[Booking] Error notifying goalkeepers:', err)
     )
+
+    // Send admin alert email
+    sendNewBookingAdminAlert(
+      session.user.name || 'Unknown',
+      session.user.email || '',
+      new Date(date),
+      location,
+      fieldType,
+      parseInt(pricePerHour),
+      parseInt(duration),
+      bookingType
+    ).catch((err) => console.error('[Booking] Error sending admin alert:', err))
 
     return NextResponse.json(booking, { status: 201 })
   } catch (error) {
