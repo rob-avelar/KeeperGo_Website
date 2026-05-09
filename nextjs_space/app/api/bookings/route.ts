@@ -83,13 +83,13 @@ export async function POST(request: NextRequest) {
       latitude,
       longitude,
       fieldType,
-      pricePerHour,
+      pricePerHour: clientPricePerHour,
       specialRequests,
       bookingType,
       goalkeeperId
     } = body
 
-    if (!date || !duration || !location || !fieldType || !pricePerHour) {
+    if (!date || !duration || !location || !fieldType) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
@@ -97,6 +97,9 @@ export async function POST(request: NextRequest) {
     if (bookingType === 'direct' && !goalkeeperId) {
       return NextResponse.json({ error: 'Goalkeeper ID required for direct booking' }, { status: 400 })
     }
+
+    // Fixed standard rate: €20/hour (2000 cents). Accept client value only if provided for backwards compatibility.
+    const pricePerHour = clientPricePerHour || 2000
 
     // Calculate total amount with premium for direct booking
     const isPremium = bookingType === 'direct'

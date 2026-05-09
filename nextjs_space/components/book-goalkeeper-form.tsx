@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { Calendar, MapPin, Clock, Euro, ArrowRight, Goal, Star, Heart, Repeat, Plus, Building2 } from 'lucide-react'
+import { Calendar, MapPin, Clock, ArrowRight, Goal, Star, Heart, Repeat, Plus, Building2 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
@@ -35,7 +35,6 @@ export default function BookGoalkeeperForm() {
     duration: '',
     location: '',
     fieldType: '',
-    pricePerHour: '',
     specialRequests: '',
     bookingType: inviteGoalkeeperId ? 'direct' : 'open',
     selectedGoalkeeperId: inviteGoalkeeperId || '',
@@ -160,13 +159,7 @@ export default function BookGoalkeeperForm() {
     }
   }
 
-  const calculateTotalPrice = () => {
-    const basePrice = parseInt(formData.pricePerHour) || 20
-    const duration = parseInt(formData.duration) || 1
-    const isPremium = formData.bookingType === 'direct'
-    const premiumMultiplier = isPremium ? 1.25 : 1
-    return Math.round(basePrice * duration * premiumMultiplier)
-  }
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -221,7 +214,6 @@ export default function BookGoalkeeperForm() {
             duration: parseInt(formData.duration),
             location: formData.location,
             fieldType: formData.fieldType,
-            pricePerHour: parseInt(formData.pricePerHour) * 100, // Convert to cents
             specialRequests: formData.specialRequests,
             bookingType: formData.bookingType,
             goalkeeperId: formData.bookingType === 'direct' ? formData.selectedGoalkeeperId : undefined
@@ -645,54 +637,7 @@ export default function BookGoalkeeperForm() {
                 </DialogContent>
               </Dialog>
 
-              {/* Price Per Hour */}
-              <div className="space-y-2">
-                <Label htmlFor="pricePerHour">Price Per Hour (€)</Label>
-                <div className="relative">
-                  <Euro className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="pricePerHour"
-                    type="number"
-                    placeholder="e.g., 20"
-                    min="20"
-                    step="1"
-                    max="100"
-                    value={formData.pricePerHour}
-                    onChange={(e) => handleChange('pricePerHour', e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-                <p className="text-sm text-gray-400">
-                  Minimum rate: €20 per hour
-                </p>
-                {formData.pricePerHour && formData.duration && (
-                  <div className="mt-2 p-3 bg-gray-800 rounded-lg border border-gray-700">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-400">Base cost:</span>
-                      <span className="font-medium">€{parseInt(formData.pricePerHour) * parseInt(formData.duration)}</span>
-                    </div>
-                    {formData.bookingType === 'direct' && (
-                      <>
-                        <div className="flex justify-between items-center text-sm text-orange-600 mt-1">
-                          <span>Direct booking premium (+25%):</span>
-                          <span className="font-medium">€{Math.round(parseInt(formData.pricePerHour) * parseInt(formData.duration) * 0.25)}</span>
-                        </div>
-                        <div className="border-t border-gray-300 mt-2 pt-2 flex justify-between items-center">
-                          <span className="font-semibold text-gray-100">Total:</span>
-                          <span className="font-bold text-lime-400 text-lg">€{calculateTotalPrice()}</span>
-                        </div>
-                      </>
-                    )}
-                    {formData.bookingType === 'open' && (
-                      <div className="border-t border-gray-300 mt-2 pt-2 flex justify-between items-center">
-                        <span className="font-semibold text-gray-100">Total:</span>
-                        <span className="font-bold text-lime-400 text-lg">€{calculateTotalPrice()}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+
 
               {/* Special Requests */}
               <div className="space-y-2">

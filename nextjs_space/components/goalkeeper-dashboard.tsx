@@ -674,7 +674,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                 Bank Account Connected
               </CardTitle>
               <CardDescription className="text-green-700">
-                Your bank account is active. You'll receive 75% of each booking payment after confirmation.
+                Your bank account is active. You'll receive your payments directly after match confirmation.
               </CardDescription>
             </CardHeader>
             <CardContent>

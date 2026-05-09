@@ -203,7 +203,7 @@ export default function BankAccountPage() {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="font-bold text-lime-400">3.</span>
-                      Once verified, you&apos;ll receive 75% of each booking payment directly
+                      Once verified, you&apos;ll receive your payments directly to your bank account
                     </li>
                   </ul>
                 </div>
@@ -322,7 +322,7 @@ export default function BankAccountPage() {
                 <div>
                   <CardTitle className="text-green-800">Bank Account Active</CardTitle>
                   <CardDescription className="text-green-700">
-                    Your bank account is fully set up. You&apos;ll receive 75% of each booking payment directly to your bank account.
+                    Your bank account is fully set up. You&apos;ll receive your payments directly to your bank account.
                   </CardDescription>
                 </div>
               </div>
