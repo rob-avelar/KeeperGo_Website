@@ -81,6 +81,15 @@ export async function POST(request: NextRequest) {
     })
 
     if (existingUser) {
+      // ADMIN accounts cannot add other roles
+      const existingRoles = (existingUser as any).roles || []
+      if (existingUser.role === 'ADMIN' || existingRoles.includes('ADMIN')) {
+        return NextResponse.json(
+          { error: 'Admin accounts cannot register for other roles. Please use a different email.' },
+          { status: 400 }
+        )
+      }
+
       // If user exists, verify password and allow adding a new role
       if (!existingUser.password) {
         // Google SSO user - they should use Google to sign in

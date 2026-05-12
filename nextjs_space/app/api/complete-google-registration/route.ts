@@ -39,8 +39,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Update user with role — add to roles[] (merge, don't overwrite)
+    // ADMIN accounts cannot add other roles
     const currentRoles: string[] = (user as any).roles || []
+    if ((user as any).role === 'ADMIN' || currentRoles.includes('ADMIN')) {
+      return NextResponse.json(
+        { error: 'Admin accounts cannot register for other roles.' },
+        { status: 400 }
+      )
+    }
+
+    // Update user with role — add to roles[] (merge, don't overwrite)
     const updatedRoles = currentRoles.includes(role) ? currentRoles : [...currentRoles, role]
 
     await prisma.user.update({

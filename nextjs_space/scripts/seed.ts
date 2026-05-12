@@ -43,7 +43,7 @@ async function main() {
       password: await bcrypt.hash('Kg!Adm1n#2026Nl', 12),
       name: 'Robson Avelar',
       role: 'ADMIN',
-      roles: ['ADMIN', 'GOALKEEPER'],
+      roles: ['ADMIN'],
     }
   })
 
