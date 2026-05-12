@@ -18,8 +18,8 @@ export default async function GoalkeeperDashboardPage() {
   })
 
   if (!dbUser || !dbUser.roles.includes('GOALKEEPER')) {
-    // User doesn't have goalkeeper role — redirect to signup
-    redirect('/auth/goalkeeper/signup')
+    // User doesn't have goalkeeper role — redirect to home to avoid redirect loops
+    redirect('/')
   }
 
   // Set active role to GOALKEEPER if not already

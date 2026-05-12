@@ -1,3 +1,5 @@
+// CRITICAL: This schema file is shared across multiple applications. Only make edits with explicit user consent. Changes here affect all apps using this database.
+
 
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema

@@ -227,7 +227,7 @@ async function notifyGoalkeepers(
   for (let i = 0; i < goalkeepers.length; i += batchSize) {
     const batch = goalkeepers.slice(i, i + batchSize)
     await Promise.allSettled(
-      batch.map((gk) =>
+      batch.map((gk: any) =>
         sendNewBookingAvailableEmail(
           gk.email,
           gk.name || 'Goalkeeper',

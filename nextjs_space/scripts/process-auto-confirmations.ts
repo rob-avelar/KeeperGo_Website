@@ -42,7 +42,7 @@ async function processAutoConfirmations() {
         const platformFee = booking.totalAmount - goalkeeperEarning;
 
         // Process auto-confirmation in transaction
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx: any) => {
           // 1. Update booking status
           await tx.booking.update({
             where: { id: booking.id },

@@ -18,18 +18,28 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { prisma } from '@/lib/prisma'
 
 export default async function HomePage() {
   // If user is already logged in, redirect to their dashboard
   const session = await auth()
-  if (session?.user?.role === 'ADMIN') {
-    redirect('/admin/dashboard')
-  } else if (session?.user?.role === 'GOALKEEPER') {
-    redirect('/goalkeeper/dashboard')
-  } else if (session?.user?.role === 'ORGANIZER') {
-    redirect('/organizer/dashboard')
-  } else if (session?.user && !session?.user?.role) {
-    redirect('/auth/complete-registration?email=' + encodeURIComponent(session.user.email || ''))
+  if (session?.user?.id) {
+    // Verify the role against the DB roles array to prevent redirect loops
+    const dbUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { role: true, roles: true }
+    })
+    
+    if (dbUser?.role === 'ADMIN') {
+      redirect('/admin/dashboard')
+    } else if (dbUser?.role === 'GOALKEEPER' && dbUser.roles.includes('GOALKEEPER')) {
+      redirect('/goalkeeper/dashboard')
+    } else if (dbUser?.role === 'ORGANIZER' && dbUser.roles.includes('ORGANIZER')) {
+      redirect('/organizer/dashboard')
+    } else if (dbUser && !dbUser.role && dbUser.roles.length === 0) {
+      redirect('/auth/complete-registration?email=' + encodeURIComponent(session.user.email || ''))
+    }
+    // Otherwise: user is logged in but role doesn't match roles array — show home page
   }
   const jsonLd = {
     '@context': 'https://schema.org',

@@ -55,7 +55,7 @@ export async function GET() {
         const platformFee = booking.totalAmount - goalkeeperEarning;
 
         // Use transaction to ensure atomicity
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx: any) => {
           // Update booking status
           await tx.booking.update({
             where: { id: booking.id },
@@ -98,7 +98,7 @@ export async function GET() {
             let avgRating = 0;
             if (allRatings.length > 0) {
               avgRating =
-                allRatings.reduce((sum, r) => sum + r.overallRating, 0) /
+                allRatings.reduce((sum: number, r: any) => sum + r.overallRating, 0) /
                 allRatings.length;
             }
 

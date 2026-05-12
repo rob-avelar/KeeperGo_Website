@@ -61,7 +61,7 @@ export async function POST(
     }
 
     // Update booking and payment in a transaction
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       // Update booking to CONFIRMED
       await tx.booking.update({
         where: { id: bookingId },

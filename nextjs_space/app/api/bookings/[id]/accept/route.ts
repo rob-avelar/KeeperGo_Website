@@ -32,7 +32,7 @@ export async function POST(
     }
 
     // Use a transaction to ensure atomicity and handle race conditions
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       // First, check if booking is still available
       const booking = await tx.booking.findUnique({
         where: { id: bookingId },

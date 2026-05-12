@@ -107,7 +107,7 @@ export async function POST(
     const platformFee = booking.totalAmount - goalkeeperEarning;
 
     // Create transaction to update everything
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       // 1. Create rating
       const rating = await tx.rating.create({
         data: {
@@ -150,7 +150,7 @@ export async function POST(
         where: { ratedUserId: booking.goalkeeperId! },
       });
 
-      const totalRating = allRatings.reduce((sum, r) => sum + r.overallRating, 0);
+      const totalRating = allRatings.reduce((sum: number, r: any) => sum + r.overallRating, 0);
       const averageRating = allRatings.length > 0 ? totalRating / allRatings.length : 0;
 
       await tx.goalkeeperProfile.update({

@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
         platformRevenue: (platformRevenue._sum.platformFee || 0) / 100,
       },
       registrationTrend: last7Days,
-      topGoalkeepers: topGoalkeepers.map(gk => ({
+      topGoalkeepers: topGoalkeepers.map((gk: any) => ({
         name: gk.user.name,
         email: gk.user.email,
         rating: gk.averageRating,

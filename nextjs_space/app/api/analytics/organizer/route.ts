@@ -50,7 +50,7 @@ export async function GET() {
     const hourFrequency: { [key: number]: number } = {}
     const fieldTypeFrequency: { [key: string]: number } = {}
 
-    completedBookings.forEach(booking => {
+    completedBookings.forEach((booking: any) => {
       const date = new Date(booking.date)
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
       
@@ -130,12 +130,12 @@ export async function GET() {
 
     // Calculate totals and averages
     const totalMatches = completedBookings.length
-    const totalHoursPlayed = completedBookings.reduce((sum, b) => sum + (b.duration || 0), 0)
+    const totalHoursPlayed = completedBookings.reduce((sum: number, b: any) => sum + (b.duration || 0), 0)
     const avgMatchDuration = totalMatches > 0 ? totalHoursPlayed / totalMatches : 0
     
-    const ratingsGiven = completedBookings.flatMap(b => b.ratings)
+    const ratingsGiven = completedBookings.flatMap((b: any) => b.ratings)
     const avgRatingGiven = ratingsGiven.length > 0
-      ? ratingsGiven.reduce((sum, r) => sum + r.overallRating, 0) / ratingsGiven.length
+      ? ratingsGiven.reduce((sum: number, r: any) => sum + r.overallRating, 0) / ratingsGiven.length
       : 0
 
     // Get current month matches

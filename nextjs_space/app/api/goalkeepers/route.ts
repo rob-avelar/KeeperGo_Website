@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
       const lng = parseFloat(longitude)
       const radiusKm = parseFloat(radius)
 
-      filteredGoalkeepers = goalkeepers.filter(gk => {
+      filteredGoalkeepers = goalkeepers.filter((gk: any) => {
         if (!gk.latitude || !gk.longitude) return false
         
         const distance = calculateDistance(lat, lng, gk.latitude, gk.longitude)

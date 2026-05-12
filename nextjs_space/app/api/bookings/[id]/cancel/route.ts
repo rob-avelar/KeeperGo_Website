@@ -109,7 +109,7 @@ export async function POST(
       refundAmount = refundCalc.refund;
       cancellationFee = refundCalc.fee;
 
-      const result = await prisma.$transaction(async (tx) => {
+      const result = await prisma.$transaction(async (tx: any) => {
         // Update booking
         const updatedBooking = await tx.booking.update({
           where: { id },
@@ -192,7 +192,7 @@ export async function POST(
         ? `Goalkeeper cancelled ${hoursUntilMatch.toFixed(1)}h before match`
         : null;
 
-      const result = await prisma.$transaction(async (tx) => {
+      const result = await prisma.$transaction(async (tx: any) => {
         // Reset booking to PENDING — remove goalkeeper, make available again
         const updatedBooking = await tx.booking.update({
           where: { id },

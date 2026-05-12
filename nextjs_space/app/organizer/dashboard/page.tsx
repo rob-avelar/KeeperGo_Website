@@ -18,8 +18,8 @@ export default async function OrganizerDashboardPage() {
   })
 
   if (!dbUser || !dbUser.roles.includes('ORGANIZER')) {
-    // User doesn't have organizer role — redirect to signup
-    redirect('/auth/organizer/signup')
+    // User doesn't have organizer role — redirect to home to avoid redirect loops
+    redirect('/')
   }
 
   // Set active role to ORGANIZER if not already

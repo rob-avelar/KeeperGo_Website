@@ -36,9 +36,9 @@ export async function getReferralStats(userId: string) {
   })
 
   const totalReferred = referrals.length
-  const signedUp = referrals.filter(r => r.status === 'SIGNED_UP' || r.status === 'COMPLETED').length
-  const completed = referrals.filter(r => r.status === 'COMPLETED').length
-  const totalEarned = referrals.filter(r => r.referrerRewarded).reduce((sum, r) => sum + r.rewardAmount, 0)
+  const signedUp = referrals.filter((r: any) => r.status === 'SIGNED_UP' || r.status === 'COMPLETED').length
+  const completed = referrals.filter((r: any) => r.status === 'COMPLETED').length
+  const totalEarned = referrals.filter((r: any) => r.referrerRewarded).reduce((sum: number, r: any) => sum + r.rewardAmount, 0)
 
   return {
     referrals,

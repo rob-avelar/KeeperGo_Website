@@ -81,7 +81,7 @@ export async function POST(
     }
 
     // Create transaction to handle no-show
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       // 1. Update booking as no-show
       const updatedBooking = await tx.booking.update({
         where: { id },

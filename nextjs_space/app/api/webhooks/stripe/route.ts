@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         console.log(`Payment succeeded for booking ${bookingId}, PaymentIntent ${paymentIntent.id}`)
 
         // Update payment and booking status
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx: any) => {
           // Find and update payment
           const payment = await tx.payment.findFirst({
             where: { stripePaymentId: paymentIntent.id }
