@@ -91,8 +91,8 @@ export async function POST(
     const matchTime = new Date(booking.date);
     const hoursUntilMatch = (matchTime.getTime() - now.getTime()) / (1000 * 60 * 60);
 
-    // Cannot cancel after match has started
-    if (hoursUntilMatch < 0) {
+    // Cannot cancel after match has started (except PENDING bookings with no goalkeeper)
+    if (hoursUntilMatch < 0 && booking.status !== 'PENDING') {
       return NextResponse.json(
         { error: 'Cannot cancel a match that has already started or passed' },
         { status: 400 }
@@ -105,7 +105,11 @@ export async function POST(
 
     // Handle ORGANIZER cancellation
     if (isOrganizer) {
-      const refundCalc = calculateOrganizerRefund(hoursUntilMatch, booking.totalAmount);
+      // PENDING bookings (no goalkeeper assigned) = always free cancellation
+      const isPending = booking.status === 'PENDING';
+      const refundCalc = isPending
+        ? { refundPercent: 100, refund: booking.totalAmount, fee: 0 }
+        : calculateOrganizerRefund(hoursUntilMatch, booking.totalAmount);
       refundAmount = refundCalc.refund;
       cancellationFee = refundCalc.fee;
 

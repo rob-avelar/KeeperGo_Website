@@ -102,7 +102,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
   }) || []
 
   const openBookings = bookings?.filter((booking: any) => 
-    new Date(booking.date) >= now && booking.status === 'PENDING' && !booking.goalkeeperId
+    booking.status === 'PENDING' && !booking.goalkeeperId
   ) || []
 
   const completedBookings = bookings?.filter((booking: any) => 
@@ -149,6 +149,17 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
     const matchDate = new Date(booking.date)
     const hoursUntilMatch = (matchDate.getTime() - now.getTime()) / (1000 * 60 * 60)
 
+    // PENDING bookings (no goalkeeper assigned) = always free, no fees
+    if (booking.status === 'PENDING') {
+      return {
+        refundAmount: booking.totalAmount,
+        cancellationFee: 0,
+        message: 'Free cancellation — no goalkeeper assigned yet',
+        hoursUntilMatch: Math.round(hoursUntilMatch * 10) / 10,
+        isFree: true,
+      }
+    }
+
     let refundPercentage = 0
     let message = ''
 
@@ -173,7 +184,8 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
       refundAmount,
       cancellationFee,
       message,
-      hoursUntilMatch: Math.round(hoursUntilMatch * 10) / 10
+      hoursUntilMatch: Math.round(hoursUntilMatch * 10) / 10,
+      isFree: false,
     }
   }
 
@@ -463,13 +475,13 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
 
         {/* Open Announcements */}
         {openBookings?.length > 0 && (
-          <Card className="mb-8 border-yellow-300 bg-yellow-50/50">
+          <Card className="mb-8 border-yellow-500/30 bg-yellow-900/10">
             <CardHeader>
-              <CardTitle className="flex items-center text-yellow-800">
+              <CardTitle className="flex items-center text-yellow-400">
                 <Activity className="h-5 w-5 mr-2" />
                 Open Match Announcements
               </CardTitle>
-              <CardDescription className="text-yellow-700">
+              <CardDescription className="text-yellow-500/70">
                 Waiting for goalkeepers to accept
               </CardDescription>
             </CardHeader>
@@ -777,36 +789,49 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                 <p className="text-sm text-gray-300">
                   <strong>Location:</strong> {bookingToCancel.location}
                 </p>
-                <p className="text-sm text-gray-300">
-                  <strong>Time until match:</strong> {cancelFeeInfo.hoursUntilMatch} hours
-                </p>
+                {!cancelFeeInfo.isFree && (
+                  <p className="text-sm text-gray-300">
+                    <strong>Time until match:</strong> {cancelFeeInfo.hoursUntilMatch} hours
+                  </p>
+                )}
               </div>
 
-              <div className={`p-4 rounded-lg border ${
-                cancelFeeInfo.cancellationFee === 0 
-                  ? 'bg-green-50 border-green-700' 
-                  : 'bg-orange-50 border-orange-700'
-              }`}>
-                <h4 className="font-semibold text-sm mb-2">
-                  {cancelFeeInfo.message}
-                </h4>
-                <div className="space-y-1 text-sm">
-                  <p className="flex justify-between">
-                    <span>Original amount:</span>
-                    <span className="font-medium">€{(bookingToCancel.totalAmount / 100).toFixed(2)}</span>
-                  </p>
-                  {cancelFeeInfo.cancellationFee > 0 && (
-                    <p className="flex justify-between text-orange-600">
-                      <span>Cancellation fee:</span>
-                      <span className="font-medium">-€{(cancelFeeInfo.cancellationFee / 100).toFixed(2)}</span>
-                    </p>
-                  )}
-                  <p className="flex justify-between border-t pt-1 font-semibold">
-                    <span>You will receive:</span>
-                    <span className="text-green-600">€{(cancelFeeInfo.refundAmount / 100).toFixed(2)}</span>
+              {cancelFeeInfo.isFree ? (
+                <div className="p-4 rounded-lg border bg-green-900/20 border-green-700">
+                  <h4 className="font-semibold text-sm text-green-400">
+                    ✓ {cancelFeeInfo.message}
+                  </h4>
+                  <p className="text-sm text-gray-400 mt-1">
+                    No payment has been made for this match yet, so there are no charges.
                   </p>
                 </div>
-              </div>
+              ) : (
+                <div className={`p-4 rounded-lg border ${
+                  cancelFeeInfo.cancellationFee === 0 
+                    ? 'bg-green-900/20 border-green-700' 
+                    : 'bg-orange-900/20 border-orange-700'
+                }`}>
+                  <h4 className="font-semibold text-sm mb-2">
+                    {cancelFeeInfo.message}
+                  </h4>
+                  <div className="space-y-1 text-sm">
+                    <p className="flex justify-between">
+                      <span>Original amount:</span>
+                      <span className="font-medium">€{(bookingToCancel.totalAmount / 100).toFixed(2)}</span>
+                    </p>
+                    {cancelFeeInfo.cancellationFee > 0 && (
+                      <p className="flex justify-between text-orange-400">
+                        <span>Cancellation fee:</span>
+                        <span className="font-medium">-€{(cancelFeeInfo.cancellationFee / 100).toFixed(2)}</span>
+                      </p>
+                    )}
+                    <p className="flex justify-between border-t border-gray-700 pt-1 font-semibold">
+                      <span>You will receive:</span>
+                      <span className="text-green-400">€{(cancelFeeInfo.refundAmount / 100).toFixed(2)}</span>
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <div>
                 <Label htmlFor="cancelReason">Reason (Optional)</Label>
