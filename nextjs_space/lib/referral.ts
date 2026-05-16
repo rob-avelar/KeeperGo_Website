@@ -1,5 +1,4 @@
 import { prisma } from '@/lib/prisma'
-import { PrismaClient } from '@prisma/client'
 import crypto from 'crypto'
 
 const REFERRAL_REWARD_CENTS = 500 // €5
@@ -8,6 +7,11 @@ const REFERRAL_REWARD_CENTS = 500 // €5
  * Process referral reward when a booking is completed.
  * Checks if the organizer or goalkeeper was referred and if this is their first completed booking.
  * If so, marks the referral as COMPLETED and credits the referrer.
+ * 
+ * ANTI-FRAUD: Blocks rewards when:
+ * - The booking is between the referrer and the person they referred (referral loop)
+ * - The referrer is involved in the same booking as the referred user
+ * 
  * Can run inside an existing transaction (pass tx) or standalone.
  */
 export async function processReferralReward(
@@ -16,6 +20,10 @@ export async function processReferralReward(
   tx?: any
 ) {
   const db = tx || prisma
+
+  // Collect both parties of the booking for cross-checking
+  const bookingParticipants = new Set<string>([organizerId])
+  if (goalkeeperId) bookingParticipants.add(goalkeeperId)
 
   // Check both the organizer and goalkeeper
   const userIds = [organizerId]
@@ -32,6 +40,16 @@ export async function processReferralReward(
     })
 
     if (!referral) continue
+
+    // ANTI-FRAUD: Block reward if the referrer is the other party in this booking.
+    // e.g. Referrer (organizer) referred a goalkeeper, then books that goalkeeper — no reward.
+    // e.g. Referrer (goalkeeper) referred an organizer, organizer books them — no reward.
+    if (bookingParticipants.has(referral.referrerId)) {
+      console.log(
+        `[Referral Anti-Fraud] Blocked reward: referrer ${referral.referrerId} is a participant in the same booking as referred user ${userId}. Booking: org=${organizerId}, gk=${goalkeeperId}`
+      )
+      continue
+    }
 
     // Check if this is their first completed booking (as organizer or goalkeeper)
     const completedBookingsCount = await db.booking.count({

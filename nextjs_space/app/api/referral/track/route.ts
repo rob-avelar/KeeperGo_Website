@@ -43,6 +43,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Already referred' }, { status: 400 })
     }
 
+    // ANTI-FRAUD: Check for circular referrals (A referred B, B tries to refer A)
+    const reverseReferral = await prisma.referral.findFirst({
+      where: {
+        referrerId: session.user.id,
+        referredId: referrer.id,
+      }
+    })
+
+    if (reverseReferral) {
+      return NextResponse.json({ error: 'Circular referrals are not allowed' }, { status: 400 })
+    }
+
     // Create referral record
     await prisma.referral.create({
       data: {

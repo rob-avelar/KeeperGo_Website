@@ -51,6 +51,11 @@ export async function POST(
         throw new Error('BOOKING_NOT_FOUND')
       }
 
+      // Prevent self-booking (goalkeeper accepting their own booking)
+      if (booking.organizerId === session.user.id) {
+        throw new Error('SELF_BOOKING')
+      }
+
       // Check if already taken
       if (booking.goalkeeperId !== null) {
         throw new Error('BOOKING_ALREADY_TAKEN')
@@ -140,6 +145,13 @@ export async function POST(
     // Handle specific error cases
     if (error.message === 'BOOKING_NOT_FOUND') {
       return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
+    }
+    
+    if (error.message === 'SELF_BOOKING') {
+      return NextResponse.json(
+        { error: 'You cannot accept your own booking' },
+        { status: 400 }
+      )
     }
     
     if (error.message === 'BOOKING_ALREADY_TAKEN') {

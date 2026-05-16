@@ -98,6 +98,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Goalkeeper ID required for direct booking' }, { status: 400 })
     }
 
+    // Prevent self-booking (organizer booking themselves as goalkeeper)
+    if (bookingType === 'direct' && goalkeeperId === session.user.id) {
+      return NextResponse.json({ error: 'You cannot book yourself as a goalkeeper' }, { status: 400 })
+    }
+
     // Fixed standard rate: €20/hour (2000 cents). Accept client value only if provided for backwards compatibility.
     const pricePerHour = clientPricePerHour || 2000
 
