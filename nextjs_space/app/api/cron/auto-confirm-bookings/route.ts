@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { processReferralReward } from '@/lib/referral';
+import { calcGoalkeeperEarning, calcPlatformFee } from '@/lib/pricing';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,9 +52,9 @@ export async function GET() {
           continue;
         }
 
-        // Calculate goalkeeper earnings (75% of total amount)
-        const goalkeeperEarning = Math.floor(booking.totalAmount * 0.75);
-        const platformFee = booking.totalAmount - goalkeeperEarning;
+        // Calculate goalkeeper earnings
+        const goalkeeperEarning = calcGoalkeeperEarning(booking.totalAmount);
+        const platformFee = calcPlatformFee(booking.totalAmount);
 
         // Use transaction to ensure atomicity
         await prisma.$transaction(async (tx: any) => {

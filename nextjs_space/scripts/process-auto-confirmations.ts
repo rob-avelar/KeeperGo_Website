@@ -37,8 +37,8 @@ async function processAutoConfirmations() {
       try {
         console.log(`⚙️  Processing booking ${booking.id}...`);
 
-        // Calculate goalkeeper earnings (75% of totalAmount)
-        const goalkeeperEarning = Math.floor(booking.totalAmount * 0.75);
+        // Calculate goalkeeper earnings (65% of totalAmount)
+        const goalkeeperEarning = Math.floor(booking.totalAmount * 0.65);
         const platformFee = booking.totalAmount - goalkeeperEarning;
 
         // Process auto-confirmation in transaction

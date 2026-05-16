@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { processReferralReward } from '@/lib/referral';
+import { calcGoalkeeperEarning, calcPlatformFee } from '@/lib/pricing';
 
 export async function POST(
   request: NextRequest,
@@ -111,9 +112,9 @@ export async function POST(
     // Calculate overall rating
     const overallRating = (punctuality + attitude + technicalSkill / 2) / 3;
 
-    // Calculate goalkeeper earnings (75% of total amount)
-    const goalkeeperEarning = Math.floor(booking.totalAmount * 0.75);
-    const platformFee = booking.totalAmount - goalkeeperEarning;
+    // Calculate goalkeeper earnings
+    const goalkeeperEarning = calcGoalkeeperEarning(booking.totalAmount);
+    const platformFee = calcPlatformFee(booking.totalAmount);
 
     // Start transaction
     const result = await prisma.$transaction(async (tx: any) => {

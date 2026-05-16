@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
           experienceLevel: 'BEGINNER',
           preferredFields: [],
           serviceRadius: 10,
-          hourlyRateMin: 2000,
+          hourlyRateMin: 2500,
           hourlyRateMax: 3000,
         }
       })

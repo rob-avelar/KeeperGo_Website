@@ -42,7 +42,7 @@ export default async function GoalkeeperDashboardPage() {
         experienceLevel: 'BEGINNER',
         preferredFields: [],
         serviceRadius: 10,
-        hourlyRateMin: 2000,
+        hourlyRateMin: 2500,
         hourlyRateMax: 3000,
       }
     })

@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { sendNewBookingAvailableEmail, sendNewBookingAdminAlert } from '@/lib/email'
+import { PRICE_PER_HOUR, DIRECT_BOOKING_PREMIUM } from '@/lib/pricing'
 
 export async function GET(request: NextRequest) {
   try {
@@ -103,12 +104,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'You cannot book yourself as a goalkeeper' }, { status: 400 })
     }
 
-    // Fixed standard rate: €20/hour (2000 cents). Accept client value only if provided for backwards compatibility.
-    const pricePerHour = clientPricePerHour || 2000
+    // Fixed standard rate. Accept client value only if provided for backwards compatibility.
+    const pricePerHour = clientPricePerHour || PRICE_PER_HOUR
 
     // Calculate total amount with premium for direct booking
     const isPremium = bookingType === 'direct'
-    const premiumMultiplier = isPremium ? 1.25 : 1
+    const premiumMultiplier = isPremium ? DIRECT_BOOKING_PREMIUM : 1
     const baseAmount = pricePerHour * duration
     const totalAmount = Math.round(baseAmount * premiumMultiplier)
 

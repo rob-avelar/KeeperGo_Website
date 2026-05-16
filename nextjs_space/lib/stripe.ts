@@ -1,5 +1,6 @@
 
 import Stripe from 'stripe'
+import { calcPlatformFee } from '@/lib/pricing'
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('STRIPE_SECRET_KEY is not defined in environment variables')
@@ -110,7 +111,7 @@ export async function createPaymentIntentForBooking(
   bookingId: string,
   goalkeeperStripeAccountId?: string | null
 ) {
-  const applicationFee = Math.floor(amount * 0.25) // 25% platform fee
+  const applicationFee = calcPlatformFee(amount) // platform fee
 
   const params: Stripe.PaymentIntentCreateParams = {
     amount,

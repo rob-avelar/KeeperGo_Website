@@ -1,5 +1,6 @@
 // KeeperGo Email Notification System
 // Uses Abacus.AI Notification Email API for real email delivery
+import { GOALKEEPER_SHARE } from '@/lib/pricing'
 
 interface SendNotificationEmailParams {
   recipientEmail: string
@@ -132,7 +133,7 @@ export const emailTemplates = {
   },
 
   newBookingAvailable: (goalkeeperName: string, date: Date, location: string, fieldType: string, pricePerHour: number, duration: number) => {
-    const totalGoalkeeperEarningsCents = Math.round(pricePerHour * duration * 0.75)
+    const totalGoalkeeperEarningsCents = Math.round(pricePerHour * duration * GOALKEEPER_SHARE)
     const totalGoalkeeperEarningsEuro = (totalGoalkeeperEarningsCents / 100).toFixed(2).replace('.', ',')
     const html = emailLayout(`
       <h2 style="color: #a3e635; margin: 0 0 8px;">New Match Available! 🆕⚽</h2>

@@ -8,6 +8,7 @@ import { Goal, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import PaymentCheckout from '@/components/payment-checkout'
+import { calcGoalkeeperEarning, calcPlatformFee } from '@/lib/pricing'
 
 export default async function PaymentPage({ params, searchParams }: { params: { id: string }, searchParams: { redirect_status?: string } }) {
   const session = await getServerSession(authOptions)
@@ -40,8 +41,8 @@ export default async function PaymentPage({ params, searchParams }: { params: { 
     redirect('/organizer/dashboard')
   }
 
-  const goalkeeperEarning = Math.floor(booking.totalAmount * 0.75)
-  const platformFee = booking.totalAmount - goalkeeperEarning
+  const goalkeeperEarning = calcGoalkeeperEarning(booking.totalAmount)
+  const platformFee = calcPlatformFee(booking.totalAmount)
 
   return (
     <div className="min-h-screen bg-transparent">

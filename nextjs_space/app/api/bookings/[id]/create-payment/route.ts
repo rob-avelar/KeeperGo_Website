@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { createPaymentIntentForBooking } from '@/lib/stripe'
+import { calcGoalkeeperEarning, calcPlatformFee } from '@/lib/pricing'
 
 export async function POST(
   request: NextRequest,
@@ -93,9 +94,9 @@ export async function POST(
       stripePaymentId = paymentIntent.id
     }
 
-    // Calculate fee split (based on full booking amount — goalkeeper always gets 75% of total)
-    const goalkeeperEarning = Math.floor(booking.totalAmount * 0.75)
-    const platformFee = booking.totalAmount - goalkeeperEarning
+    // Calculate fee split (based on full booking amount)
+    const goalkeeperEarning = calcGoalkeeperEarning(booking.totalAmount)
+    const platformFee = calcPlatformFee(booking.totalAmount)
 
     // Deduct credit from organizer's account
     if (creditToApply > 0) {

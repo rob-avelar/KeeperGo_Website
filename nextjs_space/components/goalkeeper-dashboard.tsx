@@ -122,7 +122,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
   const isBlocked = blockedUntil && blockedUntil > now
 
   const totalEarnings = completedBookings?.reduce((sum: number, booking: any) => {
-    const goalkeeperEarning = booking.totalAmount * 0.75 // 75% - goalkeeper share
+    const goalkeeperEarning = booking.totalAmount * 0.65 // 65% - goalkeeper share
     return sum + goalkeeperEarning
   }, 0) || 0
 
@@ -222,7 +222,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
     const matchDate = new Date(booking.date)
     const hoursUntilMatch = (matchDate.getTime() - now.getTime()) / (1000 * 60 * 60)
 
-    const goalkeeperEarnings = Math.round(booking.totalAmount * 0.75) // 75% of total
+    const goalkeeperEarnings = Math.round(booking.totalAmount * 0.65) // 65% of total
     let warningLevel = ''
     let message = ''
 
@@ -733,7 +733,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                     </div>
                     <div className="flex items-center">
                       <Euro className="h-3 w-3 mr-1" />
-                      €{((booking.totalAmount * 0.75) / 100).toFixed(0)} earnings
+                      €{((booking.totalAmount * 0.65) / 100).toFixed(0)} earnings
                     </div>
                   </div>
                   <div className="text-sm text-gray-400 mb-3">
@@ -805,7 +805,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                       </div>
                       <div className="flex items-center text-green-700 font-medium">
                         <Euro className="h-3 w-3 mr-1" />
-                        You will earn: €{((booking.totalAmount * 0.75) / 100).toFixed(2)}
+                        You will earn: €{((booking.totalAmount * 0.65) / 100).toFixed(2)}
                       </div>
                     </div>
                     <div className="mt-3">
@@ -931,7 +931,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                       </div>
                       <div className="flex items-center text-green-700 font-medium">
                         <Euro className="h-3 w-3 mr-1" />
-                        You earn: €{((booking.totalAmount * 0.75) / 100).toFixed(2)}
+                        You earn: €{((booking.totalAmount * 0.65) / 100).toFixed(2)}
                       </div>
                     </div>
                     <div className="mt-2 p-2 bg-gray-900 rounded border border-gray-700">
@@ -992,7 +992,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                       </div>
                       <div className="flex items-center">
                         <Euro className="h-3 w-3 mr-1" />
-                        €{((booking.totalAmount * 0.75) / 100).toFixed(0)} earnings
+                        €{((booking.totalAmount * 0.65) / 100).toFixed(0)} earnings
                       </div>
                     </div>
                     <div className="mt-3">

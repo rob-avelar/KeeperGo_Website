@@ -360,11 +360,11 @@ export default function PaymentCheckout({
           {/* Price breakdown */}
           <div className="border-t border-gray-700 pt-4 space-y-2">
             <div className="flex justify-between text-sm text-gray-400">
-              <span>Goalkeeper fee (75%)</span>
+              <span>Goalkeeper fee (65%)</span>
               <span>€{(goalkeeperEarning / 100).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm text-gray-400">
-              <span>Platform fee (25%)</span>
+              <span>Platform fee (35%)</span>
               <span>€{(platformFee / 100).toFixed(2)}</span>
             </div>
             {creditApplied > 0 && (
