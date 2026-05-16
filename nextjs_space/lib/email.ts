@@ -132,7 +132,8 @@ export const emailTemplates = {
   },
 
   newBookingAvailable: (goalkeeperName: string, date: Date, location: string, fieldType: string, pricePerHour: number, duration: number) => {
-    const totalGoalkeeperEarnings = Math.round(pricePerHour * duration * 0.75)
+    const totalGoalkeeperEarningsCents = Math.round(pricePerHour * duration * 0.75)
+    const totalGoalkeeperEarningsEuro = (totalGoalkeeperEarningsCents / 100).toFixed(2).replace('.', ',')
     const html = emailLayout(`
       <h2 style="color: #a3e635; margin: 0 0 8px;">New Match Available! 🆕⚽</h2>
       <p style="color: #d4d4d4; font-size: 15px;">Hi ${goalkeeperName},</p>
@@ -140,7 +141,7 @@ export const emailTemplates = {
       ${matchDetailsBlock(date, location, `
         <p style="margin: 4px 0; font-size: 14px;"><strong style="color: #a3e635;">🏟️ Field:</strong> ${fieldType}</p>
         <p style="margin: 4px 0; font-size: 14px;"><strong style="color: #a3e635;">⏱️ Duration:</strong> ${duration}h</p>
-        <p style="margin: 4px 0; font-size: 14px;"><strong style="color: #a3e635;">💶 Your Earnings:</strong> €${totalGoalkeeperEarnings}</p>
+        <p style="margin: 4px 0; font-size: 14px;"><strong style="color: #a3e635;">💶 Your Earnings:</strong> €${totalGoalkeeperEarningsEuro}</p>
       `)}
       <p style="color: #d4d4d4; font-size: 15px;">Interested? Accept the match from your dashboard before another goalkeeper takes it!</p>
       <div style="text-align: center; margin: 24px 0;">
@@ -148,7 +149,7 @@ export const emailTemplates = {
       </div>
       <p style="color: #888; font-size: 13px;">You're receiving this because you're a registered goalkeeper on KeeperGo.</p>
     `)
-    return { subject: `🆕 New match available in ${location} — €${totalGoalkeeperEarnings} to earn!`, html }
+    return { subject: `🆕 New match available in ${location} — €${totalGoalkeeperEarningsEuro} to earn!`, html }
   },
 
   newBookingAdminAlert: (organizerName: string, organizerEmail: string, date: Date, location: string, fieldType: string, pricePerHour: number, duration: number, bookingType: string) => {
