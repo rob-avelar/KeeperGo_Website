@@ -13,6 +13,7 @@ interface ReferralData {
   signedUp: number
   completed: number
   totalEarned: number
+  availableCredit: number
   referrals: Array<{
     id: string
     status: string
@@ -92,7 +93,7 @@ export default function ReferralCard() {
           <div>
             <CardTitle className="text-gray-100">Invite Friends & Earn €5</CardTitle>
             <CardDescription className="text-gray-400">
-              Share your link — you both get €5 off after their first booking
+              Share your link — earn €5 credit when your friend completes their first booking
             </CardDescription>
           </div>
         </div>
@@ -114,6 +115,17 @@ export default function ReferralCard() {
           </div>
         </div>
 
+        {/* Available Credit Banner */}
+        {data.availableCredit > 0 && (
+          <div className="bg-lime-400/10 border border-lime-400/30 rounded-lg p-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Euro className="h-5 w-5 text-lime-400" />
+              <span className="text-sm text-lime-400 font-medium">Available credit</span>
+            </div>
+            <span className="text-xl font-bold text-lime-400">€{(data.availableCredit / 100).toFixed(2)}</span>
+          </div>
+        )}
+
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-gray-800 rounded-lg p-3 text-center">
@@ -129,7 +141,7 @@ export default function ReferralCard() {
           <div className="bg-gray-800 rounded-lg p-3 text-center">
             <Euro className="h-4 w-4 text-gray-400 mx-auto mb-1" />
             <p className="text-lg font-bold text-lime-400">€{(data.totalEarned / 100).toFixed(0)}</p>
-            <p className="text-xs text-gray-400">Earned</p>
+            <p className="text-xs text-gray-400">Total earned</p>
           </div>
         </div>
 

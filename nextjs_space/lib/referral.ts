@@ -1,5 +1,71 @@
 import { prisma } from '@/lib/prisma'
+import { PrismaClient } from '@prisma/client'
 import crypto from 'crypto'
+
+const REFERRAL_REWARD_CENTS = 500 // €5
+
+/**
+ * Process referral reward when a booking is completed.
+ * Checks if the organizer or goalkeeper was referred and if this is their first completed booking.
+ * If so, marks the referral as COMPLETED and credits the referrer.
+ * Can run inside an existing transaction (pass tx) or standalone.
+ */
+export async function processReferralReward(
+  organizerId: string,
+  goalkeeperId: string | null,
+  tx?: any
+) {
+  const db = tx || prisma
+
+  // Check both the organizer and goalkeeper
+  const userIds = [organizerId]
+  if (goalkeeperId) userIds.push(goalkeeperId)
+
+  for (const userId of userIds) {
+    // Find a referral where this user was referred and hasn't been rewarded yet
+    const referral = await db.referral.findFirst({
+      where: {
+        referredId: userId,
+        status: 'SIGNED_UP', // not yet completed
+        referrerRewarded: false,
+      },
+    })
+
+    if (!referral) continue
+
+    // Check if this is their first completed booking (as organizer or goalkeeper)
+    const completedBookingsCount = await db.booking.count({
+      where: {
+        OR: [
+          { organizerId: userId, status: 'COMPLETED' },
+          { goalkeeperId: userId, status: 'COMPLETED' },
+        ],
+      },
+    })
+
+    // Only reward on the first completed booking (count is 1 because the current one just got completed)
+    if (completedBookingsCount > 1) continue
+
+    // Mark referral as completed and reward the referrer
+    await db.referral.update({
+      where: { id: referral.id },
+      data: {
+        status: 'COMPLETED',
+        referrerRewarded: true,
+      },
+    })
+
+    // Add credit to the referrer's account
+    await db.user.update({
+      where: { id: referral.referrerId },
+      data: {
+        referralCredit: { increment: REFERRAL_REWARD_CENTS },
+      },
+    })
+
+    console.log(`Referral reward: €${REFERRAL_REWARD_CENTS / 100} credited to user ${referral.referrerId} for referring user ${userId}`)
+  }
+}
 
 export function generateReferralCode(): string {
   return 'KG-' + crypto.randomBytes(4).toString('hex').toUpperCase()

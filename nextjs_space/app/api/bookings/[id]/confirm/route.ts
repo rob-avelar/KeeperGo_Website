@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { processReferralReward } from '@/lib/referral';
 
 export async function POST(
   request: NextRequest,
@@ -175,6 +176,13 @@ export async function POST(
 
       return { updatedBooking, rating, goalkeeperEarning };
     });
+
+    // Process referral rewards (outside transaction, non-blocking)
+    try {
+      await processReferralReward(booking.organizerId, booking.goalkeeperId);
+    } catch (refErr) {
+      console.error('Referral reward processing error:', refErr);
+    }
 
     return NextResponse.json({
       success: true,

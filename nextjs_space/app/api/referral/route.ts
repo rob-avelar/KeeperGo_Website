@@ -17,9 +17,16 @@ export async function GET() {
     const referralCode = await getOrCreateReferralCode(session.user.id)
     const stats = await getReferralStats(session.user.id)
 
+    // Fetch available credit
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { referralCredit: true }
+    })
+
     return NextResponse.json({
       referralCode,
-      ...stats
+      ...stats,
+      availableCredit: user?.referralCredit || 0
     })
   } catch (error) {
     console.error('Error fetching referral data:', error)

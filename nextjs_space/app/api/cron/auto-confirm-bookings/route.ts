@@ -1,6 +1,7 @@
 
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { processReferralReward } from '@/lib/referral';
 
 export const dynamic = 'force-dynamic';
 
@@ -134,6 +135,13 @@ export async function GET() {
             },
           });
         });
+
+        // Process referral rewards
+        try {
+          await processReferralReward(booking.organizerId, booking.goalkeeperId);
+        } catch (refErr) {
+          console.error(`[Auto-Confirm] Referral reward error for booking ${booking.id}:`, refErr);
+        }
 
         console.log(`[Auto-Confirm] Successfully auto-confirmed booking ${booking.id}`);
         results.processed++;

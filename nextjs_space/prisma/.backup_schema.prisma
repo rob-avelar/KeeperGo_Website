@@ -76,6 +76,7 @@ model User {
   betaInvite          BetaInvite[]
   referralCode        String?             @unique
   referredByCode      String?
+  referralCredit      Int                 @default(0) // available credit in cents from referrals
   referralsMade       Referral[]          @relation("ReferralsMade")
   referralsReceived   Referral[]          @relation("ReferralsReceived")
   passwordResets      PasswordReset[]

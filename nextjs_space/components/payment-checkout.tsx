@@ -38,7 +38,7 @@ interface PaymentCheckoutProps {
   redirectStatus: string | null
 }
 
-function PaymentForm({ bookingId, totalAmount }: { bookingId: string; totalAmount: number }) {
+function PaymentForm({ bookingId, totalAmount, chargeAmount }: { bookingId: string; totalAmount: number; chargeAmount: number }) {
   const stripe = useStripe()
   const elements = useElements()
   const [isProcessing, setIsProcessing] = useState(false)
@@ -95,7 +95,7 @@ function PaymentForm({ bookingId, totalAmount }: { bookingId: string; totalAmoun
         ) : (
           <>
             <CreditCard className="h-5 w-5 mr-2" />
-            Pay €{(totalAmount / 100).toFixed(2)}
+            Pay €{(chargeAmount / 100).toFixed(2)}
           </>
         )}
       </Button>
@@ -129,6 +129,9 @@ export default function PaymentCheckout({
   const [paymentSuccess, setPaymentSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [confirming, setConfirming] = useState(false)
+  const [creditApplied, setCreditApplied] = useState(0)
+  const [chargeAmount, setChargeAmount] = useState(totalAmount)
+  const [fullyCoveredByCredit, setFullyCoveredByCredit] = useState(false)
 
   // Handle return from Stripe redirect
   const handleRedirectReturn = useCallback(async () => {
@@ -185,8 +188,19 @@ export default function PaymentCheckout({
           method: 'POST',
         })
         const data = await res.json()
-        if (res.ok && data.clientSecret) {
-          setClientSecret(data.clientSecret)
+        if (res.ok) {
+          if (data.creditApplied > 0) {
+            setCreditApplied(data.creditApplied)
+            setChargeAmount(data.chargeAmount)
+          }
+          if (data.fullyCoveredByCredit) {
+            setFullyCoveredByCredit(true)
+            setPaymentSuccess(true)
+          } else if (data.clientSecret) {
+            setClientSecret(data.clientSecret)
+          } else {
+            setError(data.error || 'Failed to initialize payment')
+          }
         } else {
           setError(data.error || 'Failed to initialize payment')
         }
@@ -215,9 +229,19 @@ export default function PaymentCheckout({
             </p>
           </div>
           <div className="bg-gray-800 rounded-lg p-4 space-y-2 text-sm">
+            {creditApplied > 0 && (
+              <div className="flex justify-between text-lime-400">
+                <span>Referral credit applied</span>
+                <span className="font-bold">-€{(creditApplied / 100).toFixed(2)}</span>
+              </div>
+            )}
             <div className="flex justify-between text-gray-300">
               <span>Amount paid</span>
-              <span className="font-bold text-white">€{(totalAmount / 100).toFixed(2)}</span>
+              <span className="font-bold text-white">
+                {fullyCoveredByCredit
+                  ? '€0.00 (covered by credit)'
+                  : `€${((totalAmount - creditApplied) / 100).toFixed(2)}`}
+              </span>
             </div>
             <div className="flex justify-between text-gray-400">
               <span>Date</span>
@@ -343,11 +367,17 @@ export default function PaymentCheckout({
               <span>Platform fee (25%)</span>
               <span>€{(platformFee / 100).toFixed(2)}</span>
             </div>
+            {creditApplied > 0 && (
+              <div className="flex justify-between text-sm text-lime-400 font-medium">
+                <span>🎁 Referral credit</span>
+                <span>-€{(creditApplied / 100).toFixed(2)}</span>
+              </div>
+            )}
             <div className="flex justify-between font-bold text-lg border-t border-gray-700 pt-2 mt-2">
-              <span className="text-gray-100">Total</span>
+              <span className="text-gray-100">Total to pay</span>
               <span className="text-lime-400 flex items-center">
                 <Euro className="h-4 w-4 mr-1" />
-                {(totalAmount / 100).toFixed(2)}
+                {(chargeAmount / 100).toFixed(2)}
               </span>
             </div>
           </div>
@@ -391,7 +421,7 @@ export default function PaymentCheckout({
                 },
               }}
             >
-              <PaymentForm bookingId={bookingId} totalAmount={totalAmount} />
+              <PaymentForm bookingId={bookingId} totalAmount={totalAmount} chargeAmount={chargeAmount} />
             </Elements>
           </CardContent>
         </Card>

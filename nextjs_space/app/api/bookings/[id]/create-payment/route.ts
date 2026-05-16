@@ -65,39 +65,91 @@ export async function POST(
       })
     }
 
+    // Check if organizer has referral credit to apply
+    const organizer = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { referralCredit: true }
+    })
+
+    const availableCredit = organizer?.referralCredit || 0
+    const creditToApply = Math.min(availableCredit, booking.totalAmount)
+    const chargeAmount = booking.totalAmount - creditToApply
+
     // Get goalkeeper's Stripe account (for destination charge)
     const goalkeeperStripeAccountId = booking.goalkeeperProfile?.stripeAccountId || null
 
-    // Create PaymentIntent
-    const paymentIntent = await createPaymentIntentForBooking(
-      booking.totalAmount,
-      bookingId,
-      goalkeeperStripeAccountId
-    )
+    let paymentIntent: any = null
+    let stripeClientSecret: string | null = null
+    let stripePaymentId: string | null = null
 
-    // Calculate fee split
+    if (chargeAmount > 0) {
+      // Create PaymentIntent for the remaining amount after credit
+      paymentIntent = await createPaymentIntentForBooking(
+        chargeAmount,
+        bookingId,
+        goalkeeperStripeAccountId
+      )
+      stripeClientSecret = paymentIntent.client_secret
+      stripePaymentId = paymentIntent.id
+    }
+
+    // Calculate fee split (based on full booking amount — goalkeeper always gets 75% of total)
     const goalkeeperEarning = Math.floor(booking.totalAmount * 0.75)
     const platformFee = booking.totalAmount - goalkeeperEarning
+
+    // Deduct credit from organizer's account
+    if (creditToApply > 0) {
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { referralCredit: { decrement: creditToApply } }
+      })
+    }
 
     // Create Payment record in DB
     const payment = await prisma.payment.create({
       data: {
         userId: session.user.id,
         bookingId: bookingId,
-        stripePaymentId: paymentIntent.id,
+        stripePaymentId: stripePaymentId || `credit_${bookingId}_${Date.now()}`,
         amount: booking.totalAmount,
         platformFee,
         goalkeeperEarning,
-        status: 'PENDING',
-        stripeClientSecret: paymentIntent.client_secret,
-        paymentMethod: goalkeeperStripeAccountId ? 'stripe_destination' : 'stripe_platform',
+        status: chargeAmount > 0 ? 'PENDING' : 'COMPLETED',
+        stripeClientSecret: stripeClientSecret,
+        paymentMethod: chargeAmount > 0
+          ? (goalkeeperStripeAccountId ? 'stripe_destination' : 'stripe_platform')
+          : 'referral_credit',
       }
     })
 
+    // If fully covered by credit, also mark booking as CONFIRMED
+    if (chargeAmount === 0) {
+      await prisma.booking.update({
+        where: { id: bookingId },
+        data: { status: 'CONFIRMED' }
+      })
+
+      // Notify goalkeeper
+      if (booking.goalkeeperId) {
+        await prisma.notification.create({
+          data: {
+            userId: booking.goalkeeperId,
+            bookingId: bookingId,
+            title: 'Payment Received - Match Confirmed!',
+            message: `Payment received (via referral credit)! The match on ${new Date(booking.date).toLocaleDateString()} is now confirmed.`,
+            type: 'PAYMENT_RECEIVED'
+          }
+        })
+      }
+    }
+
     return NextResponse.json({
-      clientSecret: paymentIntent.client_secret,
+      clientSecret: stripeClientSecret,
       paymentId: payment.id,
       amount: booking.totalAmount,
+      creditApplied: creditToApply,
+      chargeAmount,
+      fullyCoveredByCredit: chargeAmount === 0,
     })
   } catch (error) {
     console.error('Error creating payment:', error)
