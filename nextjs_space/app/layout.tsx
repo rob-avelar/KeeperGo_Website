@@ -10,8 +10,6 @@ import GoogleAnalytics from '@/components/google-analytics'
 import WebVitals from '@/components/web-vitals'
 import { CookieConsentBanner } from '@/components/cookie-consent'
 
-export const dynamic = "force-dynamic"
-
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {

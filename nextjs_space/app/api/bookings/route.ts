@@ -2,10 +2,24 @@
 export const dynamic = "force-dynamic"
 
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { sendNewBookingAvailableEmail, sendNewBookingAdminAlert } from '@/lib/email'
 import { PRICE_PER_HOUR, DIRECT_BOOKING_PREMIUM } from '@/lib/pricing'
+
+const createBookingSchema = z.object({
+  date: z.string().min(1, 'Date is required'),
+  duration: z.union([z.string(), z.number()]).transform((v) => Number(v)),
+  location: z.string().min(1, 'Location is required'),
+  latitude: z.union([z.string(), z.number()]).optional().nullable(),
+  longitude: z.union([z.string(), z.number()]).optional().nullable(),
+  fieldType: z.enum(['GRASS', 'ARTIFICIAL', 'FUTSAL', 'INDOOR'], { message: 'Invalid field type' }),
+  pricePerHour: z.union([z.string(), z.number()]).optional().nullable(),
+  specialRequests: z.string().max(500).optional().nullable(),
+  bookingType: z.enum(['open', 'direct']).default('open'),
+  goalkeeperId: z.string().optional().nullable(),
+})
 
 export async function GET(request: NextRequest) {
   try {
@@ -77,6 +91,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
+    const parsed = createBookingSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 })
+    }
+
     const {
       date,
       duration,
@@ -87,12 +106,8 @@ export async function POST(request: NextRequest) {
       pricePerHour: clientPricePerHour,
       specialRequests,
       bookingType,
-      goalkeeperId
-    } = body
-
-    if (!date || !duration || !location || !fieldType) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
-    }
+      goalkeeperId,
+    } = parsed.data
 
     // Validate direct booking
     if (bookingType === 'direct' && !goalkeeperId) {
@@ -104,10 +119,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'You cannot book yourself as a goalkeeper' }, { status: 400 })
     }
 
-    // Fixed standard rate. Accept client value only if provided for backwards compatibility.
-    const pricePerHour = clientPricePerHour || PRICE_PER_HOUR
+    const pricePerHour = clientPricePerHour ? Number(clientPricePerHour) : PRICE_PER_HOUR
 
-    // Calculate total amount with premium for direct booking
     const isPremium = bookingType === 'direct'
     const premiumMultiplier = isPremium ? DIRECT_BOOKING_PREMIUM : 1
     const baseAmount = pricePerHour * duration
@@ -147,12 +160,12 @@ export async function POST(request: NextRequest) {
         goalkeeperId: bookingType === 'direct' ? goalkeeperId : null,
         goalkeeperProfileId,
         date: new Date(date),
-        duration: parseInt(duration),
+        duration,
         location,
-        latitude: latitude ? parseFloat(latitude) : null,
-        longitude: longitude ? parseFloat(longitude) : null,
+        latitude: latitude != null ? Number(latitude) : null,
+        longitude: longitude != null ? Number(longitude) : null,
         fieldType,
-        pricePerHour: parseInt(pricePerHour),
+        pricePerHour,
         totalAmount,
         specialRequests,
         status: bookingType === 'direct' ? 'ACCEPTED' : 'PENDING', // Direct bookings go to ACCEPTED (awaiting payment)

@@ -20,7 +20,6 @@ export async function createConnectAccount(email: string, country: string = 'NL'
       country: country,
       email: email,
       capabilities: {
-        card_payments: { requested: true },
         transfers: { requested: true },
       },
       business_type: 'individual', // Most goalkeepers are individuals

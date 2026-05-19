@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Goal, Handshake, Building2, Trophy, Users, MapPin, ArrowRight, Mail, Star, Euro, Target, BarChart3 } from 'lucide-react'
+import { Goal, Handshake, Building2, Trophy, Users, MapPin, ArrowRight, Mail, Star, Target } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Partnerships | KeeperGo',
@@ -77,14 +77,6 @@ const AUDIENCE_STATS = [
   { label: 'Average Rating', value: '4.8', icon: Star },
 ]
 
-const TARGET_BRANDS = [
-  { category: 'Sports Beverages', examples: 'Gatorade, AA Drink, Aquarius' },
-  { category: 'Beer & Beverages', examples: 'Heineken, Amstel, Grolsch' },
-  { category: 'Sports Equipment', examples: 'Nike, Adidas, Reusch, Puma' },
-  { category: 'Insurance', examples: 'Centraal Beheer, Nationale-Nederlanden' },
-  { category: 'Health & Fitness', examples: 'Fysio Fit, Basic-Fit, SportCity' },
-  { category: 'Food & Delivery', examples: 'Thuisbezorgd, Dominos, Subway' },
-]
 
 export default function PartnershipsPage() {
   return (
@@ -147,7 +139,7 @@ export default function PartnershipsPage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl font-bold text-white text-center mb-4">Partnership Options</h2>
           <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-            Whether you\u2019re a sports venue, amateur league, corporation, or brand \u2014 there\u2019s a partnership model that works for you.
+            Whether you're a sports venue, amateur league, corporation, or brand — there's a partnership model that works for you.
           </p>
           
           <div className="grid md:grid-cols-2 gap-8">
@@ -194,65 +186,14 @@ export default function PartnershipsPage() {
         </div>
       </section>
 
-      {/* Target Brands */}
-      <section className="py-16 px-4 bg-gray-900/50 border-t border-b border-gray-800">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-white text-center mb-4">Who Should Partner With Us?</h2>
-          <p className="text-gray-400 text-center mb-8">
-            Our audience consists of active, 25-45 year old football enthusiasts in the Netherlands.
-          </p>
-          <div className="grid md:grid-cols-3 gap-4">
-            {TARGET_BRANDS.map((brand, i) => (
-              <div key={i} className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-                <h3 className="font-semibold text-white text-sm mb-1">{brand.category}</h3>
-                <p className="text-xs text-gray-400">{brand.examples}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Sponsorship Tiers */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-white text-center mb-8">Sponsorship Tiers</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="bg-gray-900 border-gray-800">
-              <CardContent className="pt-6 text-center">
-                <Badge className="mb-3 bg-gray-700 text-gray-300 border-gray-600">Bronze</Badge>
-                <h3 className="text-lg font-bold text-white mb-2">Community Sponsor</h3>
-                <p className="text-sm text-gray-400 mb-4">Logo on footer, mentioned in monthly newsletter.</p>
-                <p className="text-2xl font-bold text-lime-400">€100<span className="text-sm font-normal text-gray-400">/month</span></p>
-              </CardContent>
-            </Card>
-            <Card className="bg-gray-900 border-lime-400/30">
-              <CardContent className="pt-6 text-center">
-                <Badge className="mb-3 bg-lime-400/10 text-lime-400 border-lime-400/30">Silver</Badge>
-                <h3 className="text-lg font-bold text-white mb-2">Match Sponsor</h3>
-                <p className="text-sm text-gray-400 mb-4">Logo on match pages, branded notifications, social media mentions.</p>
-                <p className="text-2xl font-bold text-lime-400">€300<span className="text-sm font-normal text-gray-400">/month</span></p>
-              </CardContent>
-            </Card>
-            <Card className="bg-gray-900 border-gray-800">
-              <CardContent className="pt-6 text-center">
-                <Badge className="mb-3 bg-yellow-500/10 text-yellow-400 border-yellow-500/30">Gold</Badge>
-                <h3 className="text-lg font-bold text-white mb-2">Platform Sponsor</h3>
-                <p className="text-sm text-gray-400 mb-4">Exclusive branding, product placement, co-marketing campaigns.</p>
-                <p className="text-2xl font-bold text-lime-400">Custom</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="py-16 px-4 border-t border-gray-800">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Let\u2019s Build Something Together
+            Let's Build Something Together
           </h2>
           <p className="text-gray-400 mb-8">
-            Whether you want to sponsor matches, partner your venue, or reach our audience \u2014 we\u2019d love to hear from you.
+            Whether you want to sponsor matches, partner your venue, or reach our audience — we’d love to hear from you.
           </p>
           <Link href="/contact">
             <Button size="lg" className="bg-lime-400 text-gray-950 hover:bg-lime-300">
@@ -275,7 +216,7 @@ export default function PartnershipsPage() {
             <Link href="/cookies" className="hover:text-lime-400">Cookies</Link>
             <Link href="/terms" className="hover:text-lime-400">Terms</Link>
           </div>
-          <p className="text-sm text-gray-500">\u00a9 {new Date().getFullYear()} KeeperGo. All rights reserved.</p>
+          <p className="text-sm text-gray-500">© {new Date().getFullYear()} KeeperGo. All rights reserved.</p>
         </div>
       </footer>
     </div>

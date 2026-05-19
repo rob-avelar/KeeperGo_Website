@@ -1,20 +1,23 @@
 export const dynamic = "force-dynamic"
 
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
+const resetPasswordSchema = z.object({
+  token: z.string().min(1, 'Token is required'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+})
+
 export async function POST(request: NextRequest) {
   try {
-    const { token, password } = await request.json()
-
-    if (!token || !password) {
-      return NextResponse.json({ error: 'Token and password are required' }, { status: 400 })
+    const body = await request.json()
+    const parsed = resetPasswordSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 })
     }
-
-    if (password.length < 6) {
-      return NextResponse.json({ error: 'Password must be at least 6 characters' }, { status: 400 })
-    }
+    const { token, password } = parsed.data
 
     // Find valid, unused, non-expired token
     const resetRecord = await prisma.passwordReset.findUnique({

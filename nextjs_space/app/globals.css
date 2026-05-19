@@ -74,3 +74,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .hero-image-mask {
+    -webkit-mask-image:
+      linear-gradient(to bottom, transparent 0%, black 12%, black 80%, transparent 100%),
+      linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to bottom, transparent 0%, black 12%, black 80%, transparent 100%),
+      linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    mask-composite: intersect;
+  }
+}
