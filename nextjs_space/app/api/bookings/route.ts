@@ -14,7 +14,7 @@ const createBookingSchema = z.object({
   location: z.string().min(1, 'Location is required'),
   latitude: z.union([z.string(), z.number()]).optional().nullable(),
   longitude: z.union([z.string(), z.number()]).optional().nullable(),
-  fieldType: z.enum(['GRASS', 'ARTIFICIAL', 'FUTSAL', 'INDOOR'], { message: 'Invalid field type' }),
+  fieldType: z.string().min(1, 'Field type is required'),
   pricePerHour: z.union([z.string(), z.number()]).optional().nullable(),
   specialRequests: z.string().max(500).optional().nullable(),
   bookingType: z.enum(['open', 'direct']).default('open'),
