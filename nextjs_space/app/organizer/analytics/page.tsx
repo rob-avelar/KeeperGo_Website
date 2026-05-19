@@ -1,10 +1,19 @@
 
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import AnalyticsDashboard from '@/components/analytics-dashboard'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Goal, ArrowLeft } from 'lucide-react'
+
+const AnalyticsDashboard = dynamic(() => import('@/components/analytics-dashboard'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-64 text-gray-400">
+      Loading analytics...
+    </div>
+  ),
+})
 
 export default async function AnalyticsPage() {
   const session = await auth()

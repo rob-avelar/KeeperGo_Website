@@ -1,7 +1,8 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import type { User, Booking, CancellationPreview } from '@/types'
 import ReferralCard from '@/components/referral-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -49,7 +50,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 
 interface GoalkeeperDashboardProps {
-  user: any
+  user: User
 }
 
 export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) {
@@ -58,28 +59,28 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
   const profile = user?.goalkeeperProfile
   const bookings = user?.goalkeeperBookings || []
 
-  const [availableBookings, setAvailableBookings] = useState<any[]>([])
-  const [loadingBookingId, setLoadingBookingId] = useState<string | null>(null)
+  const [availableBookings, setAvailableBookings] = useState<Booking[]>([])
+  const [loadingBookingIds, setLoadingBookingIds] = useState<Set<string>>(new Set())
   const [isLoadingAvailable, setIsLoadingAvailable] = useState(false)
-  
+
   // Cancellation state
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
-  const [bookingToCancel, setBookingToCancel] = useState<any>(null)
+  const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null)
   const [cancelReason, setCancelReason] = useState('')
   const [cancelling, setCancelling] = useState(false)
-  const [cancelFeeInfo, setCancelFeeInfo] = useState<any>(null)
-  
+  const [cancelFeeInfo, setCancelFeeInfo] = useState<CancellationPreview | null>(null)
+
   // State for goalkeeper confirmation
   const [confirmingBookingId, setConfirmingBookingId] = useState<string | null>(null)
 
   const now = new Date()
 
-  const upcomingBookings = bookings?.filter((booking: any) => 
+  const upcomingBookings = bookings?.filter((booking: Booking) =>
     new Date(booking.date) >= now && (booking.status === 'CONFIRMED' || booking.status === 'ACCEPTED')
   ) || []
 
   // Bookings where match ended and goalkeeper needs to confirm attendance
-  const needsGoalkeeperConfirmation = bookings?.filter((booking: any) => {
+  const needsGoalkeeperConfirmation = bookings?.filter((booking: Booking) => {
     const matchDate = new Date(booking.date)
     const matchEndTime = new Date(matchDate)
     matchEndTime.setHours(matchEndTime.getHours() + (booking.duration || 0))
@@ -96,7 +97,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
   }) || []
 
   // Bookings awaiting confirmation from organizer (goalkeeper already confirmed)
-  const awaitingConfirmation = bookings?.filter((booking: any) => {
+  const awaitingConfirmation = bookings?.filter((booking: Booking) => {
     const matchDate = new Date(booking.date)
     const matchEndTime = new Date(matchDate)
     matchEndTime.setHours(matchEndTime.getHours() + (booking.duration || 0))
@@ -112,7 +113,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
     )
   }) || []
 
-  const completedBookings = bookings?.filter((booking: any) => 
+  const completedBookings = bookings?.filter((booking: Booking) =>
     booking.isCompleted || booking.status === 'COMPLETED'
   ) || []
 
@@ -121,21 +122,15 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
   const blockedUntil = profile?.blockedUntil ? new Date(profile.blockedUntil) : null
   const isBlocked = blockedUntil && blockedUntil > now
 
-  const totalEarnings = completedBookings?.reduce((sum: number, booking: any) => {
-    const goalkeeperEarning = booking.totalAmount * 0.65 // 65% - goalkeeper share
-    return sum + goalkeeperEarning
+  const totalEarnings = completedBookings?.reduce((sum: number, booking: Booking) => {
+    return sum + booking.totalAmount * 0.65
   }, 0) || 0
 
-  const pendingBookings = bookings?.filter((booking: any) => 
+  const pendingBookings = bookings?.filter((booking: Booking) =>
     booking.status === 'PENDING'
   ) || []
 
-  // Fetch available bookings
-  useEffect(() => {
-    fetchAvailableBookings()
-  }, [])
-
-  const fetchAvailableBookings = async () => {
+  const fetchAvailableBookings = useCallback(async () => {
     try {
       setIsLoadingAvailable(true)
       const response = await fetch('/api/bookings/available')
@@ -148,13 +143,18 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
     } finally {
       setIsLoadingAvailable(false)
     }
-  }
+  }, [])
+
+  // Fetch available bookings
+  useEffect(() => {
+    fetchAvailableBookings()
+  }, [fetchAvailableBookings])
 
   const handleAcceptBooking = async (bookingId: string) => {
     try {
-      setLoadingBookingId(bookingId)
+      setLoadingBookingIds((prev) => new Set(prev).add(bookingId))
       const response = await fetch(`/api/bookings/${bookingId}/accept`, {
-        method: 'POST'
+        method: 'POST',
       })
 
       if (!response.ok) {
@@ -167,22 +167,18 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
         description: 'You have successfully accepted this match. The organizer has been notified.',
       })
 
-      // Refresh the page to show updated data
       router.refresh()
-      
-      // Also refresh available bookings
       fetchAvailableBookings()
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to accept booking. It may have been taken by another goalkeeper.',
-        variant: 'destructive'
-      })
-      
-      // Refresh available bookings to remove the taken one
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to accept booking. It may have been taken by another goalkeeper.'
+      toast({ title: 'Error', description: message, variant: 'destructive' })
       fetchAvailableBookings()
     } finally {
-      setLoadingBookingId(null)
+      setLoadingBookingIds((prev) => {
+        const next = new Set(prev)
+        next.delete(bookingId)
+        return next
+      })
     }
   }
 
@@ -190,7 +186,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
     try {
       setConfirmingBookingId(bookingId)
       const response = await fetch(`/api/bookings/${bookingId}/goalkeeper-confirm`, {
-        method: 'POST'
+        method: 'POST',
       })
 
       const data = await response.json()
@@ -204,20 +200,16 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
         description: data.message || 'The organizer will now validate and rate your performance.',
       })
 
-      // Refresh the page to show updated data
       router.refresh()
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to confirm attendance',
-        variant: 'destructive'
-      })
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to confirm attendance'
+      toast({ title: 'Error', description: message, variant: 'destructive' })
     } finally {
       setConfirmingBookingId(null)
     }
   }
 
-  const calculateCancellationPreview = (booking: any) => {
+  const calculateCancellationPreview = (booking: Booking): CancellationPreview => {
     const now = new Date()
     const matchDate = new Date(booking.date)
     const hoursUntilMatch = (matchDate.getTime() - now.getTime()) / (1000 * 60 * 60)
@@ -251,7 +243,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
     }
   }
 
-  const handleOpenCancelDialog = (booking: any) => {
+  const handleOpenCancelDialog = (booking: Booking) => {
     setBookingToCancel(booking)
     const feeInfo = calculateCancellationPreview(booking)
     setCancelFeeInfo(feeInfo)
@@ -394,8 +386,8 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <Settings className="h-4 w-4" />
+                  <Button variant="ghost" size="sm" aria-label="Open settings menu">
+                    <Settings className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
@@ -419,7 +411,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
+              <Button variant="outline" size="sm" onClick={handleLogout} aria-label="Sign out of your account">
                 Sign Out
               </Button>
             </div>
@@ -689,10 +681,10 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
 
         {/* Available Matches - First Come First Served */}
         {availableBookings?.length > 0 && (
-          <Card className="mb-8 border-lime-400/20 bg-lime-400/5">
+          <Card className="mb-8 border-lime-400/20 bg-lime-400/5" role="region" aria-label="Available matches">
             <CardHeader>
               <CardTitle className="text-white flex items-center">
-                <Bell className="h-5 w-5 mr-2" />
+                <Bell className="h-5 w-5 mr-2" aria-hidden="true" />
                 Available Matches
               </CardTitle>
               <CardDescription className="text-lime-500">
@@ -700,7 +692,7 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {availableBookings?.map((booking: any) => (
+              {availableBookings?.map((booking: Booking) => (
                 <div key={booking.id} className={`border-l-4 ${booking.isPriority ? 'border-red-500 bg-red-500/10' : 'border-lime-400 bg-gray-800'} pl-4 py-3 rounded-r-lg shadow-sm`}>
                   <div className="flex justify-between items-start mb-3">
                     <div>
@@ -744,13 +736,15 @@ export default function GoalkeeperDashboard({ user }: GoalkeeperDashboardProps) 
                       <strong>Notes:</strong> {booking.specialRequests}
                     </div>
                   )}
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     className="bg-lime-400 hover:bg-lime-300 text-gray-950 w-full"
                     onClick={() => handleAcceptBooking(booking.id)}
-                    disabled={loadingBookingId === booking.id}
+                    disabled={loadingBookingIds.has(booking.id)}
+                    aria-busy={loadingBookingIds.has(booking.id)}
+                    aria-label={`Accept match at ${booking.location}`}
                   >
-                    {loadingBookingId === booking.id ? (
+                    {loadingBookingIds.has(booking.id) ? (
                       'Accepting...'
                     ) : (
                       <>

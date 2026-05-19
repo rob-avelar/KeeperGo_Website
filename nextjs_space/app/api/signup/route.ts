@@ -3,25 +3,28 @@ export const dynamic = "force-dynamic"
 
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
+import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
+
+const signupSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  name: z.string().min(1, 'Name is required').max(100),
+  role: z.enum(['ORGANIZER', 'GOALKEEPER'], { message: 'Invalid role' }),
+  inviteCode: z.string().optional(),
+})
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name, role, inviteCode } = await request.json()
-
-    if (!email || !password || !name || !role) {
+    const body = await request.json()
+    const parsed = signupSchema.safeParse(body)
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: parsed.error.errors[0].message },
         { status: 400 }
       )
     }
-
-    if (!['ORGANIZER', 'GOALKEEPER'].includes(role?.toString()?.toUpperCase())) {
-      return NextResponse.json(
-        { error: 'Invalid role' },
-        { status: 400 }
-      )
-    }
+    const { email, password, name, role, inviteCode } = parsed.data
 
     // Check if beta mode is enabled
     const settings = await prisma.appSettings.findUnique({
@@ -73,7 +76,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const normalizedRole = role?.toString()?.toUpperCase() as 'ORGANIZER' | 'GOALKEEPER'
+    const normalizedRole = role as 'ORGANIZER' | 'GOALKEEPER'
 
     const existingUser = await prisma.user.findUnique({
       where: { email },

@@ -2,17 +2,15 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Users, 
-  MapPin, 
-  Star, 
-  Shield, 
-  Clock, 
-  Euro,
+import {
+  Users,
+  MapPin,
+  Star,
+  Shield,
   ArrowRight,
   Goal,
   Trophy,
-  CheckCircle
+  CheckCircle,
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -65,7 +63,7 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -115,11 +113,10 @@ export default async function HomePage() {
           </p>
         </div>
 
-        {/* Hero Image - merges into background */}
+        {/* Hero Image */}
         <div className="max-w-5xl mx-auto relative">
-          {/* Gradient overlays to blend image into background */}
           <div className="relative">
-            <div className="relative aspect-video">
+            <div className="relative aspect-video overflow-hidden hero-image-mask">
               <Image
                 src="/og-image.jpg"
                 alt="KeeperGo - Never play without a keeper again"
@@ -127,21 +124,9 @@ export default async function HomePage() {
                 className="object-cover"
                 priority
               />
-              {/* Fade edges into background */}
-              <div className="absolute inset-0 pointer-events-none" style={{
-                boxShadow: 'inset 0 0 60px 30px rgb(3 7 18)',
-              }} />
-              {/* Subtle bottom fade */}
-              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-950/80 to-transparent pointer-events-none" />
-              {/* Top fade */}
-              <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-gray-950 via-gray-950/40 to-transparent pointer-events-none" />
-              {/* Left fade */}
-              <div className="absolute top-0 bottom-0 left-0 w-20 bg-gradient-to-r from-gray-950 via-gray-950/40 to-transparent pointer-events-none" />
-              {/* Right fade */}
-              <div className="absolute top-0 bottom-0 right-0 w-20 bg-gradient-to-l from-gray-950 via-gray-950/40 to-transparent pointer-events-none" />
             </div>
 
-            {/* Buttons overlaid on image - same size */}
+            {/* Buttons overlaid on image */}
             <div className="absolute bottom-12 sm:bottom-16 left-0 right-0 flex justify-between px-4 sm:px-10">
               <Link href="/auth/organizer/signin" className="w-[48%] sm:w-auto">
                 <Button
@@ -179,7 +164,7 @@ export default async function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-gray-800/50 border-gray-700 shadow-lg hover:shadow-xl hover:border-lime-400/30 transition-all">
+            <Card className="bg-gray-800/60 border-gray-700 shadow-lg hover:shadow-lime-400/10 hover:shadow-xl hover:border-lime-400/40 hover:-translate-y-1 transition-all duration-300">
               <CardHeader>
                 <MapPin className="h-12 w-12 text-lime-400 mb-4" />
                 <CardTitle className="text-white">Location-Based Matching</CardTitle>
@@ -201,7 +186,7 @@ export default async function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800/50 border-gray-700 shadow-lg hover:shadow-xl hover:border-lime-400/30 transition-all">
+            <Card className="bg-gray-800/60 border-gray-700 shadow-lg hover:shadow-lime-400/10 hover:shadow-xl hover:border-lime-400/40 hover:-translate-y-1 transition-all duration-300">
               <CardHeader>
                 <Star className="h-12 w-12 text-lime-400 mb-4" />
                 <CardTitle className="text-white">Verified Ratings</CardTitle>
@@ -223,7 +208,7 @@ export default async function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gray-800/50 border-gray-700 shadow-lg hover:shadow-xl hover:border-lime-400/30 transition-all">
+            <Card className="bg-gray-800/60 border-gray-700 shadow-lg hover:shadow-lime-400/10 hover:shadow-xl hover:border-lime-400/40 hover:-translate-y-1 transition-all duration-300">
               <CardHeader>
                 <Shield className="h-12 w-12 text-lime-400 mb-4" />
                 <CardTitle className="text-white">Secure Payments</CardTitle>
