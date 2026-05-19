@@ -100,9 +100,33 @@ function PaymentForm({ bookingId, totalAmount, chargeAmount }: { bookingId: stri
         )}
       </Button>
 
-      <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
-        <Shield className="h-4 w-4" />
-        Secure payment powered by Stripe
+      <div className="space-y-3">
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+          <Shield className="h-4 w-4" />
+          Secure payment powered by Stripe
+        </div>
+        <div className="flex items-center justify-center gap-3 text-xs text-gray-500">
+          <span className="flex items-center gap-1">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/></svg>
+            iDEAL
+          </span>
+          <span className="flex items-center gap-1">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/></svg>
+            Apple Pay
+          </span>
+          <span className="flex items-center gap-1">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/></svg>
+            Google Pay
+          </span>
+          <span className="flex items-center gap-1">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/></svg>
+            PayPal
+          </span>
+          <span className="flex items-center gap-1">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/></svg>
+            Cards
+          </span>
+        </div>
       </div>
     </form>
   )
@@ -310,7 +334,7 @@ export default function PaymentCheckout({
             Payment
           </CardTitle>
           <CardDescription className="text-gray-400">
-            Confirm and pay to secure your goalkeeper
+            Pay with card, iDEAL, Apple Pay, Google Pay or PayPal
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

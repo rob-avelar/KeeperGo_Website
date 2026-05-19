@@ -66,12 +66,16 @@ export async function POST(
     // Verify payment with Stripe
     const paymentIntent = await retrievePaymentIntent(payment.stripePaymentId)
 
-    if (paymentIntent.status !== 'succeeded') {
+    // For async payment methods (iDEAL, PayPal), status may be 'processing'
+    if (paymentIntent.status !== 'succeeded' && paymentIntent.status !== 'processing') {
       return NextResponse.json(
         { error: `Payment not completed. Status: ${paymentIntent.status}` },
         { status: 400 }
       )
     }
+
+    // If still processing (async methods like iDEAL), mark as processing and treat as success for UX
+    const isProcessing = paymentIntent.status === 'processing'
 
     // Determine new status based on booking type:
     // - Direct booking (has goalkeeper) → CONFIRMED (paid + goalkeeper assigned)
@@ -93,7 +97,7 @@ export async function POST(
       // Update payment status
       await tx.payment.update({
         where: { id: payment.id },
-        data: { status: 'COMPLETED' }
+        data: { status: isProcessing ? 'PROCESSING' : 'COMPLETED' }
       })
 
       // Notify goalkeeper that payment is received (only if assigned)

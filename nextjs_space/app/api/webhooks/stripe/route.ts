@@ -31,13 +31,14 @@ export async function POST(request: NextRequest) {
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object
         const bookingId = paymentIntent.metadata?.bookingId
+        const paymentMethodType = paymentIntent.payment_method_types?.[0] || 'unknown'
 
         if (!bookingId) {
           console.log('PaymentIntent without bookingId metadata, skipping')
           break
         }
 
-        console.log(`Payment succeeded for booking ${bookingId}, PaymentIntent ${paymentIntent.id}`)
+        console.log(`Payment succeeded for booking ${bookingId}, PaymentIntent ${paymentIntent.id}, method: ${paymentMethodType}`)
 
         // Update payment and booking status
         await prisma.$transaction(async (tx: any) => {
@@ -49,22 +50,51 @@ export async function POST(request: NextRequest) {
           if (payment && payment.status !== 'COMPLETED') {
             await tx.payment.update({
               where: { id: payment.id },
-              data: { status: 'COMPLETED' }
+              data: {
+                status: 'COMPLETED',
+                paymentMethod: paymentMethodType === 'ideal' ? 'ideal'
+                  : paymentMethodType === 'paypal' ? 'paypal'
+                  : payment.paymentMethod,
+              }
             })
           }
 
-          // Update booking to CONFIRMED if still ACCEPTED
+          // Update booking: set paidAt + determine correct status
           const booking = await tx.booking.findUnique({
             where: { id: bookingId }
           })
 
-          if (booking && booking.status === 'ACCEPTED') {
+          if (booking && !booking.paidAt) {
+            const hasGoalkeeper = !!booking.goalkeeperId
+            const newStatus = hasGoalkeeper ? 'CONFIRMED' : booking.status
+
+            await tx.booking.update({
+              where: { id: bookingId },
+              data: {
+                paidAt: new Date(),
+                status: newStatus,
+              }
+            })
+
+            // Notify goalkeeper if assigned
+            if (booking.goalkeeperId) {
+              await tx.notification.create({
+                data: {
+                  userId: booking.goalkeeperId,
+                  bookingId: bookingId,
+                  title: 'Payment Received - Match Confirmed!',
+                  message: `Payment received! The match on ${new Date(booking.date).toLocaleDateString()} is now confirmed.`,
+                  type: 'PAYMENT_RECEIVED'
+                }
+              })
+            }
+          } else if (booking && booking.status === 'ACCEPTED') {
+            // Legacy: handle ACCEPTED status
             await tx.booking.update({
               where: { id: bookingId },
               data: { status: 'CONFIRMED' }
             })
 
-            // Notify goalkeeper
             if (booking.goalkeeperId) {
               await tx.notification.create({
                 data: {
@@ -87,12 +117,38 @@ export async function POST(request: NextRequest) {
         const bookingId = paymentIntent.metadata?.bookingId
 
         if (bookingId) {
-          console.log(`Payment failed for booking ${bookingId}`)
+          console.log(`Payment failed for booking ${bookingId}, method: ${paymentIntent.payment_method_types?.[0] || 'unknown'}`)
 
           await prisma.payment.updateMany({
             where: { stripePaymentId: paymentIntent.id },
             data: { status: 'FAILED' }
           })
+        }
+        break
+      }
+
+      case 'payment_intent.processing': {
+        // For async methods like iDEAL, PayPal — payment is still being processed
+        const paymentIntent = event.data.object
+        const bookingId = paymentIntent.metadata?.bookingId
+
+        if (bookingId) {
+          console.log(`Payment processing for booking ${bookingId}, method: ${paymentIntent.payment_method_types?.[0] || 'unknown'}`)
+
+          await prisma.payment.updateMany({
+            where: { stripePaymentId: paymentIntent.id },
+            data: { status: 'PROCESSING' }
+          })
+        }
+        break
+      }
+
+      case 'payment_intent.requires_action': {
+        // Payment requires additional action (e.g., 3D Secure, bank redirect)
+        const paymentIntent = event.data.object
+        const bookingId = paymentIntent.metadata?.bookingId
+        if (bookingId) {
+          console.log(`Payment requires action for booking ${bookingId}, method: ${paymentIntent.payment_method_types?.[0] || 'unknown'}`)
         }
         break
       }
