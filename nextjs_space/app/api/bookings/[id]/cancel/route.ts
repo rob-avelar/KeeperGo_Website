@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { sendBookingCancelledEmail } from '@/lib/email';
+import { refundPayment } from '@/lib/stripe';
 
 // Cancellation rules for organizers
 function calculateOrganizerRefund(hoursUntilMatch: number, totalAmount: number) {
@@ -46,13 +47,18 @@ export async function POST(
     const body = await request.json();
     const { reason } = body;
 
-    // Get the booking
+    // Get the booking with payments
     const booking = await prisma.booking.findUnique({
       where: { id },
       include: {
         goalkeeper: true,
         goalkeeperProfile: true,
         organizer: true,
+        payments: {
+          where: { status: 'COMPLETED' },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
       },
     });
 
@@ -105,13 +111,28 @@ export async function POST(
 
     // Handle ORGANIZER cancellation
     if (isOrganizer) {
-      // PENDING bookings (no goalkeeper assigned) = always free cancellation
-      const isPending = booking.status === 'PENDING';
-      const refundCalc = isPending
+      // PENDING bookings (no goalkeeper assigned) = always free cancellation (full refund)
+      const isPendingNoGoalkeeper = booking.status === 'PENDING' && !booking.goalkeeperId;
+      const refundCalc = isPendingNoGoalkeeper
         ? { refundPercent: 100, refund: booking.totalAmount, fee: 0 }
         : calculateOrganizerRefund(hoursUntilMatch, booking.totalAmount);
       refundAmount = refundCalc.refund;
       cancellationFee = refundCalc.fee;
+
+      // Process Stripe refund if there's a completed payment
+      const completedPayment = booking.payments?.[0];
+      if (completedPayment?.stripePaymentId && refundAmount > 0) {
+        try {
+          await refundPayment(
+            completedPayment.stripePaymentId,
+            refundAmount < booking.totalAmount ? refundAmount : undefined // partial or full
+          );
+          console.log(`[Cancel] Stripe refund processed: €${(refundAmount / 100).toFixed(2)} for booking ${id}`);
+        } catch (refundError) {
+          console.error('[Cancel] Stripe refund failed:', refundError);
+          // Continue with cancellation even if refund fails — will need manual processing
+        }
+      }
 
       const result = await prisma.$transaction(async (tx: any) => {
         // Update booking
@@ -127,15 +148,26 @@ export async function POST(
           },
         });
 
-        // Update payment
+        // Update payment records
+        if (completedPayment) {
+          await tx.payment.update({
+            where: { id: completedPayment.id },
+            data: {
+              status: refundAmount >= booking.totalAmount ? 'REFUNDED' : 'COMPLETED',
+              platformFee: cancellationFee,
+              goalkeeperEarning: 0,
+            },
+          });
+        }
+        // Also update any pending payments
         await tx.payment.updateMany({
           where: {
             bookingId: id,
             status: 'PENDING',
           },
           data: {
-            status: cancellationFee > 0 ? 'COMPLETED' : 'REFUNDED',
-            platformFee: cancellationFee,
+            status: 'REFUNDED',
+            platformFee: 0,
             goalkeeperEarning: 0,
           },
         });
@@ -147,7 +179,7 @@ export async function POST(
               userId: booking.goalkeeperId,
               bookingId: id,
               title: 'Match Cancelled by Organizer',
-              message: `The match on ${matchTime.toLocaleDateString()} has been cancelled by the organizer. ${hoursUntilMatch > 6 ? 'This was a free cancellation.' : `Cancellation was ${hoursUntilMatch.toFixed(1)}h before the match.`}`,
+              message: `The match on ${matchTime.toLocaleDateString()} has been cancelled by the organizer. ${isPendingNoGoalkeeper || hoursUntilMatch > 6 ? 'This was a free cancellation.' : `Cancellation was ${hoursUntilMatch.toFixed(1)}h before the match.`}`,
               type: 'BOOKING_CANCELLED',
             },
           });

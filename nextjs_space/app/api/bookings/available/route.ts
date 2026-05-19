@@ -13,12 +13,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get all available bookings (no goalkeeper assigned, future dates, pending status)
+    // Get all available bookings (no goalkeeper assigned, future dates, pending status, PAID)
     // Priority bookings (goalkeeper cancelled close to match) appear first
     const availableBookings = await prisma.booking.findMany({
       where: {
         goalkeeperId: null,
         status: 'PENDING',
+        paidAt: { not: null }, // Only show bookings where organizer has already paid
         date: {
           gte: new Date() // Only future bookings
         }

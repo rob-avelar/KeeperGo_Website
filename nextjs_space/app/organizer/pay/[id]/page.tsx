@@ -29,6 +29,10 @@ export default async function PaymentPage({ params, searchParams }: { params: { 
           totalMatches: true,
           city: true,
         }
+      },
+      payments: {
+        where: { status: 'COMPLETED' },
+        take: 1,
       }
     }
   })
@@ -73,10 +77,10 @@ export default async function PaymentPage({ params, searchParams }: { params: { 
           totalAmount={booking.totalAmount}
           goalkeeperEarning={goalkeeperEarning}
           platformFee={platformFee}
-          goalkeeperName={booking.goalkeeper?.name || 'Goalkeeper'}
+          goalkeeperName={booking.goalkeeper?.name || (booking.goalkeeperId ? 'Goalkeeper' : 'TBD')}
           goalkeeperRating={booking.goalkeeperProfile?.averageRating || 0}
           goalkeeperMatches={booking.goalkeeperProfile?.totalMatches || 0}
-          bookingStatus={booking.status}
+          bookingStatus={booking.paidAt ? 'CONFIRMED' : booking.status}
           redirectStatus={searchParams.redirect_status || null}
         />
       </main>

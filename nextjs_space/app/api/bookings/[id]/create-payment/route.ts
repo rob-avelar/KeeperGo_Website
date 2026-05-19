@@ -21,7 +21,14 @@ export async function POST(
     // Fetch booking with goalkeeper's Stripe info
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
-      include: {
+      select: {
+        id: true,
+        organizerId: true,
+        goalkeeperId: true,
+        status: true,
+        totalAmount: true,
+        date: true,
+        paidAt: true,
         goalkeeperProfile: {
           select: {
             stripeAccountId: true,
@@ -48,10 +55,18 @@ export async function POST(
       return NextResponse.json({ error: 'Only the organizer can pay for this booking' }, { status: 403 })
     }
 
-    // Booking must be ACCEPTED (goalkeeper accepted, awaiting payment)
-    if (booking.status !== 'ACCEPTED') {
+    // Booking must be PENDING or ACCEPTED (upfront payment flow)
+    if (booking.status !== 'PENDING' && booking.status !== 'ACCEPTED') {
       return NextResponse.json(
         { error: `Cannot pay for a booking with status: ${booking.status}` },
+        { status: 400 }
+      )
+    }
+
+    // If already paid, don't allow double payment
+    if (booking.paidAt) {
+      return NextResponse.json(
+        { error: 'This booking has already been paid for' },
         { status: 400 }
       )
     }

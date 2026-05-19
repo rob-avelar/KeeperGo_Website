@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
     if (bookingType === 'direct') {
       const matchDate = new Date(date);
       const matchEndTime = new Date(matchDate);
-      matchEndTime.setHours(matchEndTime.getHours() + parseInt(duration));
+      matchEndTime.setHours(matchEndTime.getHours() + Number(duration));
       confirmationDeadline = new Date(matchEndTime);
       confirmationDeadline.setHours(confirmationDeadline.getHours() + 48);
     }
@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
 
     // Send email notification to all active goalkeepers about the new booking
     // Do this in the background (don't await) so the response isn't delayed
-    notifyGoalkeepers(booking, bookingType, goalkeeperId).catch((err) =>
+    notifyGoalkeepers(booking, bookingType, goalkeeperId || undefined).catch((err) =>
       console.error('[Booking] Error notifying goalkeepers:', err)
     )
 
@@ -199,8 +199,8 @@ export async function POST(request: NextRequest) {
       new Date(date),
       location,
       fieldType,
-      parseInt(pricePerHour),
-      parseInt(duration),
+      Number(pricePerHour),
+      Number(duration),
       bookingType
     ).catch((err) => console.error('[Booking] Error sending admin alert:', err))
 

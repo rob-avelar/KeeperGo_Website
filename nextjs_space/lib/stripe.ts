@@ -139,6 +139,25 @@ export async function retrievePaymentIntent(paymentIntentId: string) {
   return stripe.paymentIntents.retrieve(paymentIntentId)
 }
 
+// Helper to refund a payment (full or partial)
+export async function refundPayment(
+  paymentIntentId: string,
+  amountInCents?: number // if omitted, full refund
+) {
+  try {
+    const params: Stripe.RefundCreateParams = {
+      payment_intent: paymentIntentId,
+    }
+    if (amountInCents && amountInCents > 0) {
+      params.amount = amountInCents
+    }
+    return await stripe.refunds.create(params)
+  } catch (error) {
+    console.error('Error creating refund:', error)
+    throw error
+  }
+}
+
 // Helper to construct webhook event
 export function constructWebhookEvent(body: string, signature: string, secret: string) {
   return stripe.webhooks.constructEvent(body, signature, secret)

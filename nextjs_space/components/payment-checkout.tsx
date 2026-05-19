@@ -174,8 +174,8 @@ export default function PaymentCheckout({
       return
     }
 
-    // If booking is not ACCEPTED, can't pay
-    if (bookingStatus !== 'ACCEPTED') {
+    // Allow payment for PENDING (open booking, upfront) and ACCEPTED (direct booking)
+    if (bookingStatus !== 'PENDING' && bookingStatus !== 'ACCEPTED') {
       setError(`This booking cannot be paid for (status: ${bookingStatus})`)
       setLoading(false)
       return
@@ -225,7 +225,9 @@ export default function PaymentCheckout({
           <div>
             <h2 className="text-2xl font-bold text-lime-400 mb-2">Payment Successful!</h2>
             <p className="text-gray-400">
-              Your match with {goalkeeperName} is now confirmed.
+              {goalkeeperName && goalkeeperName !== 'TBD' && goalkeeperName !== 'Goalkeeper'
+                ? `Your match with ${goalkeeperName} is now confirmed.`
+                : 'Your match announcement is now live! Goalkeepers can view and accept it.'}
             </p>
           </div>
           <div className="bg-gray-800 rounded-lg p-4 space-y-2 text-sm">
@@ -313,23 +315,35 @@ export default function PaymentCheckout({
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Goalkeeper info */}
-          <div className="flex items-center justify-between bg-gray-800 rounded-lg p-4 border border-gray-700">
-            <div>
-              <p className="font-semibold text-gray-100">{goalkeeperName}</p>
-              <div className="flex items-center gap-3 text-sm text-gray-400 mt-1">
-                {goalkeeperRating > 0 && (
-                  <span className="flex items-center">
-                    <Star className="h-3 w-3 text-yellow-500 mr-1" />
-                    {goalkeeperRating.toFixed(1)}
-                  </span>
-                )}
-                <span>{goalkeeperMatches} matches</span>
+          {goalkeeperName && goalkeeperName !== 'TBD' ? (
+            <div className="flex items-center justify-between bg-gray-800 rounded-lg p-4 border border-gray-700">
+              <div>
+                <p className="font-semibold text-gray-100">{goalkeeperName}</p>
+                <div className="flex items-center gap-3 text-sm text-gray-400 mt-1">
+                  {goalkeeperRating > 0 && (
+                    <span className="flex items-center">
+                      <Star className="h-3 w-3 text-yellow-500 mr-1" />
+                      {goalkeeperRating.toFixed(1)}
+                    </span>
+                  )}
+                  <span>{goalkeeperMatches} matches</span>
+                </div>
               </div>
+              <Badge className="bg-lime-400/10 text-lime-400 border-lime-400/30">
+                Goalkeeper
+              </Badge>
             </div>
-            <Badge className="bg-lime-400/10 text-lime-400 border-lime-400/30">
-              Goalkeeper
-            </Badge>
-          </div>
+          ) : (
+            <div className="flex items-center justify-between bg-gray-800 rounded-lg p-4 border border-yellow-600/30">
+              <div>
+                <p className="font-semibold text-yellow-400">Open Match — Goalkeeper TBD</p>
+                <p className="text-sm text-gray-400 mt-1">After payment, goalkeepers can view and accept this match.</p>
+              </div>
+              <Badge className="bg-yellow-400/10 text-yellow-400 border-yellow-400/30">
+                Open
+              </Badge>
+            </div>
+          )}
 
           {/* Match details */}
           <div className="space-y-2 text-sm">

@@ -82,7 +82,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
 
   // Upcoming bookings (future matches)
   const upcomingBookings = bookings?.filter((booking: any) => 
-    new Date(booking.date) >= now && (booking.status === 'CONFIRMED' || booking.status === 'ACCEPTED')
+    new Date(booking.date) >= now && (booking.status === 'CONFIRMED' || booking.status === 'ACCEPTED' || (booking.status === 'PENDING' && booking.paidAt))
   ) || []
 
   // Bookings awaiting confirmation (past matches, within 48h deadline)
@@ -101,8 +101,14 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
     )
   }) || []
 
+  // Open announcements: PENDING bookings without goalkeeper (both paid and unpaid)
   const openBookings = bookings?.filter((booking: any) => 
     booking.status === 'PENDING' && !booking.goalkeeperId
+  ) || []
+
+  // Unpaid bookings: created but not yet paid — organizer needs to complete payment
+  const unpaidBookings = bookings?.filter((booking: any) =>
+    (booking.status === 'PENDING' || booking.status === 'ACCEPTED') && !booking.paidAt
   ) || []
 
   const completedBookings = bookings?.filter((booking: any) => 
@@ -149,12 +155,23 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
     const matchDate = new Date(booking.date)
     const hoursUntilMatch = (matchDate.getTime() - now.getTime()) / (1000 * 60 * 60)
 
-    // PENDING bookings (no goalkeeper assigned) = always free, no fees
-    if (booking.status === 'PENDING') {
+    // Unpaid bookings = free cancellation, no refund needed
+    if (!booking.paidAt) {
+      return {
+        refundAmount: 0,
+        cancellationFee: 0,
+        message: 'Free cancellation — no payment made yet',
+        hoursUntilMatch: Math.round(hoursUntilMatch * 10) / 10,
+        isFree: true,
+      }
+    }
+
+    // PENDING bookings (paid but no goalkeeper assigned) = always full refund
+    if (booking.status === 'PENDING' && !booking.goalkeeperId) {
       return {
         refundAmount: booking.totalAmount,
         cancellationFee: 0,
-        message: 'Free cancellation — no goalkeeper assigned yet',
+        message: 'Free cancellation — full refund (no goalkeeper assigned)',
         hoursUntilMatch: Math.round(hoursUntilMatch * 10) / 10,
         isFree: true,
       }
@@ -473,8 +490,70 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
           <FavoritesSection />
         </div>
 
-        {/* Open Announcements */}
-        {openBookings?.length > 0 && (
+        {/* Awaiting Payment — bookings created but not yet paid */}
+        {unpaidBookings?.length > 0 && (
+          <Card className="mb-8 border-orange-500/30 bg-orange-900/10">
+            <CardHeader>
+              <CardTitle className="flex items-center text-orange-400">
+                <CreditCard className="h-5 w-5 mr-2" />
+                Awaiting Payment
+              </CardTitle>
+              <CardDescription className="text-orange-500/70">
+                Complete payment to activate these bookings
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {unpaidBookings?.map((booking: any) => (
+                <div key={booking.id} className="border-l-4 border-orange-500 bg-gray-900 pl-4 py-2 rounded-r-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-semibold">
+                      {booking?.goalkeeper?.name || 'Open Match'}
+                    </h4>
+                    <Badge variant="outline" className="text-orange-400 border-orange-500/30">
+                      UNPAID
+                    </Badge>
+                  </div>
+                  <div className="space-y-1 text-sm text-gray-400">
+                    <div className="flex items-center">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {new Date(booking.date).toLocaleDateString()} at {new Date(booking.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    <div className="flex items-center">
+                      <MapPin className="h-3 w-3 mr-1" />
+                      {booking.location}
+                    </div>
+                    <div className="flex items-center">
+                      <Euro className="h-3 w-3 mr-1" />
+                      €{(booking.totalAmount / 100).toFixed(2)}
+                    </div>
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    <Button
+                      size="sm"
+                      className="bg-lime-400 hover:bg-lime-300 text-gray-950 font-bold"
+                      onClick={() => router.push(`/organizer/pay/${booking.id}`)}
+                    >
+                      <CreditCard className="h-3 w-3 mr-1" />
+                      Pay Now
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-900/20"
+                      onClick={() => handleOpenCancelDialog(booking)}
+                    >
+                      <X className="h-3 w-3 mr-1" />
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Open Announcements (paid, waiting for goalkeeper) */}
+        {openBookings?.filter((b: any) => b.paidAt)?.length > 0 && (
           <Card className="mb-8 border-yellow-500/30 bg-yellow-900/10">
             <CardHeader>
               <CardTitle className="flex items-center text-yellow-400">
@@ -486,7 +565,7 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {openBookings?.map((booking: any) => (
+              {openBookings?.filter((b: any) => b.paidAt)?.map((booking: any) => (
                 <div key={booking.id} className={`border-l-4 ${booking.isPriority ? 'border-red-500 bg-red-500/10' : 'border-yellow-500 bg-gray-900'} pl-4 py-2 rounded-r-lg`}>
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -558,16 +637,13 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                 </p>
               ) : (
                 upcomingBookings?.slice(0, 3)?.map((booking: any) => (
-                  <div key={booking.id} className={`border-l-4 ${booking.status === 'ACCEPTED' ? 'border-yellow-400' : 'border-lime-400'} pl-4 py-2`}>
+                  <div key={booking.id} className={`border-l-4 border-lime-400 pl-4 py-2`}>
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-semibold">
                         {booking?.goalkeeper?.name || 'Goalkeeper TBD'}
                       </h4>
-                      <Badge
-                        variant="outline"
-                        className={booking.status === 'ACCEPTED' ? 'text-yellow-400 border-yellow-400/50' : ''}
-                      >
-                        {booking.status === 'ACCEPTED' ? 'AWAITING PAYMENT' : booking.status}
+                      <Badge variant="outline">
+                        {booking.status}
                       </Badge>
                     </div>
                     <div className="space-y-1 text-sm text-gray-400">
@@ -589,16 +665,6 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                       </div>
                     </div>
                     <div className="mt-3 space-y-2">
-                      {booking.status === 'ACCEPTED' && (
-                        <Button
-                          size="sm"
-                          className="w-full bg-lime-400 hover:bg-lime-300 text-gray-950 font-bold"
-                          onClick={() => router.push(`/organizer/pay/${booking.id}`)}
-                        >
-                          <CreditCard className="h-3 w-3 mr-1" />
-                          Pay Now — €{(booking.totalAmount / 100).toFixed(2)}
-                        </Button>
-                      )}
                       <Button
                         variant="outline"
                         size="sm"
@@ -802,7 +868,9 @@ export default function OrganizerDashboard({ user }: OrganizerDashboardProps) {
                     ✓ {cancelFeeInfo.message}
                   </h4>
                   <p className="text-sm text-gray-400 mt-1">
-                    No payment has been made for this match yet, so there are no charges.
+                    {bookingToCancel?.paidAt
+                      ? 'You will receive a full refund to your original payment method.'
+                      : 'No payment has been made for this match yet, so there are no charges.'}
                   </p>
                 </div>
               ) : (

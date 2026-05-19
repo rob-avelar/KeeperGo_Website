@@ -21,7 +21,15 @@ export async function POST(
     // Fetch booking with payment
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
-      include: {
+      select: {
+        id: true,
+        organizerId: true,
+        goalkeeperId: true,
+        status: true,
+        totalAmount: true,
+        date: true,
+        location: true,
+        paidAt: true,
         payments: {
           orderBy: { createdAt: 'desc' },
           take: 1
@@ -40,8 +48,13 @@ export async function POST(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // Already confirmed
-    if (booking.status === 'CONFIRMED') {
+    // Already paid
+    if (booking.paidAt) {
+      return NextResponse.json({ success: true, message: 'Booking already paid' })
+    }
+
+    // Already confirmed (legacy)
+    if (booking.status === 'CONFIRMED' || booking.status === 'COMPLETED') {
       return NextResponse.json({ success: true, message: 'Booking already confirmed' })
     }
 
@@ -60,12 +73,21 @@ export async function POST(
       )
     }
 
+    // Determine new status based on booking type:
+    // - Direct booking (has goalkeeper) → CONFIRMED (paid + goalkeeper assigned)
+    // - Open booking (no goalkeeper) → stay PENDING (paid, waiting for goalkeeper)
+    const hasGoalkeeper = !!booking.goalkeeperId
+    const newStatus = hasGoalkeeper ? 'CONFIRMED' : booking.status // keep PENDING for open bookings
+
     // Update booking and payment in a transaction
     await prisma.$transaction(async (tx: any) => {
-      // Update booking to CONFIRMED
+      // Update booking: set paidAt and status
       await tx.booking.update({
         where: { id: bookingId },
-        data: { status: 'CONFIRMED' }
+        data: {
+          paidAt: new Date(),
+          status: newStatus,
+        }
       })
 
       // Update payment status
@@ -74,7 +96,7 @@ export async function POST(
         data: { status: 'COMPLETED' }
       })
 
-      // Notify goalkeeper that payment is received and match is confirmed
+      // Notify goalkeeper that payment is received (only if assigned)
       if (booking.goalkeeperId) {
         await tx.notification.create({
           data: {
@@ -88,18 +110,21 @@ export async function POST(
       }
 
       // Notify organizer
+      const orgMessage = hasGoalkeeper
+        ? `Your payment of €${(booking.totalAmount / 100).toFixed(2)} was successful. The match is confirmed!`
+        : `Your payment of €${(booking.totalAmount / 100).toFixed(2)} was successful. Your match announcement is now live — goalkeepers can accept it.`
       await tx.notification.create({
         data: {
           userId: session.user.id,
           bookingId: bookingId,
-          title: 'Payment Successful',
-          message: `Your payment of €${(booking.totalAmount / 100).toFixed(2)} was successful. The match is confirmed!`,
+          title: hasGoalkeeper ? 'Payment Successful — Match Confirmed' : 'Payment Successful — Announcement Live',
+          message: orgMessage,
           type: 'BOOKING_CONFIRMED'
         }
       })
     })
 
-    // Send payment received email to goalkeeper
+    // Send payment received email to goalkeeper (if assigned)
     if (booking.goalkeeper?.email && booking.goalkeeper.emailNotifications) {
       sendPaymentReceivedEmail(
         booking.goalkeeper.email,
@@ -110,7 +135,7 @@ export async function POST(
       ).catch(err => console.error('[ConfirmPayment] Email send error:', err))
     }
 
-    return NextResponse.json({ success: true, message: 'Payment confirmed and booking updated' })
+    return NextResponse.json({ success: true, message: hasGoalkeeper ? 'Payment confirmed and match confirmed' : 'Payment confirmed, announcement is live' })
   } catch (error) {
     console.error('Error confirming payment:', error)
     return NextResponse.json({ error: 'Failed to confirm payment' }, { status: 500 })

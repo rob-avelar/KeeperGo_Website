@@ -77,13 +77,16 @@ export async function POST(
       const confirmationDeadline = new Date(matchEndTime);
       confirmationDeadline.setHours(confirmationDeadline.getHours() + 48);
 
-      // Update booking with goalkeeper assignment (ACCEPTED = awaiting payment)
+      // Update booking with goalkeeper assignment
+      // If already paid (upfront flow), go directly to CONFIRMED
+      // Otherwise (legacy), go to ACCEPTED (awaiting payment)
+      const newStatus = booking.paidAt ? 'CONFIRMED' : 'ACCEPTED'
       const updatedBooking = await tx.booking.update({
         where: { id: bookingId },
         data: {
           goalkeeperId: session.user.id,
           goalkeeperProfileId: goalkeeperProfile.id,
-          status: 'ACCEPTED',
+          status: newStatus,
           confirmationDeadline,
           isPriority: false,
           priorityReason: null,
@@ -106,8 +109,10 @@ export async function POST(
         data: {
           userId: booking.organizer.id,
           bookingId: booking.id,
-          title: 'Goalkeeper Accepted Your Match!',
-          message: `${session.user.name} has accepted your match on ${new Date(booking.date).toLocaleDateString()}`,
+          title: booking.paidAt ? 'Goalkeeper Accepted — Match Confirmed!' : 'Goalkeeper Accepted Your Match!',
+          message: booking.paidAt
+            ? `${session.user.name} has accepted your match on ${new Date(booking.date).toLocaleDateString()}. Payment was already received — the match is confirmed!`
+            : `${session.user.name} has accepted your match on ${new Date(booking.date).toLocaleDateString()}`,
           type: 'BOOKING_ACCEPTED'
         }
       })
@@ -117,8 +122,10 @@ export async function POST(
         data: {
           userId: session.user.id,
           bookingId: booking.id,
-          title: 'Match Accepted',
-          message: `You've successfully accepted the match with ${booking.organizer.name} on ${new Date(booking.date).toLocaleDateString()}`,
+          title: booking.paidAt ? 'Match Accepted & Confirmed' : 'Match Accepted',
+          message: booking.paidAt
+            ? `You've accepted the match with ${booking.organizer.name} on ${new Date(booking.date).toLocaleDateString()}. The organizer has already paid — the match is confirmed!`
+            : `You've successfully accepted the match with ${booking.organizer.name} on ${new Date(booking.date).toLocaleDateString()}`,
           type: 'BOOKING_ACCEPTED'
         }
       })

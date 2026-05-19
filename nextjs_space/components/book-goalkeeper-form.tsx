@@ -223,25 +223,20 @@ export default function BookGoalkeeperForm() {
 
       const responses = await Promise.all(bookingPromises)
       
-      // Check if all requests succeeded
-      const allSucceeded = responses.every(response => response.ok)
-      
-      if (!allSucceeded) {
-        throw new Error('Failed to create some bookings')
-      }
+      // Parse all responses
+      const bookingResults = await Promise.all(
+        responses.map(async (res) => {
+          if (!res.ok) throw new Error('Failed to create booking')
+          return res.json()
+        })
+      )
 
-      const successMessage = formData.isRecurring
-        ? `Successfully created ${datesToCreate.length} recurring ${formData.bookingType === 'direct' ? 'bookings' : 'match announcements'}!`
-        : formData.bookingType === 'direct'
-        ? 'Direct booking created! The goalkeeper has been notified.'
-        : 'Your match announcement has been posted. Goalkeepers can now view and accept it.'
-
+      // Redirect to payment for the first booking
       toast({
-        title: 'Success!',
-        description: successMessage,
+        title: formData.isRecurring ? `${bookingResults.length} bookings created!` : 'Booking created!',
+        description: 'Redirecting to payment...',
       })
-
-      router.push('/organizer/dashboard')
+      router.push(`/organizer/pay/${bookingResults[0].id}`)
     } catch (error) {
       toast({
         title: 'Error',

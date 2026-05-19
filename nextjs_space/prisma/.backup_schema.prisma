@@ -163,6 +163,7 @@ model Booking {
   confirmationDeadline    DateTime?    // 48h after match time
   goalkeeperConfirmedAt   DateTime?    // when goalkeeper confirmed their attendance
   confirmedAt             DateTime?    // when organizer confirmed
+  paidAt                  DateTime?    // when organizer paid (upfront payment)
   noShow                  Boolean      @default(false) // if goalkeeper didn't show up
   
   createdAt           DateTime      @default(now())
