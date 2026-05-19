@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { retrievePaymentIntent } from '@/lib/stripe'
-import { sendPaymentReceivedEmail } from '@/lib/email'
+import { sendPaymentReceivedEmail, sendNewBookingAvailableEmail, sendNewBookingAdminAlert } from '@/lib/email'
 
 export async function POST(
   request: NextRequest,
@@ -29,10 +29,16 @@ export async function POST(
         totalAmount: true,
         date: true,
         location: true,
+        fieldType: true,
+        duration: true,
+        pricePerHour: true,
         paidAt: true,
         payments: {
           orderBy: { createdAt: 'desc' },
           take: 1
+        },
+        organizer: {
+          select: { id: true, name: true, email: true }
         },
         goalkeeper: {
           select: { id: true, name: true, email: true, emailNotifications: true }
@@ -139,9 +145,73 @@ export async function POST(
       ).catch(err => console.error('[ConfirmPayment] Email send error:', err))
     }
 
+    // Now that payment is confirmed, send booking notification emails
+    // Notify all active goalkeepers about the new match (for open bookings)
+    if (!hasGoalkeeper) {
+      notifyGoalkeepers(booking).catch(err =>
+        console.error('[ConfirmPayment] Error notifying goalkeepers:', err)
+      )
+    }
+
+    // Send admin alert email
+    sendNewBookingAdminAlert(
+      booking.organizer?.name || 'Unknown',
+      booking.organizer?.email || '',
+      booking.date,
+      booking.location,
+      booking.fieldType,
+      booking.pricePerHour,
+      booking.duration,
+      hasGoalkeeper ? 'direct' : 'open'
+    ).catch(err => console.error('[ConfirmPayment] Error sending admin alert:', err))
+
     return NextResponse.json({ success: true, message: hasGoalkeeper ? 'Payment confirmed and match confirmed' : 'Payment confirmed, announcement is live' })
   } catch (error) {
     console.error('Error confirming payment:', error)
     return NextResponse.json({ error: 'Failed to confirm payment' }, { status: 500 })
   }
+}
+
+// Notify all active goalkeepers about a new paid open match
+async function notifyGoalkeepers(
+  booking: { date: Date; location: string; fieldType: string; pricePerHour: number; duration: number; goalkeeperId: string | null }
+) {
+  const goalkeepers = await prisma.user.findMany({
+    where: {
+      role: 'GOALKEEPER',
+      ...(booking.goalkeeperId ? { id: { not: booking.goalkeeperId } } : {}),
+      goalkeeperProfile: {
+        isActive: true,
+        blockedUntil: null,
+      },
+    },
+    select: { id: true, name: true, email: true },
+  })
+
+  if (goalkeepers.length === 0) {
+    console.log('[ConfirmPayment] No active goalkeepers to notify')
+    return
+  }
+
+  console.log(`[ConfirmPayment] Notifying ${goalkeepers.length} goalkeeper(s) about paid match`)
+
+  const batchSize = 5
+  for (let i = 0; i < goalkeepers.length; i += batchSize) {
+    const batch = goalkeepers.slice(i, i + batchSize)
+    await Promise.allSettled(
+      batch.map((gk: any) =>
+        sendNewBookingAvailableEmail(
+          gk.email,
+          gk.name || 'Goalkeeper',
+          booking.date,
+          booking.location,
+          booking.fieldType,
+          booking.pricePerHour,
+          booking.duration
+        )
+      )
+    )
+  }
+
+  console.log(`[ConfirmPayment] Finished notifying goalkeepers`)
 }

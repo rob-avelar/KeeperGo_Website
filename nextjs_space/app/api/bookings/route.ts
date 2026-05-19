@@ -186,23 +186,9 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Send email notification to all active goalkeepers about the new booking
-    // Do this in the background (don't await) so the response isn't delayed
-    notifyGoalkeepers(booking, bookingType, goalkeeperId || undefined).catch((err) =>
-      console.error('[Booking] Error notifying goalkeepers:', err)
-    )
-
-    // Send admin alert email
-    sendNewBookingAdminAlert(
-      session.user.name || 'Unknown',
-      session.user.email || '',
-      new Date(date),
-      location,
-      fieldType,
-      Number(pricePerHour),
-      Number(duration),
-      bookingType
-    ).catch((err) => console.error('[Booking] Error sending admin alert:', err))
+    // NOTE: Email notifications (to goalkeepers and admin) are sent AFTER payment
+    // is confirmed, not at booking creation time. See confirm-payment/route.ts and
+    // webhooks/stripe/route.ts for the email sending logic.
 
     return NextResponse.json(booking, { status: 201 })
   } catch (error) {
