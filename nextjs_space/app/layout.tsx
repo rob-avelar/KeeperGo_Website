@@ -15,10 +15,10 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://keepergo.nl'),
   title: {
-    default: 'KeeperGo - Hire a Goalkeeper for Your Match | Netherlands',
+    default: 'KeeperGo - Find a Goalkeeper for Your Match | Netherlands',
     template: '%s | KeeperGo',
   },
-  description: 'Hire a goalkeeper for your amateur football match in the Netherlands. KeeperGo connects match organizers with available goalkeepers in Amsterdam, Rotterdam, Utrecht, and The Hague. Book instantly, pay securely.',
+  description: 'Find a goalkeeper for your amateur football match in the Netherlands. KeeperGo connects match organizers with available goalkeepers in Amsterdam, Rotterdam, Utrecht, and The Hague. Book instantly, pay securely.',
   keywords: 'goalkeeper hire, keeper huren, doelman huren, goalkeeper rental, football Netherlands, amateur football, zaalvoetbal, goalkeeper booking, Amsterdam, Rotterdam, Utrecht, Den Haag, keeper zoeken',
   authors: [{ name: 'KeeperGo' }],
   creator: 'KeeperGo',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'KeeperGo - Hire a Goalkeeper for Your Match',
+    title: 'KeeperGo - Find a Goalkeeper for Your Match',
     description: 'Find and book goalkeepers for your amateur football matches across the Netherlands. Secure payments, verified ratings, instant booking.',
     url: '/',
     siteName: 'KeeperGo',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'KeeperGo - Hire a Goalkeeper for Your Match in the Netherlands',
+        alt: 'KeeperGo - Find a Goalkeeper for Your Match in the Netherlands',
       },
     ],
     locale: 'en_NL',
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'KeeperGo - Hire a Goalkeeper for Your Match',
+    title: 'KeeperGo - Find a Goalkeeper for Your Match',
     description: 'Find and book goalkeepers for your amateur football matches across the Netherlands.',
     images: ['/og-image.jpg'],
   },
