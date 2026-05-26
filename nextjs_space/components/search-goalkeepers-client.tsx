@@ -56,6 +56,7 @@ export default function SearchGoalkeepersClient() {
   })
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [togglingFavorite, setTogglingFavorite] = useState<string | null>(null)
+  const [expandedBios, setExpandedBios] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     fetchGoalkeepers()
@@ -399,9 +400,27 @@ export default function SearchGoalkeepersClient() {
                           )}
 
                           {gk.bio && (
-                            <p className="text-sm text-gray-400 mb-4 line-clamp-2">
-                              {gk.bio}
-                            </p>
+                            <div className="mb-4">
+                              <p className={`text-sm text-gray-400 ${expandedBios.has(gk.id) ? '' : 'line-clamp-3'}`}>
+                                {gk.bio}
+                              </p>
+                              {gk.bio.length > 100 && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setExpandedBios(prev => {
+                                      const next = new Set(prev)
+                                      if (next.has(gk.id)) next.delete(gk.id)
+                                      else next.add(gk.id)
+                                      return next
+                                    })
+                                  }}
+                                  className="text-xs text-lime-400 hover:text-lime-300 mt-1 transition-colors"
+                                >
+                                  {expandedBios.has(gk.id) ? 'Show less' : 'Read more'}
+                                </button>
+                              )}
+                            </div>
                           )}
 
                           <Button
